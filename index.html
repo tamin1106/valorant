@@ -11,7 +11,16 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
-:root {  --bg:#0b0c10; --bg2:#13141a; --bg3:#1c1d26; --card:#181920;  --border:#2a2b38; --border2:#353647;  --red:#ff4655; --red-dim:#cc3544;  --teal:#00d4aa; --yellow:#f5c518; --blue:#4f9eff;  --text:#ece8e1; --muted:#6b6c7e; --muted2:#9b9cad;  --fh:'Rajdhani','Noto Sans KR',sans-serif;  --fb:'Noto Sans KR',sans-serif;  --fm:'IBM Plex Mono',monospace;}
+:root {
+  --bg:#0b0c10; --bg2:#13141a; --bg3:#1c1d26; --card:#181920;
+  --border:#2a2b38; --border2:#353647;
+  --red:#ff4655; --red-dim:#cc3544;
+  --teal:#00d4aa; --yellow:#f5c518; --blue:#4f9eff;
+  --text:#ece8e1; --muted:#6b6c7e; --muted2:#9b9cad;
+  --fh:'Rajdhani','Noto Sans KR',sans-serif;
+  --fb:'Noto Sans KR',sans-serif;
+  --fm:'IBM Plex Mono',monospace;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px);pointer-events:none;z-index:9999}
@@ -81,7 +90,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .mvs{font-family:var(--fm);font-size:12px;color:var(--red);background:rgba(255,70,85,.1);border:1px solid rgba(255,70,85,.3);padding:3px 9px}
 .mbadge{font-family:var(--fm);font-size:11px;padding:3px 9px;border:1px solid var(--border);color:var(--muted2);letter-spacing:.5px}
 .mbadge.map{border-color:rgba(0,212,170,.3);color:var(--teal)}
-.match-info-row{display:flex;gap:10px;flex-wrap:wrap}
 .rounds-sec{padding:24px;flex:1}
 .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .sec-title{font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
@@ -145,6 +153,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .upload-ph .utxt{font-family:var(--fm);font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;text-align:center}
 .upload-ph .usub{font-size:11px;color:var(--muted);font-family:var(--fm);text-align:center;padding:0 10px}
 #file-input{display:none}
+/* 텍스트 입력 오버레이 */
+.c-txt-inp{position:absolute;background:rgba(0,0,0,.75);border:1px solid var(--red);color:#fff;font-family:var(--fh);font-size:16px;font-weight:600;padding:3px 8px;outline:none;min-width:80px;z-index:10;display:none;border-radius:0}
 
 .canvas-nav{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:rgba(11,12,16,.9);border-top:1px solid var(--border);flex-shrink:0}
 .nav-btn{width:32px;height:32px;background:transparent;border:1px solid var(--border);color:var(--muted2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:var(--fm)}
@@ -157,88 +167,131 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 /* RIGHT: info panel */
 .info-panel{background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.info-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.info-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .info-title{font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-.info-body{flex:1;overflow-y:auto;padding:20px}
-.info-sec{margin-bottom:24px}
+.info-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:0}
+.info-sec{margin-bottom:20px}
 .info-sec-label{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;display:block}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .info-item{background:var(--card);border:1px solid var(--border);padding:10px;border-radius:2px}
 .info-item-val{font-family:var(--fh);font-size:15px;font-weight:600;color:var(--text)}
 .info-item-label{font-family:var(--fm);font-size:9px;color:var(--muted2);text-transform:uppercase;margin-top:2px}
-.notes-area{width:100%;height:140px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--fb);font-size:13px;line-height:1.6;resize:none;outline:none;border-radius:2px}
+.notes-area{width:100%;height:130px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--fb);font-size:13px;line-height:1.6;resize:none;outline:none;border-radius:2px;transition:border-color .2s}
 .notes-area:focus{border-color:var(--teal)}
-.ann-list{display:flex;flex-direction:column;gap:6px}
-.ann-item{background:var(--bg3);border:1px solid var(--border);padding:8px 10px;display:flex;align-items:center;gap:10px;font-size:12px;border-radius:2px}
-.ann-item-ico{width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border2);border-radius:2px;font-size:14px}
-.ann-item-txt{flex:1;font-family:var(--fm);color:var(--muted2)}
-.ann-item-del{color:var(--muted);cursor:pointer;padding:4px;transition:color .2s}
+.ann-list{display:flex;flex-direction:column;gap:4px;max-height:110px;overflow-y:auto}
+.ann-item{background:var(--bg3);border:1px solid var(--border);padding:6px 10px;display:flex;align-items:center;gap:8px;font-size:11px;border-radius:2px}
+.ann-col{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ann-item-type{font-family:var(--fm);font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;flex:1}
+.ann-item-del{color:var(--muted);cursor:pointer;background:none;border:none;font-size:13px;padding:1px 5px;transition:color .15s}
 .ann-item-del:hover{color:var(--red)}
-.btn-save-round{width:100%;padding:14px;background:var(--teal);border:none;color:#000;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+/* 저장/내보내기 버튼들 */
+.info-actions{padding:0 20px 20px;display:flex;flex-direction:column;gap:7px;flex-shrink:0}
+.btn-save-round{width:100%;padding:12px;background:var(--teal);border:none;color:#000;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
 .btn-save-round:hover{background:#00f0c0;transform:translateY(-1px)}
+.btn-export{width:100%;padding:9px;background:transparent;border:1px solid var(--border);color:var(--muted2);font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-export:hover{border-color:var(--teal);color:var(--teal)}
+.btn-export-all{width:100%;padding:9px;background:transparent;border:1px solid var(--border);color:var(--muted2);font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-export-all:hover{border-color:var(--yellow);color:var(--yellow)}
 
 /* ─── MODALS ─── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);width:100%;max-width:440px;position:relative;animation:modalIn .3s cubic-bezier(0.16, 1, 0.3, 1)}
-@keyframes modalIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.modal{background:var(--card);border:1px solid var(--border);width:100%;max-width:380px;position:relative;animation:modalIn .25s cubic-bezier(0.16, 1, 0.3, 1)}
+@keyframes modalIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 .modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal)}
-.modal-hd{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
-.modal-close{background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer}
-.modal-body{padding:24px}
-.modal-ft{padding:16px 24px;background:var(--bg2);border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+.modal-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(--fh);font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+.modal-body{padding:20px 22px}
+.modal-ft{padding:14px 22px;background:var(--bg2);border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
 .btn-modal{padding:10px 20px;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all .2s}
 .btn-modal.cancel{background:transparent;color:var(--muted2);border:1px solid var(--border)}
+.btn-modal.cancel:hover{border-color:var(--red);color:var(--red)}
 .btn-modal.confirm{background:var(--teal);color:#000}
+.btn-modal.confirm:hover{filter:brightness(1.1)}
 
 /* ─── NOTIFICATION ─── */
-#notif{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--teal);color:#000;padding:12px 24px;font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:1px;z-index:9999;transition:transform .4s cubic-bezier(0.16, 1, 0.3, 1);box-shadow:0 10px 30px rgba(0,0,0,.5);pointer-events:none}
-#notif.show{transform:translateX(-50%) translateY(0)}
+#notif{position:fixed;bottom:22px;right:22px;background:var(--bg3);border:1px solid var(--teal);border-left:3px solid var(--teal);padding:11px 18px;font-family:var(--fm);font-size:12px;color:var(--teal);letter-spacing:1px;z-index:9999;transform:translateX(130%);transition:transform .3s ease;pointer-events:none}
+#notif.show{transform:translateX(0)}
 
-/* ─── TEAM HUB SYSTEM ─── */
-.login-view { flex: 1; display: flex; align-items: center; justify-content: center; background: var(--bg); padding: 20px; }
-.login-card { background: var(--card); border: 1px solid var(--border); padding: 40px; width: 100%; max-width: 440px; position: relative; }
-.login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--red); }
-.login-card h2 { font-family: var(--fh); font-size: 24px; letter-spacing: 4px; margin-bottom: 30px; text-align: center; }
-.member-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; max-height: 300px; overflow-y: auto; padding-right: 5px; }
-.member-btn { background: var(--bg2); border: 1px solid var(--border); padding: 15px; color: var(--text); font-family: var(--fh); font-size: 15px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: all .2s; text-align: center; position: relative; }
-.member-btn:hover { border-color: var(--teal); background: var(--bg3); color: var(--teal); }
-.admin-trigger { display: block; width: 100%; text-align: center; font-size: 11px; color: var(--muted); cursor: pointer; margin-top: 10px; font-family: var(--fm); letter-spacing: 1px; }
-.admin-trigger:hover { color: var(--red); }
+/* ─── TEAM HUB / AUTH ─── */
+.login-view{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px}
+.login-card{background:var(--card);border:1px solid var(--border);padding:40px;width:100%;max-width:440px;position:relative}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+.login-card h2{font-family:var(--fh);font-size:24px;letter-spacing:4px;margin-bottom:30px;text-align:center}
+.member-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:30px;max-height:300px;overflow-y:auto;padding-right:4px}
+.member-btn{background:var(--bg2);border:1px solid var(--border);padding:15px;color:var(--text);font-family:var(--fh);font-size:15px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s;text-align:center}
+.member-btn:hover{border-color:var(--teal);background:var(--bg3);color:var(--teal)}
+.admin-trigger{display:block;width:100%;text-align:center;font-size:11px;color:var(--muted);cursor:pointer;margin-top:10px;font-family:var(--fm);letter-spacing:1px}
+.admin-trigger:hover{color:var(--red)}
 
 /* Admin View */
-#view-admin { background: var(--bg); display: none; }
-#view-admin.active { display: flex; }
-.admin-container { max-width: 600px; margin: 60px auto; width: 100%; padding: 0 24px; }
-.admin-card { background: var(--card); border: 1px solid var(--border); padding: 30px; position: relative; }
-.admin-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--red); }
-.member-list-admin { display: grid; gap: 8px; margin-top: 20px; }
-.member-item-admin { background: var(--bg2); border: 1px solid var(--border); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; }
-.btn-del-member { color: var(--muted); cursor: pointer; background: none; border: none; font-size: 16px; transition: color .2s; }
-.btn-del-member:hover { color: var(--red); }
+#view-admin.active{display:flex}
+.admin-container{max-width:600px;margin:60px auto;width:100%;padding:0 24px}
+.admin-card{background:var(--card);border:1px solid var(--border);padding:30px;position:relative}
+.admin-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+.member-list-admin{display:grid;gap:8px;margin-top:20px}
+.member-item-admin{background:var(--bg2);border:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.btn-del-member{color:var(--muted);cursor:pointer;background:none;border:none;font-size:16px;transition:color .2s}
+.btn-del-member:hover{color:var(--red)}
+.user-display{display:flex;align-items:center;gap:10px;font-family:var(--fm);font-size:12px;color:var(--teal);background:rgba(0,212,170,.1);padding:4px 12px;border:1px solid rgba(0,212,170,.2)}
+.admin-badge{font-size:10px;background:var(--red);color:white;padding:2px 6px;border-radius:2px;margin-left:4px}
 
-.user-display { display: flex; align-items: center; gap: 10px; font-family: var(--fm); font-size: 12px; color: var(--teal); background: rgba(0,212,170,.1); padding: 4px 12px; border: 1px solid rgba(0,212,170,.2); }
-.admin-badge { font-size: 10px; background: var(--red); color: white; padding: 2px 6px; border-radius: 2px; margin-left: 8px; }
+/* ─── MOBILE ─── */
+@media(max-width:1000px){.ppt-layout{grid-template-columns:140px 1fr 280px}}
+@media(max-width:800px){
+  .home-body{grid-template-columns:1fr;padding:0 16px;margin:20px auto}
+  .rooms-panel{padding:24px 0 0 0}
+  .ppt-layout{display:flex;flex-direction:column;overflow-y:auto}
+  .slide-panel{flex-direction:row;border-right:none;border-bottom:1px solid var(--border);overflow-x:auto;height:auto;flex-shrink:0;padding:10px;align-items:center}
+  .slide-panel-hd{display:none}
+  .slide-list{display:flex;flex-direction:row;gap:10px;padding:0;flex:none;overflow-y:hidden}
+  .slide-thumb{width:130px;margin-bottom:0;flex-shrink:0}
+  .slide-thumb .st-del{display:flex}
+  .btn-add-slide{margin:0 0 0 10px;width:auto;padding:10px 20px;white-space:nowrap;flex-shrink:0;height:fit-content}
+  .canvas-area{min-height:55vh;border-bottom:1px solid var(--border);flex:none}
+  .canvas-wrap{padding:10px}
+  #bg-image{max-height:calc(55vh - 100px)}
+  .tb .tip{display:none}
+  .info-panel{border-left:none;flex:none}
+  .match-teams{flex-direction:column;align-items:flex-start;gap:6px}
+  .upload-ph{width:100%;border-width:1px}
+}
+/* Force mobile mode */
+body.force-mobile{max-width:600px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.8);position:relative;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+body.force-mobile .home-body{grid-template-columns:1fr!important;padding:0 16px!important;margin:20px auto!important}
+body.force-mobile .rooms-panel{padding:24px 0 0 0!important}
+body.force-mobile .ppt-layout{display:flex!important;flex-direction:column!important;overflow-y:auto!important}
+body.force-mobile .slide-panel{flex-direction:row!important;border-right:none!important;border-bottom:1px solid var(--border)!important;overflow-x:auto!important;height:auto!important;flex-shrink:0!important;padding:10px!important;align-items:center!important}
+body.force-mobile .slide-panel-hd{display:none!important}
+body.force-mobile .slide-list{display:flex!important;flex-direction:row!important;gap:10px!important;padding:0!important;flex:none!important;overflow-y:hidden!important}
+body.force-mobile .slide-thumb{width:130px!important;margin-bottom:0!important;flex-shrink:0!important}
+body.force-mobile .slide-thumb .st-del{display:flex!important}
+body.force-mobile .btn-add-slide{margin:0 0 0 10px!important;width:auto!important;padding:10px 20px!important;white-space:nowrap!important;flex-shrink:0!important;height:fit-content!important}
+body.force-mobile .canvas-area{min-height:55vh!important;border-bottom:1px solid var(--border)!important;flex:none!important}
+body.force-mobile .canvas-wrap{padding:10px!important}
+body.force-mobile #bg-image{max-height:calc(55vh - 100px)!important}
+body.force-mobile .tb .tip{display:none!important}
+body.force-mobile .info-panel{border-left:none!important;flex:none!important}
+body.force-mobile .match-teams{flex-direction:column!important;align-items:flex-start!important;gap:6px!important}
+body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
 </style>
 </head>
 <body>
 
-<!-- Login / Member Selection View -->
+<!-- ══════ LOGIN / MEMBER SELECTION ══════ -->
 <div id="view-login" class="view active">
   <div class="login-view">
     <div class="login-card">
-      <div class="logo" style="margin-bottom:10px; text-align:center">VALO<span>TACT</span></div>
+      <div class="logo" style="margin-bottom:10px;text-align:center">VALO<span>TACT</span></div>
       <h2>TEAM HUB</h2>
-      <div id="member-selection-grid" class="member-grid">
-        <!-- Members will be injected here -->
-      </div>
+      <div id="member-selection-grid" class="member-grid"></div>
       <div class="admin-trigger" onclick="promptAdminLogin()">ADMINISTRATOR LOGIN</div>
     </div>
   </div>
 </div>
 
-<!-- Admin Management View -->
+<!-- ══════ ADMIN VIEW ══════ -->
 <div id="view-admin" class="view">
   <div class="topbar">
     <div class="logo">VALO<span>TACT</span> <span class="admin-badge">ADMIN MODE</span></div>
@@ -258,14 +311,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         <input type="password" id="inp-new-pass" class="fi" placeholder="비밀번호 설정...">
       </div>
       <button class="btn-create" style="width:100%" onclick="addMember()">REGISTER NEW MEMBER</button>
-      
       <div class="fl" style="margin-top:30px">CURRENT MEMBERS</div>
       <div id="admin-member-list" class="member-list-admin"></div>
     </div>
   </div>
 </div>
 
-<!-- Main Home View (Member's Analysis Rooms) -->
+<!-- ══════ HOME ══════ -->
 <div id="view-home" class="view">
   <div class="topbar">
     <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
@@ -277,13 +329,11 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <button class="btn-back" onclick="logout()">LOGOUT</button>
     </div>
   </div>
-
   <div class="hero">
     <div class="hero-eye">EST. 2026 // TACTICAL OVERVIEW</div>
     <div class="hero-title">ANALYSIS <span class="a">ROOMS</span></div>
     <div class="hero-desc">팀원들과 공유되는 전술 분석 저장소</div>
   </div>
-
   <div class="home-body">
     <div class="create-panel">
       <div class="panel-title">NEW ANALYSIS ROOM</div>
@@ -292,44 +342,32 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         <input type="text" id="inp-name" class="fi" placeholder="예: 스크림 1세트">
       </div>
       <div class="fr">
-        <div class="fg">
-          <label class="fl">TEAM A</label>
-          <input type="text" id="inp-ta" class="fi" placeholder="우리팀">
-        </div>
-        <div class="fg">
-          <label class="fl">TEAM B</label>
-          <input type="text" id="inp-tb" class="fi" placeholder="상대팀">
-        </div>
+        <div class="fg"><label class="fl">TEAM A</label><input type="text" id="inp-ta" class="fi" placeholder="우리팀"></div>
+        <div class="fg"><label class="fl">TEAM B</label><input type="text" id="inp-tb" class="fi" placeholder="상대팀"></div>
       </div>
       <div class="fr">
-        <div class="fg">
-          <label class="fl">MAP</label>
-          <input type="text" id="inp-map" class="fi" placeholder="맵 선택">
-        </div>
-        <div class="fg">
-          <label class="fl">DATE</label>
-          <input type="date" id="inp-date" class="fi">
-        </div>
+        <div class="fg"><label class="fl">MAP</label><input type="text" id="inp-map" class="fi" placeholder="맵 선택"></div>
+        <div class="fg"><label class="fl">DATE</label><input type="date" id="inp-date" class="fi"></div>
       </div>
       <button class="btn-create" onclick="createRoom()">GENERATE ROOM</button>
     </div>
-
     <div class="rooms-panel">
       <div class="rooms-hd">
-        <div class="rc" id="rooms-count">0 경기</div>
+        <div class="rc" id="rooms-count">0 분석방</div>
       </div>
       <div id="rooms-grid" class="rooms-grid"></div>
     </div>
   </div>
 </div>
 
-<!-- Room Detail View -->
+<!-- ══════ ROOM ══════ -->
 <div id="view-room" class="view">
   <div class="topbar">
     <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
     <div id="room-tb-sub" class="tb-sub">MATCH ANALYSIS</div>
     <div class="tb-right">
+      <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
       <button class="btn-back" onclick="goHome()">BACK TO LIST</button>
     </div>
   </div>
@@ -352,196 +390,319 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- Round Detail (PPT) View -->
+<!-- ══════ ROUND DETAIL (PPT) ══════ -->
 <div id="view-round" class="view">
   <div class="topbar">
     <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
     <div id="rd-match-sub" class="tb-sub">MATCH NAME</div>
+    <div style="font-family:var(--fm);font-size:11px;color:var(--muted);margin-left:4px">/ ROUND <span id="rd-rnum" style="color:var(--red);font-size:14px;font-family:var(--fh);font-weight:700">—</span></div>
     <div class="tb-right">
-      <button class="btn-back" onclick="goRoom()">EXIT ANALYZER</button>
+      <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
+      <button class="btn-back" onclick="goRoom()">← 경기</button>
     </div>
   </div>
-  
+
   <div class="ppt-layout">
+    <!-- LEFT: slide panel -->
     <div class="slide-panel">
-      <div class="slide-panel-hd"><span>SLIDES</span><span id="sp-count">1</span></div>
+      <div class="slide-panel-hd"><span>SLIDES</span><span id="sp-count" style="color:var(--red)">1</span></div>
       <div id="slide-list" class="slide-list"></div>
       <button class="btn-add-slide" onclick="addSlide()">+ NEW SLIDE</button>
     </div>
 
+    <!-- CENTER: canvas -->
     <div class="canvas-area">
       <div class="toolbar">
         <div class="tg">
-          <button class="tb active" onclick="setTool('pen')" id="t-pen">✏️</button>
-          <button class="tb" onclick="setTool('arrow')" id="t-arrow">↗️</button>
-          <button class="tb" onclick="setTool('line')" id="t-line">📏</button>
-          <button class="tb" onclick="setTool('rect')" id="t-rect">⬜</button>
-          <button class="tb" onclick="setTool('circle')" id="t-circle">⭕</button>
-          <button class="tb" onclick="setTool('text')" id="t-text">T</button>
+          <button class="tb active" data-tool="pen" onclick="setTool('pen')">✏️<span class="tip">펜</span></button>
+          <button class="tb" data-tool="arrow" onclick="setTool('arrow')">↗<span class="tip">화살표</span></button>
+          <button class="tb" data-tool="line" onclick="setTool('line')">╱<span class="tip">직선</span></button>
+          <button class="tb" data-tool="rect" onclick="setTool('rect')">⬜<span class="tip">사각형</span></button>
+          <button class="tb" data-tool="circle" onclick="setTool('circle')">⭕<span class="tip">원</span></button>
+          <button class="tb" data-tool="text" onclick="setTool('text')">T<span class="tip">텍스트</span></button>
         </div>
         <div class="tg"><div class="cdots" id="color-picker"></div></div>
-        <div class="tg" style="padding-left:8px"><input type="range" class="sz-sl" min="1" max="20" value="3" oninput="setStroke(this.value)"></div>
-        <div class="tg"><button class="tb" onclick="undo()">↩️</button><button class="tb" onclick="clearAnns()">🗑️</button></div>
+        <div class="tg" style="padding-left:8px">
+          <span style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-right:4px">굵기</span>
+          <input type="range" class="sz-sl" id="sz-sl" min="1" max="14" value="3">
+        </div>
+        <div class="tg">
+          <button class="tb" onclick="undoAnn()">↩️<span class="tip">실행취소</span></button>
+          <button class="tb" onclick="clearAnns()">🗑️<span class="tip">전체삭제</span></button>
+          <button class="tb" onclick="triggerUpload()">🖼️<span class="tip">이미지 교체</span></button>
+        </div>
       </div>
-      <div class="canvas-wrap">
-        <div class="canvas-inner" id="canvas-container">
-          <img id="bg-image" src="" alt="Tactical Map">
+      <div class="canvas-wrap" id="canvas-wrap">
+        <div class="canvas-inner" id="canvas-inner">
+          <img id="bg-image" src="" alt="" style="display:none">
           <canvas id="ann-canvas"></canvas>
-          <div id="upload-ph" class="upload-ph" onclick="triggerUpload()">
-            <div class="uico">📁</div>
-            <div class="utxt">UPLOAD MAP IMAGE</div>
-          </div>
-          <input type="file" id="file-input" accept="image/*" onchange="loadImage(event)">
+          <input type="text" id="c-txt-inp" class="c-txt-inp" placeholder="텍스트 입력 후 Enter">
+        </div>
+        <div class="upload-ph" id="upload-ph" onclick="triggerUpload()">
+          <div class="uico">📸</div>
+          <div class="utxt">MAP SCREENSHOT UPLOAD</div>
+          <div class="usub">터치하거나 파일을 드래그하세요 (PNG, JPG)</div>
         </div>
       </div>
       <div class="canvas-nav">
-        <button class="nav-btn" id="nav-prev" onclick="navSlide(-1)">◀</button>
+        <button class="nav-btn" id="nav-prev" onclick="navSlide(-1)">‹</button>
         <div class="nav-counter"><span class="cur" id="nav-cur">1</span> / <span id="nav-total">1</span></div>
-        <button class="nav-btn" id="nav-next" onclick="navSlide(1)">▶</button>
-        <div style="width:20px"></div>
-        <input type="text" id="slide-title-inp" class="slide-title-input" placeholder="SLIDE TITLE">
+        <input type="text" id="slide-title-inp" class="slide-title-input" placeholder="SLIDE TITLE" maxlength="40">
+        <button class="nav-btn" id="nav-next" onclick="navSlide(1)">›</button>
       </div>
+      <input type="file" id="file-input" accept="image/*" onchange="loadImage(event)">
     </div>
 
+    <!-- RIGHT: info panel -->
     <div class="info-panel">
-      <div class="info-hd"><div class="info-title">ROUND <span id="rd-rnum" style="color:var(--red)">1</span></div></div>
+      <div class="info-hd">
+        <div class="info-title">ROUND <span id="rd-rnum2" style="color:var(--red)">1</span></div>
+      </div>
       <div class="info-body">
         <div class="info-sec">
           <label class="info-sec-label">ROUND INFO</label>
           <div class="info-grid">
-            <div class="info-item"><input type="number" id="edit-rnum" class="fi" style="padding:4px"><div class="info-item-label">ROUND NO</div></div>
-            <div class="info-item"><select id="edit-phase" class="fi" style="padding:4px"><option>PISTOL</option><option>ECO</option><option>FORCE</option><option>FULL BUY</option></select><div class="info-item-label">ECONOMY</div></div>
-            <div class="info-item"><select id="edit-side" class="fi" style="padding:4px"><option value="ATTACK">ATTACK</option><option value="DEFEND">DEFEND</option></select><div class="info-item-label">SIDE</div></div>
-            <div class="info-item"><select id="edit-result" class="fi" style="padding:4px"><option value="WIN">WIN</option><option value="LOSS">LOSS</option></select><div class="info-item-label">RESULT</div></div>
+            <div class="info-item">
+              <input type="number" id="edit-rnum" class="fi" style="padding:4px;font-size:20px;font-family:var(--fh);font-weight:700;color:var(--red);background:transparent;border:none;width:100%" min="1" max="50">
+              <div class="info-item-label">ROUND NO</div>
+            </div>
+            <div class="info-item">
+              <select id="edit-phase" class="fi" style="padding:4px">
+                <option>PISTOL</option><option>ECO</option><option>FORCE</option>
+                <option selected>FULL BUY</option><option>SAVE</option>
+              </select>
+              <div class="info-item-label">ECONOMY</div>
+            </div>
+            <div class="info-item">
+              <select id="edit-side" class="fi" style="padding:4px">
+                <option value="ATTACK">ATTACK</option>
+                <option value="DEFENSE">DEFENSE</option>
+              </select>
+              <div class="info-item-label">SIDE</div>
+            </div>
+            <div class="info-item">
+              <select id="edit-result" class="fi" style="padding:4px">
+                <option value="WIN">WIN ✓</option>
+                <option value="LOSS">LOSS ✗</option>
+              </select>
+              <div class="info-item-label">RESULT</div>
+            </div>
           </div>
         </div>
         <div class="info-sec">
           <label class="info-sec-label">TACTICAL NOTES</label>
-          <textarea id="notes-ta" class="notes-area" placeholder="피드백 입력..."></textarea>
+          <textarea id="notes-ta" class="notes-area" placeholder="이 라운드의 전술적 핵심을 기록하세요&#10;&#10;예)&#10;- A사이트 더블 스모크 후 전진&#10;- 미드 컨트롤 → A사이트 연계"></textarea>
         </div>
         <div class="info-sec">
-          <label class="info-sec-label">ANNOTATIONS</label>
-          <div id="ann-list" class="ann-list"></div>
+          <label class="info-sec-label">ANNOTATIONS <span id="ann-count" style="color:var(--red)">0</span></label>
+          <div id="ann-list" class="ann-list">
+            <div style="font-family:var(--fm);font-size:10px;color:var(--muted);padding:6px">주석 없음</div>
+          </div>
         </div>
+      </div>
+      <div class="info-actions">
         <button class="btn-save-round" onclick="saveRound()">SAVE ANALYSIS</button>
+        <button class="btn-export" onclick="exportCurrentSlide()">현재 슬라이드 내보내기</button>
+        <button class="btn-export-all" onclick="exportAllSlides()">전체 슬라이드 내보내기</button>
       </div>
     </div>
   </div>
 </div>
 
-<div id="notif">NOTIFICATION</div>
+<!-- ══════ MODAL: 라운드 추가 ══════ -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">ADD ROUND</div>
+      <button class="modal-close" onclick="closeModal('modal-add')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="fl">ROUND NUMBER</label><input id="m-rnum" class="fi" type="number" value="1" min="1" max="50"></div>
+      <div class="fg"><label class="fl">DESCRIPTION (선택)</label><input id="m-rdesc" class="fi" type="text" placeholder="예) B러시, 미드 컨트롤"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-modal cancel" onclick="closeModal('modal-add')">CANCEL</button>
+      <button class="btn-modal confirm" onclick="confirmAddRound()">ADD</button>
+    </div>
+  </div>
+</div>
+
+<div id="notif"></div>
 
 <script>
 // ══════════════════════════════════
-//  STATE & CORE LOGIC
+//  FIREBASE CONFIG
 // ══════════════════════════════════
-let S = { rooms:[], curRoom:null, curRound:null, members:[], currentUser:null, isAdmin:false };
+const firebaseConfig = {
+  apiKey: "AIzaSyCG7USp2Tyxjo0VFW22lVqVIEpUZM_KXXs",
+  authDomain: "valorant-d4648.firebaseapp.com",
+  databaseURL: "https://valorant-d4648-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "valorant-d4648",
+  storageBucket: "valorant-d4648.firebasestorage.app",
+  messagingSenderId: "288343599550",
+  appId: "1:288343599550:web:8fa59d4c3ba74ad154b1ef",
+  measurementId: "G-9TZRB3QT9P"
+};
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+const db = firebase.database();
+
+// ══════════════════════════════════
+//  STATE
+// ══════════════════════════════════
 const ADMIN_PASS = "prnadmin";
+let S = { rooms:[], curRoom:null, curRound:null, members:[], currentUser:null, isAdmin:false };
 
-// Load from LocalStorage
-try { 
-  const s = localStorage.getItem('vt_team_v3'); 
-  if(s) S = { ...S, ...JSON.parse(s) };
-} catch(e){}
+// Firebase 실시간 리스너 바인딩 (수정된 로컬 보존 로직)
+function initFirebaseSync() {
+  db.ref('VALOTACT_DATA').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      // 핵심 데이터베이스 노드 동기화 (세션 상태 유지)
+      S.rooms = data.rooms || [];
+      S.members = data.members || [];
+      
+      // 현재 열려 있는 뷰에 맞는 UI 실시간 업데이트
+      if (document.getElementById('view-home').classList.contains('active')) {
+        renderRooms();
+      } else if (document.getElementById('view-room').classList.contains('active')) {
+        renderRounds();
+      } else if (document.getElementById('view-round').classList.contains('active')) {
+        // 실시간 동기화 시 다른 사람이 수정한 드로잉 데이터 유기적 병합
+        const round = getCurRound();
+        if (round && round.slides && round.slides[curSlideIdx]) {
+          annotations = JSON.parse(JSON.stringify(round.slides[curSlideIdx].annotations || []));
+          renderAnns();
+          renderAnnList();
+        }
+      }
+      if (S.isAdmin) renderAdminMemberList();
+      renderMemberSelection();
+    }
+  });
+}
 
-function saveS(){ try{ localStorage.setItem('vt_team_v3', JSON.stringify(S)); }catch(e){} }
+// 로컬 및 파이어베이스 동시 저장 프로세스
+function saveS(){ 
+  try { 
+    localStorage.setItem('vt_team_v3', JSON.stringify(S)); 
+    // 전역 상태 중 인증 및 세션값 제외 후 클라우드에 백업 동기화
+    db.ref('VALOTACT_DATA').set({
+      rooms: S.rooms,
+      members: S.members
+    });
+  } catch(e){} 
+}
+
+function loadLocalSession() {
+  try {
+    const s = localStorage.getItem('vt_team_v3');
+    if(s) {
+      const parsed = JSON.parse(s);
+      S.currentUser = parsed.currentUser;
+      S.isAdmin = parsed.isAdmin;
+      S.curRoom = parsed.curRoom;
+      S.curRound = parsed.curRound;
+    }
+  } catch(e){}
+}
+
 function gid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
-// ── Auth & Navigation ──
-function renderMemberSelection() {
+// ── View Mode ──
+let viewMode = localStorage.getItem('vt_viewmode') || 'auto';
+function applyViewMode(){
+  const meta = document.querySelector('meta[name="viewport"]');
+  document.body.classList.remove('force-mobile');
+  let text = '⚙️ 반응형';
+  if(viewMode === 'desktop'){
+    meta.setAttribute('content','width=1200, user-scalable=yes');
+    text = '💻 PC 뷰';
+  } else if(viewMode === 'mobile'){
+    meta.setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    document.body.classList.add('force-mobile');
+    text = '📱 모바일 뷰';
+  } else {
+    meta.setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+  }
+  document.querySelectorAll('.btn-vm').forEach(b=>b.textContent=text);
+  localStorage.setItem('vt_viewmode', viewMode);
+  setTimeout(()=>{ if(document.getElementById('view-round').classList.contains('active')){ setupCanvas(); renderAnns(); } }, 300);
+}
+function toggleViewMode(){
+  if(viewMode==='auto') viewMode='desktop';
+  else if(viewMode==='desktop') viewMode='mobile';
+  else viewMode='auto';
+  applyViewMode();
+}
+
+// ── Canvas State ──
+let annotations=[], curSlideIdx=0;
+let curTool='pen', curColor='#ff4655', strokeSz=3;
+let isDrawing=false, startX=0, startY=0, curPath=[];
+
+// ══════════════════════════════════
+//  AUTH
+// ══════════════════════════════════
+function renderMemberSelection(){
   const grid = document.getElementById('member-selection-grid');
-  if(S.members.length === 0) {
-    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--muted); font-size:12px; padding:20px">등록된 멤버가 없습니다.</div>';
+  if(!S.members || !S.members.length){
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:12px;padding:20px;font-family:var(--fm)">등록된 멤버가 없습니다.</div>';
     return;
   }
-  grid.innerHTML = S.members.map(m => `
-    <button class="member-btn" onclick="loginAs('${m.name}')">${m.name}</button>
-  `).join('');
+  grid.innerHTML = S.members.map(m=>`<button class="member-btn" onclick="loginAs('${esc(m.name)}')">${esc(m.name)}</button>`).join('');
 }
-
-function loginAs(name) {
-  const member = S.members.find(m => m.name === name);
-  if(!member) return;
+function loginAs(name){
+  const member = S.members.find(m=>m.name===name); if(!member) return;
   const pass = prompt(`[${name}] 멤버 비밀번호를 입력하세요:`);
-  if(pass === member.pass) {
-    S.currentUser = name;
-    S.isAdmin = false;
-    saveS();
-    enterSystem();
-  } else if(pass !== null) {
-    alert('비밀번호가 틀렸습니다.');
-  }
+  if(pass === member.pass){ S.currentUser=name; S.isAdmin=false; saveS(); enterSystem(); }
+  else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
-
-function promptAdminLogin() {
+function promptAdminLogin(){
   const pass = prompt('관리자 비밀번호를 입력하세요:');
-  if(pass === ADMIN_PASS) {
-    S.currentUser = 'ADMIN';
-    S.isAdmin = true;
-    saveS();
-    showAdminView();
-  } else if(pass !== null) {
-    alert('비밀번호가 틀렸습니다.');
-  }
+  if(pass === ADMIN_PASS){ S.currentUser='ADMIN'; S.isAdmin=true; saveS(); showAdminView(); }
+  else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
-
-function showAdminView() {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-admin').classList.add('active');
-  renderAdminMemberList();
+function showAdminView(){
+  setView('view-admin'); renderAdminMemberList();
 }
-
-function enterSystem() {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-home').classList.add('active');
-  document.getElementById('current-user-name').innerHTML = S.isAdmin ? `👤 ADMIN <span class="admin-badge">ALL ACCESS</span>` : `👤 ${S.currentUser}`;
+function enterSystem(){
+  setView('view-home');
+  document.getElementById('current-user-name').innerHTML =
+    S.isAdmin ? `👤 ADMIN <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
   renderRooms();
 }
+function logout(){ S.currentUser=null; S.isAdmin=false; saveS(); location.reload(); }
 
-function logout() {
-  S.currentUser = null;
-  S.isAdmin = false;
-  saveS();
-  location.reload();
+// ── Admin ──
+function addMember(){
+  const nameInp=document.getElementById('inp-new-member');
+  const passInp=document.getElementById('inp-new-pass');
+  const name=nameInp.value.trim(), pass=passInp.value.trim();
+  if(!name||!pass){ alert('이름과 비밀번호를 모두 입력하세요.'); return; }
+  if(S.members && S.members.some(m=>m.name===name)){ alert('이미 존재하는 이름입니다.'); return; }
+  if(!S.members) S.members = [];
+  S.members.push({name,pass}); saveS();
+  nameInp.value=''; passInp.value='';
+  renderAdminMemberList(); showNotif('멤버가 등록되었습니다');
 }
-
-// ── Admin: Member Management ──
-function addMember() {
-  const nameInp = document.getElementById('inp-new-member');
-  const passInp = document.getElementById('inp-new-pass');
-  const name = nameInp.value.trim();
-  const pass = passInp.value.trim();
-  if(!name || !pass) { alert('이름과 비밀번호를 모두 입력하세요.'); return; }
-  if(S.members.some(m => m.name === name)) { alert('이미 존재하는 이름입니다.'); return; }
-  S.members.push({ name, pass });
-  saveS();
-  nameInp.value = ''; passInp.value = '';
-  renderAdminMemberList();
-  showNotif('멤버가 등록되었습니다');
-}
-
-function delMember(name) {
+function delMember(name){
   if(!confirm(`멤버 [${name}]을(를) 삭제하시겠습니까?`)) return;
-  S.members = S.members.filter(m => m.name !== name);
-  saveS();
-  renderAdminMemberList();
+  S.members=S.members.filter(m=>m.name!==name); saveS(); renderAdminMemberList();
 }
-
-function renderAdminMemberList() {
-  const list = document.getElementById('admin-member-list');
-  list.innerHTML = S.members.map(m => `
+function renderAdminMemberList(){
+  const list=document.getElementById('admin-member-list');
+  if(!S.members || !S.members.length){ list.innerHTML='<div style="padding:12px;font-family:var(--fm);font-size:11px;color:var(--muted)">등록된 멤버 없음</div>'; return; }
+  list.innerHTML=S.members.map(m=>`
     <div class="member-item-admin">
-      <div>
-        <span class="member-name">${m.name}</span>
-        <span style="font-size:10px; color:var(--muted); margin-left:10px">PW: ${m.pass}</span>
-      </div>
-      <button class="btn-del-member" onclick="delMember('${m.name}')">✕</button>
-    </div>
-  `).join('');
+      <div><span style="font-family:var(--fh);font-size:15px">${esc(m.name)}</span><span style="font-size:10px;color:var(--muted);margin-left:10px">PW: ${esc(m.pass)}</span></div>
+      <button class="btn-del-member" onclick="delMember('${esc(m.name)}')">✕</button>
+    </div>`).join('');
 }
 
-// ── Rooms & Analysis ──
+// ══════════════════════════════════
+//  ROOMS
+// ══════════════════════════════════
 function createRoom(){
   const ta=document.getElementById('inp-ta').value.trim();
   const tb=document.getElementById('inp-tb').value.trim();
@@ -552,37 +713,35 @@ function createRoom(){
     teamA:ta, teamB:tb,
     map:document.getElementById('inp-map').value.trim()||'—',
     date:document.getElementById('inp-date').value||'날짜 미지정',
-    createdBy: S.currentUser,
+    createdBy:S.currentUser,
     rounds:[]
   };
+  if(!S.rooms) S.rooms = [];
   S.rooms.unshift(room); saveS(); renderRooms();
   ['inp-name','inp-ta','inp-tb','inp-map','inp-date'].forEach(id=>document.getElementById(id).value='');
   showNotif('✓ 분석방이 생성되었습니다');
   openRoom(room.id);
 }
-
 function openRoom(rid){
   const r=S.rooms.find(x=>x.id===rid); if(!r) return;
-  S.curRoom=rid;
+  S.curRoom=rid; saveS();
   document.getElementById('rm-ta').textContent=r.teamA;
   document.getElementById('rm-tb').textContent=r.teamB;
   document.getElementById('rm-name').textContent=r.name;
   document.getElementById('rm-map').textContent='📍 '+r.map;
   document.getElementById('rm-date').textContent=r.date;
-  document.getElementById('room-tb-sub').textContent=r.name.toUpperCase();
+  document.getElementById('room-tb-sub').textContent=r.name.toUpperCase().slice(0,40);
   renderRounds(); setView('view-room');
 }
-
 function delRoom(rid,e){
   e.stopPropagation();
   if(!confirm('이 분석방을 삭제하시겠습니까?')) return;
-  S.rooms=S.rooms.filter(r=>r.id!==rid); saveS(); renderRooms();
+  S.rooms=S.rooms.filter(r=>r.id!==rid); saveS(); renderRooms(); showNotif('분석방 삭제됨');
 }
-
 function renderRooms(){
   const g=document.getElementById('rooms-grid');
-  // Admin sees all, members see all (as requested "admin mode can see everything", assuming members already could)
-  document.getElementById('rooms-count').textContent = S.rooms.length + ' 분석방';
+  if(!S.rooms) S.rooms = [];
+  document.getElementById('rooms-count').textContent=S.rooms.length+' 분석방';
   if(!S.rooms.length){ g.innerHTML='<div class="empty-state">아직 생성된 분석방이 없습니다.</div>'; return; }
   g.innerHTML=S.rooms.map(r=>`
     <div class="room-card" onclick="openRoom('${r.id}')">
@@ -590,25 +749,27 @@ function renderRooms(){
       <div class="rmeta">
         <div class="rmi"><span class="dot"></span>${esc(r.name)}</div>
         <div class="rmi">📍${esc(r.map)}</div>
-        <div class="rmi">👤 ${esc(r.createdBy)}</div>
-        <div class="rrc">${r.rounds.length} 라운드</div>
+        <div class="rmi">👤 ${esc(r.createdBy||'')}</div>
+        <div class="rrc">${r.rounds ? r.rounds.length : 0} 라운드</div>
       </div>
       <button class="card-del" onclick="delRoom('${r.id}',event)">✕</button>
     </div>`).join('');
 }
 
-// ── Rounds Logic ──
+// ══════════════════════════════════
+//  ROUNDS
+// ══════════════════════════════════
 function getCurRoom(){ return S.rooms.find(r=>r.id===S.curRoom); }
-function getCurRound(){ const rm=getCurRoom(); return rm?.rounds.find(r=>r.id===S.curRound); }
+function getCurRound(){ const rm=getCurRoom(); return rm?.rounds?.find(r=>r.id===S.curRound); }
 
 function openAddRound(){
   const rm=getCurRoom(); if(!rm) return;
+  if(!rm.rounds) rm.rounds = [];
   const used=rm.rounds.map(r=>r.number); let n=1; while(used.includes(n)) n++;
   document.getElementById('m-rnum').value=n;
   document.getElementById('m-rdesc').value='';
   document.getElementById('modal-add').classList.add('open');
 }
-
 function confirmAddRound(){
   const rm=getCurRoom(); if(!rm) return;
   const num=parseInt(document.getElementById('m-rnum').value)||1;
@@ -616,46 +777,55 @@ function confirmAddRound(){
   const round={
     id:gid(), number:num, description:desc,
     phase:'FULL BUY', side:'ATTACK', result:'WIN', notes:'',
-    analyzedBy: S.currentUser,
-    slides:[ { id:gid(), title:'슬라이드 1', image:null, annotations:[] } ]
+    analyzedBy:S.currentUser,
+    slides:[{id:gid(), title:'슬라이드 1', image:null, annotations:[]}]
   };
+  if(!rm.rounds) rm.rounds = [];
   rm.rounds.push(round);
   rm.rounds.sort((a,b)=>a.number-b.number);
   saveS(); renderRounds(); closeModal('modal-add');
   openRound(round.id);
 }
-
 function openRound(rid){
   const rm=getCurRoom(); if(!rm) return;
   const round=rm.rounds.find(r=>r.id===rid); if(!round) return;
-  S.curRound=rid; curSlideIdx=0;
-  document.getElementById('rd-match-sub').textContent=rm.name.toUpperCase();
+  S.curRound=rid; curSlideIdx=0; saveS();
+  document.getElementById('rd-match-sub').textContent=rm.name.toUpperCase().slice(0,30);
   document.getElementById('rd-rnum').textContent=round.number;
+  document.getElementById('rd-rnum2').textContent=round.number;
   document.getElementById('edit-rnum').value=round.number;
-  document.getElementById('edit-phase').value=round.phase;
-  document.getElementById('edit-side').value=round.side;
-  document.getElementById('edit-result').value=round.result;
-  document.getElementById('notes-ta').value=round.notes;
+  document.getElementById('edit-phase').value=round.phase||'FULL BUY';
+  document.getElementById('edit-side').value=round.side||'ATTACK';
+  document.getElementById('edit-result').value=round.result||'WIN';
+  document.getElementById('notes-ta').value=round.notes||'';
   renderSlidePanelAndLoad(0);
   setView('view-round');
 }
-
+function delRound(rid,e){
+  e.stopPropagation();
+  const rm=getCurRoom(); if(!rm) return;
+  if(!confirm('라운드를 삭제하시겠습니까?')) return;
+  rm.rounds=rm.rounds.filter(r=>r.id!==rid); saveS(); renderRounds(); showNotif('라운드 삭제됨');
+}
 function renderRounds(){
   const rm=getCurRoom();
   const g=document.getElementById('rounds-grid');
-  if(!rm||!rm.rounds.length){ g.innerHTML='<div class="empty-state">아직 분석된 라운드가 없습니다.</div>'; return; }
+  if(!rm||!rm.rounds||!rm.rounds.length){ g.innerHTML='<div class="empty-state">아직 라운드가 없습니다</div>'; return; }
   g.innerHTML=rm.rounds.map(r=>`
     <div class="round-card" onclick="openRound('${r.id}')">
       <div class="rnum">R${r.number}</div>
       <div class="rlabel">${esc(r.phase)} · ${r.side==='ATTACK'?'ATK':'DEF'} · <span style="color:${r.result==='WIN'?'var(--teal)':'var(--red)'}">${r.result==='WIN'?'승':'패'}</span></div>
       <div class="rprev">
-        ${r.slides[0]?.image ? `<img src="${r.slides[0].image}">` : `<div class="rprev-empty">NO IMAGE</div>`}
+        ${r.slides && r.slides[0]?.image
+          ?`<img src="${r.slides[0].image}" alt="R${r.number}"><div class="slide-count-badge">${r.slides.length} SLIDES</div>`
+          :`<div class="rprev-empty">NO IMAGE</div>`}
       </div>
-      <div style="font-size:9px; color:var(--muted); margin-top:5px">Analyzed by: ${esc(r.analyzedBy)}</div>
+      ${r.description?`<div style="font-size:10px;font-family:var(--fm);color:var(--muted);margin-bottom:4px">${esc(r.description)}</div>`:''}
+      <div class="rnotes">${r.notes?esc(r.notes):'<span style="color:var(--muted)">노트 없음</span>'}</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:5px;font-family:var(--fm)">by ${esc(r.analyzedBy||'')}</div>
       <button class="card-del" onclick="delRound('${r.id}',event)">✕</button>
     </div>`).join('');
 }
-
 function saveRound(){
   const round=getCurRound(); if(!round) return;
   commitSlideAnnotations();
@@ -665,16 +835,47 @@ function saveRound(){
   round.result=document.getElementById('edit-result').value;
   round.notes=document.getElementById('notes-ta').value;
   round.analyzedBy=S.currentUser;
+  const rm=getCurRoom(); if(rm) rm.rounds.sort((a,b)=>a.number-b.number);
   saveS();
+  document.getElementById('rd-rnum').textContent=round.number;
+  document.getElementById('rd-rnum2').textContent=round.number;
   showNotif('✓ 저장되었습니다');
 }
 
-// ── Slides & Canvas Logic ──
-let annotations = [];
-let curSlideIdx = 0;
-let curTool = 'pen', curColor = '#ff4655', strokeSz = 3;
-let isDrawing = false, startX=0, startY=0, curPath=[];
-
+// ══════════════════════════════════
+//  SLIDES
+// ══════════════════════════════════
+function addSlide(){
+  const round=getCurRound(); if(!round) return;
+  commitSlideAnnotations();
+  round.slides.push({id:gid(), title:'슬라이드 '+(round.slides.length+1), image:null, annotations:[]});
+  saveS(); renderSlidePanelAndLoad(round.slides.length-1);
+  const list=document.getElementById('slide-list');
+  setTimeout(()=>list.scrollTop=list.scrollHeight, 50);
+}
+function delSlide(idx,e){
+  e.stopPropagation();
+  const round=getCurRound(); if(!round) return;
+  if(round.slides.length<=1){ showNotif('최소 1개의 슬라이드가 필요합니다'); return; }
+  if(!confirm('이 슬라이드를 삭제하시겠습니까?')) return;
+  round.slides.splice(idx,1); saveS();
+  renderSlidePanelAndLoad(Math.min(curSlideIdx, round.slides.length-1));
+  showNotif('슬라이드 삭제됨');
+}
+function navSlide(dir){
+  const round=getCurRound(); if(!round) return;
+  commitSlideAnnotations();
+  const newIdx=curSlideIdx+dir;
+  if(newIdx<0||newIdx>=round.slides.length) return;
+  renderSlidePanelAndLoad(newIdx);
+}
+function commitSlideAnnotations(){
+  const round=getCurRound(); if(!round) return;
+  const sl=round.slides[curSlideIdx]; if(!sl) return;
+  sl.annotations=JSON.parse(JSON.stringify(annotations));
+  const ti=document.getElementById('slide-title-inp');
+  if(ti) sl.title=ti.value||sl.title;
+}
 function renderSlidePanelAndLoad(idx){
   const round=getCurRound(); if(!round) return;
   curSlideIdx=idx;
@@ -683,15 +884,17 @@ function renderSlidePanelAndLoad(idx){
   list.innerHTML=round.slides.map((sl,i)=>`
     <div class="slide-thumb ${i===curSlideIdx?'active':''}" onclick="switchSlide(${i})">
       <span class="st-num">${i+1}</span>
-      <div class="st-img">${sl.image?`<img src="${sl.image}">`:`<div class="st-empty">🗺️</div>`}</div>
-      <div class="st-title">${esc(sl.title)}</div>
+      <button class="st-del" onclick="delSlide(${i},event)">✕</button>
+      <div class="st-img">${sl.image?`<img src="${sl.image}" alt="${i+1}">`:`<div class="st-empty">🗺️</div>`}</div>
+      <div class="st-title">${esc(sl.title||'슬라이드 '+(i+1))}</div>
     </div>`).join('');
   const sl=round.slides[curSlideIdx];
   annotations=JSON.parse(JSON.stringify(sl.annotations||[]));
-  document.getElementById('slide-title-inp').value=sl.title;
+  document.getElementById('slide-title-inp').value=sl.title||'';
   document.getElementById('nav-cur').textContent=curSlideIdx+1;
   document.getElementById('nav-total').textContent=round.slides.length;
-
+  document.getElementById('nav-prev').disabled=curSlideIdx===0;
+  document.getElementById('nav-next').disabled=curSlideIdx===round.slides.length-1;
   const bgImg=document.getElementById('bg-image');
   const ph=document.getElementById('upload-ph');
   if(sl.image){
@@ -700,115 +903,346 @@ function renderSlidePanelAndLoad(idx){
   } else {
     bgImg.src=''; bgImg.style.display='none'; ph.style.display='flex';
     const c=document.getElementById('ann-canvas'); c.width=0; c.height=0;
+    annotations=[];
   }
   renderAnnList();
 }
-
 function switchSlide(idx){ commitSlideAnnotations(); renderSlidePanelAndLoad(idx); }
-function commitSlideAnnotations(){
-  const round=getCurRound(); if(!round) return;
-  const sl=round.slides[curSlideIdx]; if(!sl) return;
-  sl.annotations=JSON.parse(JSON.stringify(annotations));
-  sl.title=document.getElementById('slide-title-inp').value||sl.title;
-}
 
-function addSlide(){
-  const round=getCurRound(); if(!round) return;
-  commitSlideAnnotations();
-  round.slides.push({ id:gid(), title:'슬라이드 '+(round.slides.length+1), image:null, annotations:[] });
-  saveS(); renderSlidePanelAndLoad(round.slides.length-1);
-}
-
-function navSlide(dir){
-  const round=getCurRound(); if(!round) return;
-  const newIdx=curSlideIdx+dir;
-  if(newIdx>=0 && newIdx<round.slides.length) switchSlide(newIdx);
-}
-
-// ── Canvas Core ──
-function setupCanvas(){
-  const bgImg=document.getElementById('bg-image');
-  const c=document.getElementById('ann-canvas');
-  c.width=bgImg.naturalWidth; c.height=bgImg.naturalHeight;
-  c.style.width=bgImg.offsetWidth+'px'; c.style.height=bgImg.offsetHeight+'px';
-  c.onmousedown=startDraw; c.onmousemove=onDrawing; c.onmouseup=endDraw;
-}
-function getPos(e){
-  const c=document.getElementById('ann-canvas'); const r=c.getBoundingClientRect();
-  return{x:(e.clientX-r.left)*(c.width/r.width), y:(e.clientY-r.top)*(c.height/r.height)};
-}
-function startDraw(e){ isDrawing=true; const p=getPos(e); startX=p.x; startY=p.y; if(curTool==='pen') curPath=[{x:p.x,y:p.y}]; }
-function onDrawing(e){
-  if(!isDrawing) return; const p=getPos(e); renderAnns();
-  const ctx=document.getElementById('ann-canvas').getContext('2d');
-  ctx.strokeStyle=curColor; ctx.lineWidth=strokeSz;
-  if(curTool==='pen'){ curPath.push({x:p.x,y:p.y}); ctx.beginPath(); ctx.moveTo(curPath[0].x,curPath[0].y); curPath.forEach(pt=>ctx.lineTo(pt.x,pt.y)); ctx.stroke(); }
-  else if(curTool==='arrow') drawArrowCtx(ctx,startX,startY,p.x,p.y);
-  else if(curTool==='rect') ctx.strokeRect(startX,startY,p.x-startX,p.y-startY);
-}
-function endDraw(e){
-  if(!isDrawing) return; isDrawing=false; const p=getPos(e);
-  let ann=null;
-  if(curTool==='pen') ann={tool:'pen',color:curColor,size:strokeSz,path:[...curPath]};
-  else if(curTool==='arrow') ann={tool:'arrow',color:curColor,size:strokeSz,x1:startX,y1:startY,x2:p.x,y2:p.y};
-  else if(curTool==='rect') ann={tool:'rect',color:curColor,size:strokeSz,x:startX,y:startY,w:p.x-startX,h:p.y-startY};
-  if(ann){ annotations.push(ann); renderAnns(); renderAnnList(); }
-}
-function renderAnns(){
-  const c=document.getElementById('ann-canvas'); const ctx=c.getContext('2d');
-  ctx.clearRect(0,0,c.width,c.height);
-  annotations.forEach(a=>{
-    ctx.strokeStyle=a.color; ctx.fillStyle=a.color; ctx.lineWidth=a.size;
-    if(a.tool==='pen'){ ctx.beginPath(); ctx.moveTo(a.path[0].x,a.path[0].y); a.path.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.stroke(); }
-    else if(a.tool==='arrow') drawArrowCtx(ctx,a.x1,a.y1,a.x2,a.y2);
-    else if(a.tool==='rect') ctx.strokeRect(a.x,a.y,a.w,a.h);
-  });
-}
-function drawArrowCtx(ctx,x1,y1,x2,y2){
-  const headlen=15; const angle=Math.atan2(y2-y1,x2-x1);
-  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x2,y2); ctx.lineTo(x2-headlen*Math.cos(angle-Math.PI/6),y2-headlen*Math.sin(angle-Math.PI/6)); ctx.lineTo(x2-headlen*Math.cos(angle+Math.PI/6),y2-headlen*Math.sin(angle+Math.PI/6)); ctx.closePath(); ctx.fill();
-}
-
-// ── UI Utils ──
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function showNotif(m){ const n=document.getElementById('notif'); n.textContent=m; n.classList.add('show'); setTimeout(()=>n.classList.remove('show'),2000); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-function setView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-function goHome(){ setView('view-home'); renderRooms(); }
+// ══════════════════════════════════
+//  IMAGE UPLOAD
+// ══════════════════════════════════
 function triggerUpload(){ document.getElementById('file-input').click(); }
 function loadImage(e){
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=ev=>{
     const round=getCurRound(); if(!round) return;
-    round.slides[curSlideIdx].image=ev.target.result; saveS(); renderSlidePanelAndLoad(curSlideIdx);
+    const sl=round.slides[curSlideIdx]; if(!sl) return;
+    sl.image=ev.target.result; saveS();
+    const bgImg=document.getElementById('bg-image');
+    const ph=document.getElementById('upload-ph');
+    bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
+    bgImg.onload=()=>{ annotations=[]; setupCanvas(); renderAnns(); renderAnnList(); };
+    renderSlidePanelAndLoad(curSlideIdx);
   };
   reader.readAsDataURL(file);
+  e.target.value='';
 }
-function undo(){ annotations.pop(); renderAnns(); renderAnnList(); }
-function clearAnns(){ annotations=[]; renderAnns(); renderAnnList(); }
-function setTool(t){ curTool=t; document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active')); document.getElementById('t-'+t).classList.add('active'); }
-function setStroke(s){ strokeSz=parseInt(s); }
+
+// ══════════════════════════════════
+//  CANVAS & DRAWING
+// ══════════════════════════════════
+function setupCanvas(){
+  const bgImg=document.getElementById('bg-image');
+  const c=document.getElementById('ann-canvas');
+  const ratio = window.devicePixelRatio || 1; // 기기별 고해상도 해상도 픽셀 매칭 파라미터 추출
+  
+  const w = bgImg.naturalWidth || bgImg.offsetWidth;
+  const h = bgImg.naturalHeight || bgImg.offsetHeight;
+  
+  // 깨짐 방지를 위한 더블 버퍼링 기법 도입 (논리 크기와 물리 픽셀 분리 보정)
+  c.width = w * ratio;
+  c.height = h * ratio;
+  c.style.width = bgImg.offsetWidth+'px';
+  c.style.height = bgImg.offsetHeight+'px';
+  
+  const ctx = c.getContext('2d');
+  ctx.scale(ratio, ratio); // 드로잉 컨텍스트 배율 동시 확장
+
+  c.onmousedown=startDraw; c.onmousemove=onDrawing; c.onmouseup=endDraw; c.onmouseleave=endDraw;
+  c.ontouchstart=e=>{startDraw(touchEv(e));};
+  c.ontouchmove=e=>{onDrawing(touchEv(e));};
+  c.ontouchend=e=>{endDraw(touchEv(e));};
+}
+function touchEv(e){ 
+  const t=e.touches[0]||e.changedTouches[0]; 
+  return {clientX:t.clientX,clientY:t.clientY}; 
+}
+function getPos(e) {
+  const c=document.getElementById('ann-canvas'); const r=c.getBoundingClientRect();
+  const bgImg=document.getElementById('bg-image');
+  const w = bgImg.naturalWidth || bgImg.offsetWidth;
+  const h = bgImg.naturalHeight || bgImg.offsetHeight;
+  // 바운딩 박스를 기준으로 실제 캔버스 내부 좌표 산출 계산식 정형화
+  return {
+    x: (e.clientX - r.left) * (w / r.width), 
+    y: (e.clientY - r.top) * (h / r.height)
+  };
+}
+function startDraw(e){
+  if(curTool==='text'){ showTextInput(e); return; }
+  isDrawing=true;
+  const p=getPos(e); startX=p.x; startY=p.y;
+  if(curTool==='pen') curPath=[{x:p.x,y:p.y}];
+}
+function onDrawing(e){
+  if(!isDrawing) return;
+  const p=getPos(e); renderAnns();
+  const ctx=document.getElementById('ann-canvas').getContext('2d');
+  ctx.strokeStyle=curColor; ctx.lineWidth=strokeSz; ctx.lineCap='round'; ctx.lineJoin='round';
+  if(curTool==='pen'){
+    curPath.push({x:p.x,y:p.y});
+    ctx.beginPath(); ctx.moveTo(curPath[0].x,curPath[0].y);
+    curPath.forEach(pt=>ctx.lineTo(pt.x,pt.y)); ctx.stroke();
+  } else if(curTool==='arrow') drawArrowCtx(ctx,startX,startY,p.x,p.y);
+  else if(curTool==='rect') ctx.strokeRect(startX,startY,p.x-startX,p.y-startY);
+  else if(curTool==='circle'){
+    const rx=Math.abs(p.x-startX)/2, ry=Math.abs(p.y-startY)/2;
+    const cx=startX+(p.x-startX)/2, cy=startY+(p.y-startY)/2;
+    ctx.beginPath(); ctx.ellipse(cx,cy,Math.max(1,rx),Math.max(1,ry),0,0,Math.PI*2); ctx.stroke();
+  } else if(curTool==='line'){
+    ctx.beginPath(); ctx.moveTo(startX,startY); ctx.lineTo(p.x,p.y); ctx.stroke();
+  }
+}
+function endDraw(e){
+  if(!isDrawing) return; isDrawing=false;
+  const p=getPos(e); let ann=null;
+  if(curTool==='pen'&&curPath.length>1) ann={id:gid(),tool:'pen',color:curColor,size:strokeSz,path:[...curPath]};
+  else if(curTool==='arrow') ann={id:gid(),tool:'arrow',color:curColor,size:strokeSz,x1:startX,y1:startY,x2:p.x,y2:p.y};
+  else if(curTool==='rect') ann={id:gid(),tool:'rect',color:curColor,size:strokeSz,x:startX,y:startY,w:p.x-startX,h:p.y-startY};
+  else if(curTool==='circle') ann={id:gid(),tool:'circle',color:curColor,size:strokeSz,x1:startX,y1:startY,x2:p.x,y2:p.y};
+  else if(curTool==='line') ann={id:gid(),tool:'line',color:curColor,size:strokeSz,x1:startX,y1:startY,x2:p.x,y2:p.y};
+  if(ann){ annotations.push(ann); renderAnns(); renderAnnList(); }
+}
+function drawArrowCtx(ctx,x1,y1,x2,y2){
+  const hl=Math.max(16,ctx.lineWidth*4), ang=Math.atan2(y2-y1,x2-x1);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-hl*Math.cos(ang-Math.PI/7),y2-hl*Math.sin(ang-Math.PI/7));
+  ctx.lineTo(x2-hl*Math.cos(ang+Math.PI/7),y2-hl*Math.sin(ang+Math.PI/7));
+  ctx.closePath(); ctx.fillStyle=curColor; ctx.fill();
+}
+function renderAnns(){
+  const c=document.getElementById('ann-canvas'); if(!c.width) return;
+  const ctx=c.getContext('2d');
+  
+  // 지우기 전 스케일 보정 초기화 방지용 클리어 처리
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.restore();
+
+  annotations.forEach(a=>{
+    ctx.strokeStyle=a.color; ctx.fillStyle=a.color; ctx.lineWidth=a.size; ctx.lineCap='round'; ctx.lineJoin='round';
+    if(a.tool==='pen'&&a.path.length>1){
+      ctx.beginPath(); ctx.moveTo(a.path[0].x,a.path[0].y);
+      a.path.forEach(pt=>ctx.lineTo(pt.x,pt.y)); ctx.stroke();
+    } else if(a.tool==='arrow'){
+      const hl=Math.max(16,a.size*4), ang=Math.atan2(a.y2-a.y1,a.x2-a.x1);
+      ctx.beginPath(); ctx.moveTo(a.x1,a.y1); ctx.lineTo(a.x2,a.y2); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(a.x2,a.y2);
+      ctx.lineTo(a.x2-hl*Math.cos(ang-Math.PI/7),a.y2-hl*Math.sin(ang-Math.PI/7));
+      ctx.lineTo(a.x2-hl*Math.cos(ang+Math.PI/7),a.y2-hl*Math.sin(ang+Math.PI/7));
+      ctx.closePath(); ctx.fillStyle=a.color; ctx.fill();
+    } else if(a.tool==='rect') ctx.strokeRect(a.x,a.y,a.w,a.h);
+    else if(a.tool==='circle'){
+      const rx=Math.abs(a.x2-a.x1)/2, ry=Math.abs(a.y2-a.y1)/2;
+      const cx=a.x1+(a.x2-a.x1)/2, cy=a.y1+(a.y2-a.y1)/2;
+      ctx.beginPath(); ctx.ellipse(cx,cy,Math.max(1,rx),Math.max(1,ry),0,0,Math.PI*2); ctx.stroke();
+    } else if(a.tool==='line'){
+      ctx.beginPath(); ctx.moveTo(a.x1,a.y1); ctx.lineTo(a.x2,a.y2); ctx.stroke();
+    } else if(a.tool==='text'){
+      ctx.font=`bold ${Math.max(14,a.size*6)}px Rajdhani,sans-serif`;
+      ctx.fillStyle=a.color; ctx.fillText(a.text,a.x,a.y);
+    }
+  });
+}
+function showTextInput(e){
+  const ci=document.getElementById('canvas-inner'); const ciR=ci.getBoundingClientRect();
+  const inp=document.getElementById('c-txt-inp');
+  inp.style.left=(e.clientX-ciR.left-2)+'px';
+  inp.style.top=(e.clientY-ciR.top-14)+'px';
+  inp.style.color=curColor;
+  inp.style.fontSize=Math.max(14,strokeSz*6)+'px';
+  inp.style.display='block'; inp.value=''; inp.focus();
+  const cx=getPos(e).x, cy=getPos(e).y;
+  inp.onkeydown=ev=>{
+    if(ev.key==='Enter'&&inp.value.trim()){
+      annotations.push({id:gid(),tool:'text',color:curColor,size:strokeSz,x:cx,y:cy,text:inp.value.trim()});
+      renderAnns(); renderAnnList(); inp.style.display='none';
+    } else if(ev.key==='Escape') inp.style.display='none';
+  };
+}
+function undoAnn(){ if(annotations.length){ annotations.pop(); renderAnns(); renderAnnList(); } }
+function clearAnns(){
+  if(!annotations.length) return;
+  if(!confirm('모든 주석을 삭제하시겠습니까?')) return;
+  annotations=[]; renderAnns(); renderAnnList();
+}
 function renderAnnList(){
   const list=document.getElementById('ann-list');
-  list.innerHTML=annotations.map((a,i)=>`<div class="ann-item"><div class="ann-item-txt">${a.tool.toUpperCase()} #${i+1}</div></div>`).join('');
+  document.getElementById('ann-count').textContent=annotations.length;
+  if(!annotations.length){ list.innerHTML='<div style="font-family:var(--fm);font-size:10px;color:var(--muted);padding:6px">주석 없음</div>'; return; }
+  const names={pen:'펜',arrow:'화살표',rect:'사각형',circle:'원',line:'직선',text:'텍스트'};
+  list.innerHTML=annotations.map((a,i)=>`
+    <div class="ann-item">
+      <div class="ann-col" style="background:${a.color}"></div>
+      <span class="ann-item-type">${names[a.tool]||a.tool}</span>
+      ${a.tool==='text'?`<span style="font-size:10px;color:var(--muted2);max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"${esc(a.text)}"</span>`:''}
+      <span style="font-size:10px;color:var(--muted)">#${i+1}</span>
+      <button class="ann-item-del" onclick="delAnn('${a.id}')">✕</button>
+    </div>`).join('');
 }
-function selectColor(c,el){ curColor=c; document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('active')); el.classList.add('active'); }
-function toggleViewMode() { /* Logic for view mode toggle if needed */ }
+function delAnn(id){ annotations=annotations.filter(a=>a.id!==id); renderAnns(); renderAnnList(); }
+function setTool(t){
+  curTool=t;
+  document.querySelectorAll('.tb[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t));
+  const c=document.getElementById('ann-canvas');
+  if(c) c.style.cursor=t==='text'?'text':'crosshair';
+}
 
-// ── Init ──
+// ══════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════
+function makeCompositeCanvas(slide){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const oc=document.createElement('canvas');
+      oc.width=img.naturalWidth; oc.height=img.naturalHeight;
+      const ctx=oc.getContext('2d');
+      ctx.drawImage(img,0,0);
+      const sc=document.getElementById('ann-canvas');
+      
+      const scaleX=img.naturalWidth / (sc.offsetWidth || 1);
+      const scaleY=img.naturalHeight / (sc.offsetHeight || 1);
+      
+      const tmp=document.createElement('canvas');
+      tmp.width=img.naturalWidth; tmp.height=img.naturalHeight;
+      const tctx=tmp.getContext('2d');
+      slide.annotations.forEach(a=>{
+        tctx.strokeStyle=a.color; tctx.fillStyle=a.color;
+        tctx.lineWidth=a.size*scaleX; tctx.lineCap='round'; tctx.lineJoin='round';
+        if(a.tool==='pen'&&a.path.length>1){
+          tctx.beginPath(); tctx.moveTo(a.path[0].x*scaleX,a.path[0].y*scaleY);
+          a.path.forEach(pt=>tctx.lineTo(pt.x*scaleX,pt.y*scaleY)); tctx.stroke();
+        } else if(a.tool==='arrow'){
+          const hl=Math.max(16,tctx.lineWidth*4), ang=Math.atan2((a.y2-a.y1)*scaleY,(a.x2-a.x1)*scaleX);
+          tctx.beginPath(); tctx.moveTo(a.x1*scaleX,a.y1*scaleY); tctx.lineTo(a.x2*scaleX,a.y2*scaleY); tctx.stroke();
+          tctx.beginPath(); tctx.moveTo(a.x2*scaleX,a.y2*scaleY);
+          tctx.lineTo(a.x2*scaleX-hl*Math.cos(ang-Math.PI/7),a.y2*scaleY-hl*Math.sin(ang-Math.PI/7));
+          tctx.lineTo(a.x2*scaleX-hl*Math.cos(ang+Math.PI/7),a.y2*scaleY-hl*Math.sin(ang+Math.PI/7));
+          tctx.closePath(); tctx.fill();
+        } else if(a.tool==='rect') tctx.strokeRect(a.x*scaleX,a.y*scaleY,a.w*scaleX,a.h*scaleY);
+        else if(a.tool==='circle'){
+          const rx=Math.abs(a.x2-a.x1)*scaleX/2, ry=Math.abs(a.y2-a.y1)*scaleY/2;
+          const cx=(a.x1+(a.x2-a.x1)/2)*scaleX, cy=(a.y1+(a.y2-a.y1)/2)*scaleY;
+          tctx.beginPath(); tctx.ellipse(cx,cy,Math.max(1,rx),Math.max(1,ry),0,0,Math.PI*2); tctx.stroke();
+        } else if(a.tool==='line'){
+          tctx.beginPath(); tctx.moveTo(a.x1*scaleX,a.y1*scaleY); tctx.lineTo(a.x2*scaleX,a.y2*scaleY); tctx.stroke();
+        } else if(a.tool==='text'){
+          tctx.font=`bold ${Math.max(14,a.size*6*scaleX)}px Rajdhani,sans-serif`;
+          tctx.fillStyle=a.color; tctx.fillText(a.text,a.x*scaleX,a.y*scaleY);
+        }
+      });
+      ctx.drawImage(tmp,0,0);
+      resolve(oc);
+    };
+    img.src=slide.image;
+  });
+}
+async function exportCurrentSlide(){
+  commitSlideAnnotations();
+  const round=getCurRound(); if(!round) return;
+  const sl=round.slides[curSlideIdx];
+  if(!sl.image){ showNotif('이미지를 먼저 업로드하세요'); return; }
+  const oc=await makeCompositeCanvas(sl);
+  const link=document.createElement('a');
+  link.download=`vt_R${round.number}_slide${curSlideIdx+1}.png`;
+  link.href=oc.toDataURL('image/png'); link.click();
+  showNotif('✓ 슬라이드 이미지 저장됨');
+}
+async function exportAllSlides(){
+  commitSlideAnnotations();
+  const round=getCurRound(); if(!round) return;
+  const hasImg=round.slides.filter(s=>s.image);
+  if(!hasImg.length){ showNotif('이미지가 있는 슬라이드가 없습니다'); return; }
+  showNotif('전체 슬라이드 저장 중...');
+  for(let i=0;i<round.slides.length;i++){
+    const sl=round.slides[i]; if(!sl.image) continue;
+    const oc=await makeCompositeCanvas(sl);
+    const link=document.createElement('a');
+    link.download=`vt_R${round.number}_slide${i+1}_${esc(sl.title||'')}.png`;
+    link.href=oc.toDataURL('image/png'); link.click();
+    await new Promise(r=>setTimeout(r,300));
+  }
+  showNotif(`✓ ${hasImg.length}개 슬라이드 저장 완료`);
+}
+
+// ══════════════════════════════════
+//  UTIL
+// ══════════════════════════════════
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showNotif(m){ const n=document.getElementById('notif'); n.textContent=m; n.classList.add('show'); setTimeout(()=>n.classList.remove('show'),2200); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function setView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function goHome(){ setView('view-home'); renderRooms(); }
+function goRoom(){ setView('view-room'); renderRounds(); }
+
+// ══════════════════════════════════
+//  INIT
+// ══════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
-  renderMemberSelection();
-  const colors=['#ff4655','#00d4aa','#f5c518','#4f9eff','#ffffff','#000000'];
-  document.getElementById('color-picker').innerHTML=colors.map(c=>`<div class="cdot ${c==='#ff4655'?'active':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('');
-  if(S.currentUser) {
+  applyViewMode();
+  loadLocalSession(); // 로컬 스토리지에 저장된 사용자 정보 선행 파싱
+
+  // Firebase 실시간 바인딩 시작
+  initFirebaseSync();
+
+  // Color picker
+  const colors=['#ff4655','#00d4aa','#f5c518','#ffffff','#4f9eff','#ff9f40','#c084fc'];
+  document.getElementById('color-picker').innerHTML=colors.map((c,i)=>`
+    <div class="cdot ${i===0?'active':''}" style="background:${c}" data-c="${c}" onclick="setColor(this)"></div>`).join('');
+
+  // Stroke slider
+  document.getElementById('sz-sl').addEventListener('input',function(){ strokeSz=parseInt(this.value); });
+
+  // Slide title save on change
+  document.getElementById('slide-title-inp').addEventListener('change',function(){
+    const round=getCurRound(); if(!round) return;
+    const sl=round.slides[curSlideIdx]; if(sl) sl.title=this.value;
+    saveS(); renderSlidePanelAndLoad(curSlideIdx);
+  });
+
+  // Drag & drop image upload
+  const ph=document.getElementById('upload-ph');
+  ph.addEventListener('dragover',e=>{e.preventDefault(); ph.style.borderColor='var(--red)';});
+  ph.addEventListener('dragleave',()=>{ ph.style.borderColor='var(--border)'; });
+  ph.addEventListener('drop',e=>{
+    e.preventDefault(); ph.style.borderColor='var(--border)';
+    const f=e.dataTransfer.files[0];
+    if(f&&f.type.startsWith('image/')) loadImage({target:{files:[f],value:''}});
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown',e=>{
+    if(document.getElementById('view-round').classList.contains('active')){
+      if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+      if(e.key==='ArrowLeft') navSlide(-1);
+      if(e.key==='ArrowRight') navSlide(1);
+    }
+  });
+
+  // Modal close on backdrop click
+  document.getElementById('modal-add').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-add'); });
+
+  // Auth restore
+  if(S.currentUser){
     if(S.isAdmin) showAdminView();
     else enterSystem();
+  } else {
+    renderMemberSelection();
   }
 });
 
+function setColor(el){
+  curColor=el.dataset.c;
+  document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+}
 </script>
 </body>
 </html>
-
