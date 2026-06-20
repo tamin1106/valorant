@@ -15,7 +15,6 @@
   --border:#2a2b38; --border2:#353647;
   --red:#ff4655; --red-dim:#cc3544;
   --teal:#00d4aa; --yellow:#f5c518; --blue:#4f9eff;
-  --ai:#c084fc;
   --text:#ece8e1; --muted:#6b6c7e; --muted2:#9b9cad;
   --fh:'Rajdhani','Noto Sans KR',sans-serif;
   --fb:'Noto Sans KR',sans-serif;
@@ -109,7 +108,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 /* ─── ROUND DETAIL (PPT MODE) ─── */
 #view-round{background:var(--bg);overflow:hidden}
-.ppt-layout{display:grid;grid-template-columns:176px 1fr 320px;flex:1;overflow:hidden;min-height:0}
+.ppt-layout{display:grid;grid-template-columns:176px 1fr 340px;flex:1;overflow:hidden;min-height:0}
 .slide-panel{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .slide-panel-hd{padding:10px 12px;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .slide-list{flex:1;overflow-y:auto;padding:8px;scrollbar-width:none}
@@ -131,18 +130,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .canvas-area{display:flex;flex-direction:column;overflow:hidden;background:#08090c;position:relative}
 .toolbar{display:flex;align-items:center;gap:3px;padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:nowrap;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .toolbar::-webkit-scrollbar{display:none}
-.tg{display:flex;gap:2px;padding-right:8px;border-right:1px solid var(--border);margin-right:4px;flex-shrink:0;align-items:center}
+.tg{display:flex;gap:2px;padding-right:8px;border-right:1px solid var(--border);margin-right:4px;flex-shrink:0}
 .tg:last-child{border-right:none}
-.tb{width:32px;height:32px;background:transparent;border:1px solid var(--border);color:var(--muted2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:var(--fm);position:relative;flex-shrink:0;border-radius:2px;}
+.tb{width:32px;height:32px;background:transparent;border:1px solid var(--border);color:var(--muted2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:var(--fm);position:relative;flex-shrink:0}
 .tb:hover{border-color:var(--text);color:var(--text);background:var(--bg3)}
 .tb.active{border-color:var(--red);color:var(--red);background:rgba(255,70,85,.1)}
 .tb .tip{position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:10px;padding:3px 7px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;font-family:var(--fm);letter-spacing:1px;z-index:100}
 .tb:hover .tip{opacity:1}
-
-.btn-interact { width: auto; padding: 0 10px; font-size: 12px; font-weight: 600; color: var(--teal); border-color: rgba(0,212,170,.3); font-family: var(--fb); }
-.btn-interact:hover { border-color: var(--teal); color: var(--teal); }
-.btn-interact.active { background: rgba(0,212,170,.1); border-color: var(--teal); color: var(--teal); }
-
 .cdots{display:flex;gap:3px;flex-wrap:wrap;width:75px}
 .cdot{width:15px;height:15px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
 .cdot:hover,.cdot.active{border-color:white;transform:scale(1.25)}
@@ -150,26 +144,18 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .sz-sl::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--red);cursor:pointer}
 .canvas-wrap{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:24px;position:relative}
 
-/* 캔버스 & 비디오 겹침 배치 */
-.canvas-inner{position:relative;display:inline-block;box-shadow:0 8px 40px rgba(0,0,0,.9); max-width:100%;}
+.canvas-inner{position:relative;display:inline-block;box-shadow:0 8px 40px rgba(0,0,0,.9)}
 #bg-image{display:block;max-width:100%;max-height:calc(100vh - 200px);user-select:none}
-#bg-youtube{display:block;width:800px;max-width:100%;aspect-ratio:16/9;background:#000;}
 #ann-canvas{position:absolute;inset:0;cursor:crosshair;touch-action:none;z-index:5}
 #tmp-canvas{position:absolute;inset:0;cursor:crosshair;touch-action:none;z-index:6;pointer-events:none}
 
-.upload-ph{width:700px;max-width:100%;aspect-ratio:16/9;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;transition:all .2s;background:var(--bg2)}
+.upload-ph{width:700px;max-width:100%;aspect-ratio:16/9;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;background:var(--bg2)}
 .upload-ph:hover{border-color:var(--red);background:rgba(255,70,85,.04)}
-.upload-ph .uico{font-size:32px;opacity:.4;margin-bottom:-5px;}
-.upload-ph .utxt{font-family:var(--fm);font-size:13px;color:var(--text);letter-spacing:2px;text-transform:uppercase;text-align:center}
+.upload-ph .uico{font-size:32px;opacity:.4}
+.upload-ph .utxt{font-family:var(--fm);font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;text-align:center}
 .upload-ph .usub{font-size:11px;color:var(--muted);font-family:var(--fm);text-align:center;padding:0 10px}
-.upload-btn-group{display:flex;gap:10px;margin-top:10px;}
-.up-btn{padding:8px 16px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:var(--fh);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
-.up-btn:hover{border-color:var(--red);color:var(--red);}
-.yt-input-group{display:flex; gap:5px; margin-top:5px;}
-.yt-input{background:var(--bg); border:1px solid var(--border); color:var(--text); padding:8px 12px; font-size:12px; font-family:var(--fm); outline:none; width:250px;}
-.yt-input:focus{border-color:var(--red);}
-
 #file-input{display:none}
+
 .c-txt-inp{position:absolute;background:rgba(0,0,0,.75);border:1px solid var(--red);color:#fff;font-family:var(--fh);font-size:16px;font-weight:600;padding:3px 8px;outline:none;min-width:80px;z-index:10;display:none;border-radius:0}
 
 .canvas-nav{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:rgba(11,12,16,.9);border-top:1px solid var(--border);flex-shrink:0}
@@ -192,40 +178,33 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .info-item{background:var(--card);border:1px solid var(--border);padding:10px;border-radius:2px}
 .info-item-val{font-family:var(--fh);font-size:15px;font-weight:600;color:var(--text)}
 .info-item-label{font-family:var(--fm);font-size:9px;color:var(--muted2);text-transform:uppercase;margin-top:2px}
-.notes-area{width:100%;height:100px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--fb);font-size:13px;line-height:1.6;resize:none;outline:none;border-radius:2px;transition:border-color .2s; margin-bottom: 10px;}
+.notes-area{width:100%;height:70px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--fb);font-size:13px;line-height:1.6;resize:none;outline:none;border-radius:2px;transition:border-color .2s}
 .notes-area:focus{border-color:var(--teal)}
-
-.btn-ai {width: 100%; padding: 10px; background: linear-gradient(45deg, #7c3aed, var(--ai)); border: none; color: #fff; font-family: var(--fh); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .2s; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));}
-.btn-ai:hover {filter: brightness(1.2); transform: translateY(-1px);}
-.ai-result-box {background: rgba(192, 132, 252, 0.08); border: 1px solid rgba(192, 132, 252, 0.2); border-left: 3px solid var(--ai); padding: 12px; margin-top: 10px; display: none; font-size: 12px; line-height: 1.5; color: var(--text);}
-.ai-result-box.show {display: block; animation: modalIn 0.3s ease;}
-.ai-title {font-family: var(--fm); font-size: 10px; color: var(--ai); letter-spacing: 1.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;}
-
-/* Comments Section */
-.cmt-list { display:flex; flex-direction:column; gap:6px; max-height:160px; overflow-y:auto; padding-right:4px; margin-bottom:8px; }
-.cmt-item { background:var(--bg3); border:1px solid var(--border); padding:8px 10px; border-radius:2px; position:relative; }
-.cmt-header { display:flex; justify-content:space-between; margin-bottom:5px; font-family:var(--fm); font-size:9px; color:var(--muted2); }
-.cmt-body { font-size:11.5px; color:var(--text); line-height:1.4; word-break:keep-all; }
-.cmt-del { position:absolute; top:4px; right:4px; background:none; border:none; color:var(--muted); font-size:12px; cursor:pointer; }
-.cmt-del:hover { color:var(--red); }
-.cmt-input-group { display:flex; gap:6px; }
-.cmt-input { flex:1; background:var(--bg3); border:1px solid var(--border); color:var(--text); padding:8px; font-size:12px; outline:none; transition:border-color .2s; }
-.cmt-input:focus { border-color:var(--teal); }
-.cmt-btn { padding:0 12px; background:var(--teal); border:none; color:#000; font-family:var(--fh); font-weight:700; font-size:12px; cursor:pointer; }
-.cmt-btn:hover { background:#00f0c0; }
-
-.ann-list{display:flex;flex-direction:column;gap:4px;max-height:90px;overflow-y:auto}
+.ann-list{display:flex;flex-direction:column;gap:4px;max-height:80px;overflow-y:auto}
 .ann-item{background:var(--bg3);border:1px solid var(--border);padding:6px 10px;display:flex;align-items:center;gap:8px;font-size:11px;border-radius:2px}
 .ann-col{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .ann-item-type{font-family:var(--fm);font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;flex:1}
 .ann-item-del{color:var(--muted);cursor:pointer;background:none;border:none;font-size:13px;padding:1px 5px;transition:color .15s}
 .ann-item-del:hover{color:var(--red)}
 
+/* Feedback List Styles */
+.feedback-list{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;padding-right:4px}
+.feedback-item{background:var(--bg3);border:1px solid var(--border);padding:10px;border-radius:2px;display:flex;flex-direction:column;gap:6px}
+.feedback-item.admin-feedback{border-color:rgba(0,212,170,.4);background:rgba(0,212,170,.05)}
+.fb-hd{display:flex;align-items:center;justify-content:space-between}
+.fb-author{font-family:var(--fh);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;letter-spacing:1px}
+.fb-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;transition:color .2s}
+.fb-del:hover{color:var(--red)}
+.fb-text{font-size:12px;line-height:1.5;color:var(--text);word-break:break-all}
+.feedback-input-wrap{display:flex;gap:6px}
+
 .info-actions{padding:0 20px 20px;display:flex;flex-direction:column;gap:7px;flex-shrink:0}
 .btn-save-round{width:100%;padding:12px;background:var(--teal);border:none;color:#000;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
 .btn-save-round:hover{background:#00f0c0;transform:translateY(-1px)}
 .btn-export{width:100%;padding:9px;background:transparent;border:1px solid var(--border);color:var(--muted2);font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .btn-export:hover{border-color:var(--teal);color:var(--teal)}
+.btn-export-all{width:100%;padding:9px;background:transparent;border:1px solid var(--border);color:var(--muted2);font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-export-all:hover{border-color:var(--yellow);color:var(--yellow)}
 
 /* ─── MODALS ─── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
@@ -269,7 +248,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .btn-del-member{color:var(--muted);cursor:pointer;background:none;border:none;font-size:16px;transition:color .2s}
 .btn-del-member:hover{color:var(--red)}
 .user-display{display:flex;align-items:center;gap:10px;font-family:var(--fm);font-size:12px;color:var(--teal);background:rgba(0,212,170,.1);padding:4px 12px;border:1px solid rgba(0,212,170,.2)}
-.admin-badge{font-size:10px;background:var(--red);color:white;padding:2px 6px;border-radius:2px;margin-left:4px}
+.admin-badge{font-size:10px;background:var(--teal);color:#000;padding:2px 6px;border-radius:2px;margin-left:4px;font-weight:bold}
 
 /* ─── MOBILE ─── */
 @media(max-width:1000px){.ppt-layout{grid-template-columns:140px 1fr 280px}}
@@ -291,6 +270,23 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   .match-teams{flex-direction:column;align-items:flex-start;gap:6px}
   .upload-ph{width:100%;border-width:1px}
 }
+body.force-mobile{max-width:600px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.8);position:relative;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+body.force-mobile .home-body{grid-template-columns:1fr!important;padding:0 16px!important;margin:20px auto!important}
+body.force-mobile .rooms-panel{padding:24px 0 0 0!important}
+body.force-mobile .ppt-layout{display:flex!important;flex-direction:column!important;overflow-y:auto!important}
+body.force-mobile .slide-panel{flex-direction:row!important;border-right:none!important;border-bottom:1px solid var(--border)!important;overflow-x:auto!important;height:auto!important;flex-shrink:0!important;padding:10px!important;align-items:center!important}
+body.force-mobile .slide-panel-hd{display:none!important}
+body.force-mobile .slide-list{display:flex!important;flex-direction:row!important;gap:10px!important;padding:0!important;flex:none!important;overflow-y:hidden!important}
+body.force-mobile .slide-thumb{width:130px!important;margin-bottom:0!important;flex-shrink:0!important}
+body.force-mobile .slide-thumb .st-del{display:flex!important}
+body.force-mobile .btn-add-slide{margin:0 0 0 10px!important;width:auto!important;padding:10px 20px!important;white-space:nowrap!important;flex-shrink:0!important;height:fit-content!important}
+body.force-mobile .canvas-area{min-height:55vh!important;border-bottom:1px solid var(--border)!important;flex:none!important}
+body.force-mobile .canvas-wrap{padding:10px!important}
+body.force-mobile #bg-image{max-height:calc(55vh - 100px)!important}
+body.force-mobile .tb .tip{display:none!important}
+body.force-mobile .info-panel{border-left:none!important;flex:none!important}
+body.force-mobile .match-teams{flex-direction:column!important;align-items:flex-start!important;gap:6px!important}
+body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
 </style>
 </head>
 <body>
@@ -301,16 +297,16 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <div class="logo" style="margin-bottom:10px;text-align:center">VALO<span>TACT</span></div>
       <h2>TEAM HUB</h2>
       <div id="member-selection-grid" class="member-grid"></div>
-      <div class="admin-trigger" onclick="promptAdminLogin()">ADMINISTRATOR LOGIN</div>
+      <div class="admin-trigger" onclick="promptAdminLogin()">COACH / ADMIN LOGIN</div>
     </div>
   </div>
 </div>
 
 <div id="view-admin" class="view">
   <div class="topbar">
-    <div class="logo">VALO<span>TACT</span> <span class="admin-badge">ADMIN MODE</span></div>
+    <div class="logo">VALO<span>TACT</span> <span class="admin-badge" style="background:var(--red);color:white">ADMIN MODE</span></div>
     <div class="tb-right">
-      <button class="btn-back" onclick="logout()">EXIT ADMIN</button>
+      <button class="btn-back" onclick="enterSystem()">← BACK TO HUB</button>
     </div>
   </div>
   <div class="admin-container">
@@ -338,6 +334,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="tb-sub">STRATEGY ANALYSIS SYSTEM</div>
     <div class="tb-right">
       <div class="user-display" id="current-user-name">👤 USER</div>
+      <button id="btn-admin-panel" class="btn-back" style="display:none; color:var(--teal); border-color:var(--teal)" onclick="showAdminView()">⚙️ 멤버 관리</button>
       <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
       <button class="btn-back" onclick="logout()">LOGOUT</button>
     </div>
@@ -423,9 +420,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
     <div class="canvas-area">
       <div class="toolbar">
-        <div class="tg" style="border-right:1px solid var(--border); padding-right:8px; margin-right:4px;">
-          <button class="btn-interact" id="btn-interact" onclick="toggleInteractMode()">✏️ 그리기 모드</button>
-        </div>
         <div class="tg">
           <button class="tb active" data-tool="pen" onclick="setTool('pen')">✏️<span class="tip">펜</span></button>
           <button class="tb" data-tool="arrow" onclick="setTool('arrow')">↗<span class="tip">화살표</span></button>
@@ -442,32 +436,20 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         <div class="tg">
           <button class="tb" onclick="undoAnn()">↩️<span class="tip">실행취소</span></button>
           <button class="tb" onclick="clearAnns()">🗑️<span class="tip">전체삭제</span></button>
-          <button class="tb" onclick="resetMedia()">🖼️<span class="tip">미디어 교체</span></button>
+          <button class="tb" onclick="triggerUpload()">🖼️<span class="tip">이미지 교체</span></button>
         </div>
       </div>
       <div class="canvas-wrap" id="canvas-wrap">
-        
         <div class="canvas-inner" id="canvas-inner">
           <img id="bg-image" src="" alt="" style="display:none">
-          <iframe id="bg-youtube" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:none;"></iframe>
           <canvas id="ann-canvas"></canvas>
-          <canvas id="tmp-canvas"></canvas>
-          <input type="text" id="c-txt-inp" class="c-txt-inp" placeholder="텍스트 입력 후 Enter">
+          <canvas id="tmp-canvas"></canvas> <input type="text" id="c-txt-inp" class="c-txt-inp" placeholder="텍스트 입력 후 Enter">
         </div>
         
-        <div class="upload-ph" id="upload-ph">
-          <div class="uico">📺</div>
-          <div class="utxt">MAP OR VIDEO UPLOAD</div>
-          <div class="usub">작전용 지도 이미지나 유튜브 영상을 등록하세요</div>
-          
-          <div class="upload-btn-group">
-            <button class="up-btn" onclick="triggerUpload()">📷 PC 이미지 첨부</button>
-          </div>
-          
-          <div class="yt-input-group">
-            <input type="text" id="yt-link-inp" class="yt-input" placeholder="유튜브 영상 링크 붙여넣기...">
-            <button class="up-btn" style="background:var(--teal); color:#000; border-color:var(--teal);" onclick="loadYouTube()">영상 연결</button>
-          </div>
+        <div class="upload-ph" id="upload-ph" onclick="triggerUpload()">
+          <div class="uico">📸</div>
+          <div class="utxt">MAP SCREENSHOT UPLOAD</div>
+          <div class="usub">터치하거나 파일을 드래그하세요 (PNG, JPG)</div>
         </div>
       </div>
       <div class="canvas-nav">
@@ -484,7 +466,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         <div class="info-title">ROUND <span id="rd-rnum2" style="color:var(--red)">1</span></div>
       </div>
       <div class="info-body">
-        
         <div class="info-sec">
           <label class="info-sec-label">ROUND INFO</label>
           <div class="info-grid">
@@ -515,25 +496,17 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
             </div>
           </div>
         </div>
-        
         <div class="info-sec">
           <label class="info-sec-label">TACTICAL NOTES</label>
           <textarea id="notes-ta" class="notes-area" placeholder="이 라운드의 전술적 핵심을 기록하세요..."></textarea>
-          
-          <button class="btn-ai" onclick="generateAIAnalysis()">✨ AI MANAGER — 전술 지령 요청</button>
-          <div id="ai-result-box" class="ai-result-box">
-            <div class="ai-title">◈ MANAGER ANALYSIS</div>
-            <div id="ai-result-text">대기 중...</div>
-          </div>
         </div>
-
+        
         <div class="info-sec">
-          <label class="info-sec-label">FEEDBACK & COMMENTS <span id="cmt-count" style="color:var(--teal)">0</span></label>
-          <div id="cmt-list" class="cmt-list">
-            </div>
-          <div class="cmt-input-group">
-            <input type="text" id="cmt-inp" class="cmt-input" placeholder="전술에 대한 피드백을 남겨주세요..." onkeypress="if(event.key==='Enter') addComment()">
-            <button class="cmt-btn" onclick="addComment()">작성</button>
+          <label class="info-sec-label">COACH / TEAM FEEDBACK</label>
+          <div id="feedback-list" class="feedback-list"></div>
+          <div class="feedback-input-wrap">
+            <input type="text" id="inp-feedback" class="fi" placeholder="피드백 입력..." style="padding:6px 10px; font-size:12px">
+            <button class="btn-create" style="margin-top:0; padding:6px 12px; clip-path:none; border-radius:2px" onclick="addFeedback()">등록</button>
           </div>
         </div>
 
@@ -543,11 +516,11 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
             <div style="font-family:var(--fm);font-size:10px;color:var(--muted);padding:6px">주석 없음</div>
           </div>
         </div>
-        
       </div>
       <div class="info-actions">
         <button class="btn-save-round" onclick="saveRound()">SAVE ANALYSIS</button>
-        <button class="btn-export" onclick="exportCurrentSlide()">현재 캔버스 내보내기</button>
+        <button class="btn-export" onclick="exportCurrentSlide()">현재 슬라이드 내보내기</button>
+        <button class="btn-export-all" onclick="exportAllSlides()">전체 슬라이드 내보내기</button>
       </div>
     </div>
   </div>
@@ -599,7 +572,7 @@ function initFirebaseSync() {
   db.ref('VALOTACT_DATA/members').on('value', (snap) => {
     S.members = snap.val() || [];
     renderMemberSelection();
-    if (S.isAdmin) renderAdminMemberList();
+    if (S.isAdmin && document.getElementById('view-admin').classList.contains('active')) renderAdminMemberList();
   });
 
   db.ref('VALOTACT_DATA/rooms').on('value', (snap) => {
@@ -609,17 +582,11 @@ function initFirebaseSync() {
       const activeRoomRemote = remoteRooms.find(r => r.id === S.curRoom);
       const activeRoundRemote = activeRoomRemote?.rounds?.find(rd => rd.id === S.curRound);
       
-      if (activeRoundRemote && activeRoundRemote.slides && activeRoundRemote.slides[curSlideIdx]) {
-        annotations = activeRoundRemote.slides[curSlideIdx].annotations || [];
-        renderAnns();
-        renderAnnList();
-      }
-      // 댓글 동기화
       if (activeRoundRemote) {
-        const localRound = getCurRound();
-        if(localRound) {
-            localRound.comments = activeRoundRemote.comments || [];
-            renderComments();
+        if (activeRoundRemote.slides && activeRoundRemote.slides[curSlideIdx]) {
+          annotations = activeRoundRemote.slides[curSlideIdx].annotations || [];
+          renderAnns();
+          renderAnnList();
         }
       }
     }
@@ -627,6 +594,7 @@ function initFirebaseSync() {
     S.rooms = remoteRooms;
     if (document.getElementById('view-home').classList.contains('active')) renderRooms();
     if (document.getElementById('view-room').classList.contains('active')) renderRounds();
+    if (document.getElementById('view-round').classList.contains('active')) renderFeedback();
   });
 }
 
@@ -682,11 +650,9 @@ function toggleViewMode(){
   applyViewMode();
 }
 
-// ── Canvas 내부 변수 ──
 let annotations=[], curSlideIdx=0;
 let curTool='pen', curColor='#ff4655', strokeSz=3;
 let isDrawing=false, startX=0, startY=0, curPath=[];
-let isViewerMode = false; // 뷰어/그리기 모드 상태
 
 // ══════════════════════════════════
 //  AUTH
@@ -706,15 +672,24 @@ function loginAs(name){
   else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
 function promptAdminLogin(){
-  const pass = prompt('관리자 비밀번호를 입력하세요:');
-  if(pass === ADMIN_PASS){ S.currentUser='ADMIN'; S.isAdmin=true; saveS(); showAdminView(); }
+  const pass = prompt('코치 / 관리자 비밀번호를 입력하세요:');
+  if(pass === ADMIN_PASS){ 
+    S.currentUser = 'COACH'; 
+    S.isAdmin = true; 
+    saveS(); 
+    enterSystem(); // 코치도 바로 홈으로 입장하여 모든 택틱을 봄
+  }
   else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
-function showAdminView(){ setView('view-admin'); renderAdminMemberList(); }
+function showAdminView(){ 
+  setView('view-admin'); 
+  renderAdminMemberList(); 
+}
 function enterSystem(){
   setView('view-home');
   document.getElementById('current-user-name').innerHTML =
-    S.isAdmin ? `👤 ADMIN <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
+    S.isAdmin ? `👤 ${esc(S.currentUser)} <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
+  document.getElementById('btn-admin-panel').style.display = S.isAdmin ? 'flex' : 'none';
   renderRooms();
 }
 function logout(){ S.currentUser=null; S.isAdmin=false; saveS(); localStorage.removeItem('vt_team_v3'); location.reload(); }
@@ -808,7 +783,7 @@ function renderRooms(){
 }
 
 // ══════════════════════════════════
-//  ROUNDS
+//  ROUNDS & FEEDBACK
 // ══════════════════════════════════
 function getCurRoom(){ return S.rooms.find(r=>r.id===S.curRoom); }
 function getCurRound(){ const rm=getCurRoom(); return rm?.rounds?.find(r=>r.id===S.curRound); }
@@ -827,9 +802,10 @@ function confirmAddRound(){
   const desc=document.getElementById('m-rdesc').value.trim();
   const round={
     id:gid(), number:num, description:desc,
-    phase:'FULL BUY', side:'ATTACK', result:'WIN', notes:'', aiFeedback:'', comments:[],
+    phase:'FULL BUY', side:'ATTACK', result:'WIN', notes:'',
     analyzedBy:S.currentUser,
-    slides:[{id:gid(), title:'슬라이드 1', mediaType:'image', image:null, annotations:[]}]
+    feedbacks: [],
+    slides:[{id:gid(), title:'슬라이드 1', image:null, annotations:[]}]
   };
   if(!rm.rounds) rm.rounds = [];
   rm.rounds.push(round);
@@ -851,20 +827,8 @@ function openRound(rid){
   document.getElementById('edit-side').value=round.side||'ATTACK';
   document.getElementById('edit-result').value=round.result||'WIN';
   document.getElementById('notes-ta').value=round.notes||'';
-  
-  const aiBox = document.getElementById('ai-result-box');
-  if(round.aiFeedback) {
-    aiBox.classList.add('show');
-    document.getElementById('ai-result-text').innerHTML = round.aiFeedback;
-  } else {
-    aiBox.classList.remove('show');
-  }
-
-  // 뷰어 모드 초기화 (기본: 그리기)
-  isViewerMode = false;
-  updateInteractToggleUI();
-
   renderSlidePanelAndLoad(0);
+  renderFeedback();
   setView('view-round');
 }
 function delRound(rid,e){
@@ -884,10 +848,9 @@ function renderRounds(){
       <div class="rnum">R${r.number}</div>
       <div class="rlabel">${esc(r.phase)} · ${r.side==='ATTACK'?'ATK':'DEF'} · <span style="color:${r.result==='WIN'?'var(--teal)':'var(--red)'}">${r.result==='WIN'?'승':'패'}</span></div>
       <div class="rprev">
-        ${r.slides && r.slides[0]?.image && r.slides[0]?.mediaType !== 'youtube'
+        ${r.slides && r.slides[0]?.image
           ?`<img src="${r.slides[0].image}" alt="R${r.number}"><div class="slide-count-badge">${r.slides.length} SLIDES</div>`
-          : r.slides && r.slides[0]?.mediaType === 'youtube' ? `<div class="rprev-empty">▶ YOUTUBE VIDEO</div>`
-          :`<div class="rprev-empty">NO MEDIA</div>`}
+          :`<div class="rprev-empty">NO IMAGE</div>`}
       </div>
       ${r.description?`<div style="font-size:10px;font-family:var(--fm);color:var(--muted);margin-bottom:4px">${esc(r.description)}</div>`:''}
       <div class="rnotes">${r.notes?esc(r.notes):'<span style="color:var(--muted)">노트 없음</span>'}</div>
@@ -914,109 +877,70 @@ function saveRound(){
   showNotif('✓ 저장되었습니다');
 }
 
-// ══════════════════════════════════
-//  COMMENTS (피드백)
-// ══════════════════════════════════
-function addComment() {
-  const inp = document.getElementById('cmt-inp');
-  const txt = inp.value.trim();
-  if(!txt) return;
-  const round = getCurRound(); if(!round) return;
-  if(!round.comments) round.comments = [];
+// ── FEEDBACK SYSTEM ──
+function addFeedback() {
+  const round = getCurRound(); if (!round) return;
+  const text = document.getElementById('inp-feedback').value.trim();
+  if (!text) return;
+  if (!round.feedbacks) round.feedbacks = [];
   
-  const newCmt = {
+  round.feedbacks.push({
     id: gid(),
-    user: S.currentUser,
-    text: txt,
-    time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})
-  };
+    author: S.currentUser,
+    isAdmin: S.isAdmin,
+    text: text,
+    timestamp: Date.now()
+  });
   
-  round.comments.push(newCmt);
-  
-  const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
-  const rdIdx = S.rooms[rmIdx]?.rounds?.findIndex(r=>r.id===S.curRound);
+  const rmIdx = S.rooms.findIndex(r => r.id === S.curRoom);
+  const rdIdx = S.rooms[rmIdx]?.rounds?.findIndex(r => r.id === S.curRound);
   if(rmIdx !== -1 && rdIdx !== -1) {
-    syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/comments`, round.comments);
+    syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/feedbacks`, round.feedbacks);
   }
   
-  inp.value = '';
-  renderComments();
+  document.getElementById('inp-feedback').value = '';
+  renderFeedback();
+  showNotif('피드백이 등록되었습니다');
 }
 
-function delComment(cid) {
-  if(!confirm('이 피드백을 삭제하시겠습니까?')) return;
-  const round = getCurRound(); if(!round) return;
-  round.comments = round.comments.filter(c => c.id !== cid);
-  
-  const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
-  const rdIdx = S.rooms[rmIdx]?.rounds?.findIndex(r=>r.id===S.curRound);
-  if(rmIdx !== -1 && rdIdx !== -1) {
-    syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/comments`, round.comments);
-  }
-  renderComments();
-}
-
-function renderComments() {
-  const round = getCurRound(); if(!round) return;
-  const list = document.getElementById('cmt-list');
-  const cmts = round.comments || [];
-  
-  document.getElementById('cmt-count').textContent = cmts.length;
-  
-  if(!cmts.length) {
-    list.innerHTML = '<div style="font-size:10px;color:var(--muted);text-align:center;padding:10px;">아직 작성된 피드백이 없습니다.</div>';
+function renderFeedback() {
+  const round = getCurRound();
+  const list = document.getElementById('feedback-list');
+  if (!round || !round.feedbacks || !round.feedbacks.length) {
+    list.innerHTML = '<div style="font-family:var(--fm);font-size:10px;color:var(--muted);padding:6px">등록된 코치/멤버 피드백이 없습니다.</div>';
     return;
   }
   
-  list.innerHTML = cmts.map(c => `
-    <div class="cmt-item">
-      <div class="cmt-header">
-        <span style="color:var(--teal)">👤 ${esc(c.user)}</span>
-        <span>${c.time}</span>
+  list.innerHTML = round.feedbacks.map(f => `
+    <div class="feedback-item ${f.isAdmin ? 'admin-feedback' : ''}">
+      <div class="fb-hd">
+        <span class="fb-author">
+          ${esc(f.author)} 
+          ${f.isAdmin ? '<span class="admin-badge" style="font-size:9px;padding:2px 5px;letter-spacing:0">COACH</span>' : ''}
+        </span>
+        ${(f.author === S.currentUser || S.isAdmin) ? `<button class="fb-del" onclick="delFeedback('${f.id}')">✕</button>` : ''}
       </div>
-      <div class="cmt-body">${esc(c.text)}</div>
-      ${(S.isAdmin || S.currentUser === c.user) ? `<button class="cmt-del" onclick="delComment('${c.id}')">✕</button>` : ''}
+      <div class="fb-text">${esc(f.text)}</div>
     </div>
   `).join('');
   
+  // 자동 스크롤
   list.scrollTop = list.scrollHeight;
 }
 
-// ══════════════════════════════════
-//  AI MANAGER (전술 지령 기능)
-// ══════════════════════════════════
-function generateAIAnalysis() {
+function delFeedback(fid) {
+  if(!confirm('피드백을 삭제하시겠습니까?')) return;
   const round = getCurRound();
-  if(!round) return;
-  const rm = getCurRoom();
-
-  const aiBox = document.getElementById('ai-result-box');
-  const aiText = document.getElementById('ai-result-text');
+  if (!round || !round.feedbacks) return;
   
-  aiBox.classList.add('show');
-  aiText.innerHTML = '전술 지령을 수신하고 있습니다... ⏳';
-
-  const mapName = rm.map || '알 수 없음';
-  const side = document.getElementById('edit-side').value;
-  const phase = document.getElementById('edit-phase').value;
-  const notes = document.getElementById('notes-ta').value;
-  const arrows = annotations.filter(a => a.tool === 'arrow').length;
-  const pens = annotations.filter(a => a.tool === 'pen').length;
-
-  setTimeout(() => {
-    let feedback = `<strong style="color:var(--ai);">[전술 지령: ${mapName} / ${side}] ${phase}</strong><br><br>`;
-    if(notes.length < 5) feedback += "▶ 기록된 전술 정보가 부족함. 세부 정보를 입력하면 더 정확한 지령이 생성됨.<br>";
-    else feedback += `▶ 노트 기반 분석 완료. 인포메이션 차단과 변수 창출이 핵심.<br>`;
-    if(arrows > 2) feedback += `▶ 다수의 기동 경로(${arrows}개) 확인됨. 러쉬나 럴킹 시 진입 타이밍(엇박자) 조율 요망.<br>`;
-    else if(pens > 0) feedback += `▶ 집중 교전 구역이 지정됨. 해당 구역의 스모크/플래시 연계 타이밍을 세밀히 설계할 것.<br>`;
-    else feedback += `▶ 정적인 배치가 예상됨. 스킬을 활용한 시야 확보를 최우선으로 둘 것.<br>`;
-    if(phase === 'ECO' || phase === 'SAVE') feedback += `▶ 자금 열세 상황. 좁은 구역에서의 난전 유도 및 상대 무기 탈취(Hero Buy)를 노려볼 것.`;
-    else feedback += `▶ 자금 우위 상황. 궁극기 사이클을 점검하고 안정적인 교전 구도를 형성할 것.`;
-
-    aiText.innerHTML = feedback;
-    round.aiFeedback = feedback;
-    saveRound();
-  }, 1200); 
+  round.feedbacks = round.feedbacks.filter(f => f.id !== fid);
+  const rmIdx = S.rooms.findIndex(r => r.id === S.curRoom);
+  const rdIdx = S.rooms[rmIdx]?.rounds?.findIndex(r => r.id === S.curRound);
+  
+  if(rmIdx !== -1 && rdIdx !== -1) {
+    syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/feedbacks`, round.feedbacks);
+  }
+  renderFeedback();
 }
 
 // ══════════════════════════════════
@@ -1025,7 +949,7 @@ function generateAIAnalysis() {
 function addSlide(){
   const round=getCurRound(); if(!round) return;
   commitSlideAnnotations();
-  round.slides.push({id:gid(), title:'슬라이드 '+(round.slides.length+1), mediaType:'image', image:null, annotations:[]});
+  round.slides.push({id:gid(), title:'슬라이드 '+(round.slides.length+1), image:null, annotations:[]});
   
   const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
   if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
@@ -1070,14 +994,9 @@ function renderSlidePanelAndLoad(idx){
     <div class="slide-thumb ${i===curSlideIdx?'active':''}" onclick="switchSlide(${i})">
       <span class="st-num">${i+1}</span>
       <button class="st-del" onclick="delSlide(${i},event)">✕</button>
-      <div class="st-img">
-        ${sl.image && sl.mediaType !== 'youtube' ? `<img src="${sl.image}" alt="${i+1}">` 
-        : sl.mediaType === 'youtube' ? `<div class="st-empty">▶</div>` 
-        : `<div class="st-empty">🗺️</div>`}
-      </div>
+      <div class="st-img">${sl.image?`<img src="${sl.image}" alt="${i+1}">`:`<div class="st-empty">🗺️</div>`}</div>
       <div class="st-title">${esc(sl.title||'슬라이드 '+(i+1))}</div>
     </div>`).join('');
-    
   const sl=round.slides[curSlideIdx];
   annotations=JSON.parse(JSON.stringify(sl.annotations||[]));
   document.getElementById('slide-title-inp').value=sl.title||'';
@@ -1085,42 +1004,25 @@ function renderSlidePanelAndLoad(idx){
   document.getElementById('nav-total').textContent=round.slides.length;
   document.getElementById('nav-prev').disabled=curSlideIdx===0;
   document.getElementById('nav-next').disabled=curSlideIdx===round.slides.length-1;
-  
   const bgImg=document.getElementById('bg-image');
-  const bgYt=document.getElementById('bg-youtube');
   const ph=document.getElementById('upload-ph');
-  
-  bgImg.style.display='none';
-  bgYt.style.display='none';
-  bgYt.src='';
-
   if(sl.image){
-    ph.style.display='none';
-    if(sl.mediaType === 'youtube') {
-      bgYt.src = sl.image;
-      bgYt.style.display='block';
-      setTimeout(()=>{ setupCanvas(); renderAnns(); }, 500); // iframe 렌더링 후 캔버스 세팅
-    } else {
-      bgImg.src=sl.image; 
-      bgImg.style.display='block';
-      bgImg.onload=()=>{ setupCanvas(); renderAnns(); };
-    }
+    bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
+    bgImg.onload=()=>{ setupCanvas(); renderAnns(); };
   } else {
-    ph.style.display='flex';
+    bgImg.src=''; bgImg.style.display='none'; ph.style.display='flex';
     document.getElementById('ann-canvas').width=0; 
     document.getElementById('tmp-canvas').width=0;
     annotations=[];
   }
   renderAnnList();
-  renderComments();
 }
 function switchSlide(idx){ commitSlideAnnotations(); renderSlidePanelAndLoad(idx); }
 
 // ══════════════════════════════════
-//  MEDIA UPLOAD (IMAGE / YOUTUBE)
+//  IMAGE UPLOAD & CANVAS COMPRESSION OPTIMIZATION
 // ══════════════════════════════════
 function triggerUpload(){ document.getElementById('file-input').click(); }
-
 function loadImage(e){
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
@@ -1140,13 +1042,15 @@ function loadImage(e){
 
       const round=getCurRound(); if(!round) return;
       const sl=round.slides[curSlideIdx]; if(!sl) return;
-      
-      sl.mediaType = 'image';
-      sl.image = compressedDataUrl;
+      sl.image=compressedDataUrl;
       
       const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
       if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
 
+      const bgImg=document.getElementById('bg-image');
+      const ph=document.getElementById('upload-ph');
+      bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
+      bgImg.onload=()=>{ annotations=[]; setupCanvas(); renderAnns(); renderAnnList(); };
       renderSlidePanelAndLoad(curSlideIdx);
     };
     tempImg.src = ev.target.result;
@@ -1155,95 +1059,24 @@ function loadImage(e){
   e.target.value='';
 }
 
-function loadYouTube() {
-  const url = document.getElementById('yt-link-inp').value.trim();
-  if(!url) return;
-  
-  // 유튜브 정규식 파싱
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-  if(match && match[1]) {
-    const vidId = match[1];
-    const embedUrl = `https://www.youtube.com/embed/${vidId}?rel=0`;
-    
-    const round=getCurRound(); if(!round) return;
-    const sl=round.slides[curSlideIdx]; if(!sl) return;
-    
-    sl.mediaType = 'youtube';
-    sl.image = embedUrl; 
-    
-    const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
-    if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
-
-    renderSlidePanelAndLoad(curSlideIdx);
-  } else {
-    alert('유효한 유튜브 영상 링크가 아닙니다.');
-  }
-}
-
-function resetMedia() {
-  if(!confirm('현재 미디어를 삭제하시겠습니까? (주석도 함께 초기화될 수 있습니다)')) return;
-  const round=getCurRound(); if(!round) return;
-  const sl=round.slides[curSlideIdx]; if(!sl) return;
-  sl.image = null;
-  sl.mediaType = 'image';
-  const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
-  if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
-  renderSlidePanelAndLoad(curSlideIdx);
-}
-
-// ══════════════════════════════════
-//  뷰어 / 그리기 조작 모드 토글
-// ══════════════════════════════════
-function toggleInteractMode() {
-  isViewerMode = !isViewerMode;
-  updateInteractToggleUI();
-}
-
-function updateInteractToggleUI() {
-  const btn = document.getElementById('btn-interact');
-  const c = document.getElementById('ann-canvas');
-  const tc = document.getElementById('tmp-canvas');
-  
-  if(isViewerMode) {
-    btn.classList.add('active');
-    btn.innerHTML = '🖐️ 뷰어 모드';
-    // 캔버스 이벤트를 꺼서 뒤에 있는 iframe(유튜브) 클릭/재생이 가능하게 함
-    c.style.pointerEvents = 'none';
-    tc.style.pointerEvents = 'none';
-  } else {
-    btn.classList.remove('active');
-    btn.innerHTML = '✏️ 그리기 모드';
-    // 캔버스 이벤트를 켜서 그리기를 활성화함
-    c.style.pointerEvents = 'auto';
-    tc.style.pointerEvents = 'none'; // 임시 캔버스는 무조건 none 유지
-  }
-}
-
 // ══════════════════════════════════
 //  CANVAS LAYER DOUBLE BUFFERING ENGINE
 // ══════════════════════════════════
 function setupCanvas(){
-  const round=getCurRound(); if(!round) return;
-  const sl=round.slides[curSlideIdx]; if(!sl) return;
-
-  const bgImg = document.getElementById('bg-image');
-  const bgYt = document.getElementById('bg-youtube');
-  
-  const activeMedia = (sl.mediaType === 'youtube') ? bgYt : bgImg;
-  
+  const bgImg=document.getElementById('bg-image');
   const c=document.getElementById('ann-canvas');
-  const tc=document.getElementById('tmp-canvas'); 
+  const tc=document.getElementById('tmp-canvas');
   const ratio = window.devicePixelRatio || 1;
   
-  const w = activeMedia.offsetWidth || 800;
-  const h = activeMedia.offsetHeight || 450;
+  const w = bgImg.naturalWidth || bgImg.offsetWidth;
+  const h = bgImg.naturalHeight || bgImg.offsetHeight;
   
   [c, tc].forEach(canvas => {
     if(!canvas) return;
     canvas.width = w * ratio;
     canvas.height = h * ratio;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
+    canvas.style.width = bgImg.offsetWidth+'px';
+    canvas.style.height = bgImg.offsetHeight+'px';
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
   });
 
@@ -1258,13 +1091,9 @@ function touchEv(e){
 }
 function getPos(e) {
   const c=document.getElementById('ann-canvas'); const r=c.getBoundingClientRect();
-  const round=getCurRound();
-  const sl=round?.slides[curSlideIdx];
-  const activeMedia = (sl && sl.mediaType === 'youtube') ? document.getElementById('bg-youtube') : document.getElementById('bg-image');
-  
-  const w = activeMedia.offsetWidth || 800;
-  const h = activeMedia.offsetHeight || 450;
-  
+  const bgImg=document.getElementById('bg-image');
+  const w = bgImg.naturalWidth || bgImg.offsetWidth;
+  const h = bgImg.naturalHeight || bgImg.offsetHeight;
   return {
     x: (e.clientX - r.left) * (w / r.width), 
     y: (e.clientY - r.top) * (h / r.height)
@@ -1428,17 +1257,10 @@ function setTool(t){
 }
 
 // ══════════════════════════════════
-//  EXPORT ENGINE (이미지용)
+//  EXPORT ENGINE
 // ══════════════════════════════════
 function makeCompositeCanvas(slide){
   return new Promise(resolve=>{
-    if(slide.mediaType === 'youtube') {
-      // 유튜브는 합성이 어려우므로 캔버스만 내보냄
-      const sc=document.getElementById('ann-canvas');
-      resolve(sc);
-      return;
-    }
-
     const img=new Image();
     img.onload=()=>{
       const oc=document.createElement('canvas');
@@ -1489,12 +1311,27 @@ async function exportCurrentSlide(){
   const round=getCurRound(); if(!round) return;
   const sl=round.slides[curSlideIdx];
   if(!sl.image){ showNotif('이미지를 먼저 업로드하세요'); return; }
-  if(sl.mediaType === 'youtube') { showNotif('유튜브 영상은 이미지로 내보낼 수 없습니다'); return; }
   const oc=await makeCompositeCanvas(sl);
   const link=document.createElement('a');
   link.download=`vt_R${round.number}_slide${curSlideIdx+1}.png`;
   link.href=oc.toDataURL('image/png'); link.click();
-  showNotif('✓ 캔버스 이미지 저장됨');
+  showNotif('✓ 슬라이드 이미지 저장됨');
+}
+async function exportAllSlides(){
+  commitSlideAnnotations();
+  const round=getCurRound(); if(!round) return;
+  const hasImg=round.slides.filter(s=>s.image);
+  if(!hasImg.length){ showNotif('이미지가 있는 슬라이드가 없습니다'); return; }
+  showNotif('전체 슬라이드 저장 중...');
+  for(let i=0;i<round.slides.length;i++){
+    const sl=round.slides[i]; if(!sl.image) continue;
+    const oc=await makeCompositeCanvas(sl);
+    const link=document.createElement('a');
+    link.download=`vt_R${round.number}_slide${i+1}_${esc(sl.title||'')}.png`;
+    link.href=oc.toDataURL('image/png'); link.click();
+    await new Promise(r=>setTimeout(r,300));
+  }
+  showNotif(`✓ ${hasImg.length}개 슬라이드 저장 완료`);
 }
 
 // ══════════════════════════════════
@@ -1528,6 +1365,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
     renderSlidePanelAndLoad(curSlideIdx);
   });
+  
+  // Enter 키로 피드백 바로 등록
+  document.getElementById('inp-feedback').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addFeedback();
+  });
 
   const ph=document.getElementById('upload-ph');
   ph.addEventListener('dragover',e=>{e.preventDefault(); ph.style.borderColor='var(--red)';});
@@ -1549,8 +1391,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('modal-add').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-add'); });
 
   if(S.currentUser){
-    if(S.isAdmin) showAdminView();
-    else enterSystem();
+    enterSystem();
   } else {
     renderMemberSelection();
   }
