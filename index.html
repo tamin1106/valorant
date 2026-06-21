@@ -6,8 +6,10 @@
 <title>VALO TACT — Team Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 
+<!-- Firebase App, RTDB, Storage -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
 <style>
 :root {
@@ -40,6 +42,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .btn-back:hover{border-color:var(--red);color:var(--red)}
 .btn-vm{color:var(--teal);border-color:var(--border2);}
 .btn-vm:hover{border-color:var(--teal);color:var(--teal);}
+.btn-tab{color:var(--text); border-color:var(--teal); background:rgba(0,212,170,.1);}
+.btn-tab:hover{background:rgba(0,212,170,.2);}
 
 /* ─── HOME ─── */
 #view-home{background:var(--bg)}
@@ -59,6 +63,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .fi{width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:var(--fb);font-size:14px;outline:none;transition:border-color .2s;border-radius:0;-webkit-appearance:none}
 .fi:focus{border-color:var(--red)}
 .fi::placeholder{color:var(--muted)}
+.fi:disabled{opacity:0.5; cursor:not-allowed}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btn-create{width:100%;padding:12px;background:var(--red);border:none;color:#fff;font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:6px;clip-path:polygon(0 0,calc(100% - 11px) 0,100% 11px,100% 100%,11px 100%,0 calc(100% - 11px))}
 .btn-create:hover{background:#e03040;transform:translateY(-1px)}
@@ -108,7 +113,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 /* ─── ROUND DETAIL (PPT MODE) ─── */
 #view-round{background:var(--bg);overflow:hidden}
-.ppt-layout{display:grid;grid-template-columns:176px 1fr 340px;flex:1;overflow:hidden;min-height:0}
+.ppt-layout{display:grid;grid-template-columns:176px 1fr 320px;flex:1;overflow:hidden;min-height:0}
 .slide-panel{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .slide-panel-hd{padding:10px 12px;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .slide-list{flex:1;overflow-y:auto;padding:8px;scrollbar-width:none}
@@ -147,7 +152,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .canvas-inner{position:relative;display:inline-block;box-shadow:0 8px 40px rgba(0,0,0,.9)}
 #bg-image{display:block;max-width:100%;max-height:calc(100vh - 200px);user-select:none}
 #ann-canvas{position:absolute;inset:0;cursor:crosshair;touch-action:none;z-index:5}
-#tmp-canvas{position:absolute;inset:0;cursor:crosshair;touch-action:none;z-index:6;pointer-events:none}
+#tmp-canvas{position:absolute;inset:0;cursor:crosshair;touch-action:none;z-index:6;pointer-events:none} 
 
 .upload-ph{width:700px;max-width:100%;aspect-ratio:16/9;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;background:var(--bg2)}
 .upload-ph:hover{border-color:var(--red);background:rgba(255,70,85,.04)}
@@ -155,7 +160,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .upload-ph .utxt{font-family:var(--fm);font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;text-align:center}
 .upload-ph .usub{font-size:11px;color:var(--muted);font-family:var(--fm);text-align:center;padding:0 10px}
 #file-input{display:none}
-
 .c-txt-inp{position:absolute;background:rgba(0,0,0,.75);border:1px solid var(--red);color:#fff;font-family:var(--fh);font-size:16px;font-weight:600;padding:3px 8px;outline:none;min-width:80px;z-index:10;display:none;border-radius:0}
 
 .canvas-nav{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:rgba(11,12,16,.9);border-top:1px solid var(--border);flex-shrink:0}
@@ -173,31 +177,20 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .info-title{font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
 .info-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:0}
 .info-sec{margin-bottom:20px}
-.info-sec-label{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;display:block}
+.info-sec-label{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;display:block; color:var(--teal)}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .info-item{background:var(--card);border:1px solid var(--border);padding:10px;border-radius:2px}
 .info-item-val{font-family:var(--fh);font-size:15px;font-weight:600;color:var(--text)}
 .info-item-label{font-family:var(--fm);font-size:9px;color:var(--muted2);text-transform:uppercase;margin-top:2px}
-.notes-area{width:100%;height:70px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--fb);font-size:13px;line-height:1.6;resize:none;outline:none;border-radius:2px;transition:border-color .2s}
+.notes-area{width:100%;height:100px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--fb);font-size:13px;line-height:1.6;resize:none;outline:none;border-radius:2px;transition:border-color .2s}
 .notes-area:focus{border-color:var(--teal)}
-.ann-list{display:flex;flex-direction:column;gap:4px;max-height:80px;overflow-y:auto}
+.feedback-area{width:100%;height:100px;background:rgba(0,212,170,.05);border:1px solid var(--teal);color:var(--text);padding:12px;font-family:var(--fb);font-size:13px;line-height:1.6;resize:none;outline:none;border-radius:2px;}
+.ann-list{display:flex;flex-direction:column;gap:4px;max-height:110px;overflow-y:auto}
 .ann-item{background:var(--bg3);border:1px solid var(--border);padding:6px 10px;display:flex;align-items:center;gap:8px;font-size:11px;border-radius:2px}
 .ann-col{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .ann-item-type{font-family:var(--fm);font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;flex:1}
 .ann-item-del{color:var(--muted);cursor:pointer;background:none;border:none;font-size:13px;padding:1px 5px;transition:color .15s}
 .ann-item-del:hover{color:var(--red)}
-
-/* Feedback List Styles */
-.feedback-list{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;padding-right:4px}
-.feedback-item{background:var(--bg3);border:1px solid var(--border);padding:10px;border-radius:2px;display:flex;flex-direction:column;gap:6px}
-.feedback-item.admin-feedback{border-color:rgba(0,212,170,.4);background:rgba(0,212,170,.05)}
-.fb-hd{display:flex;align-items:center;justify-content:space-between}
-.fb-author{font-family:var(--fh);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;letter-spacing:1px}
-.fb-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;transition:color .2s}
-.fb-del:hover{color:var(--red)}
-.fb-text{font-size:12px;line-height:1.5;color:var(--text);word-break:break-all}
-.feedback-input-wrap{display:flex;gap:6px}
-
 .info-actions{padding:0 20px 20px;display:flex;flex-direction:column;gap:7px;flex-shrink:0}
 .btn-save-round{width:100%;padding:12px;background:var(--teal);border:none;color:#000;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
 .btn-save-round:hover{background:#00f0c0;transform:translateY(-1px)}
@@ -248,7 +241,23 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .btn-del-member{color:var(--muted);cursor:pointer;background:none;border:none;font-size:16px;transition:color .2s}
 .btn-del-member:hover{color:var(--red)}
 .user-display{display:flex;align-items:center;gap:10px;font-family:var(--fm);font-size:12px;color:var(--teal);background:rgba(0,212,170,.1);padding:4px 12px;border:1px solid rgba(0,212,170,.2)}
-.admin-badge{font-size:10px;background:var(--teal);color:#000;padding:2px 6px;border-radius:2px;margin-left:4px;font-weight:bold}
+.admin-badge{font-size:10px;background:var(--red);color:white;padding:2px 6px;border-radius:2px;margin-left:4px}
+
+/* ─── HOMEWORK VIEW ─── */
+#view-hw{background:var(--bg)}
+.hw-container{max-width:1180px;margin:36px auto;width:100%;padding:0 24px}
+.hw-header{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px;}
+.hw-date-picker{padding:8px 12px; background:var(--bg2); border:1px solid var(--teal); color:var(--text); font-family:var(--fb); outline:none; border-radius:0;}
+.hw-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;}
+.hw-card{background:var(--card); border:1px solid var(--border); padding:20px; position:relative;}
+.hw-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal)}
+.hw-name{font-family:var(--fh); font-size:18px; font-weight:700; color:var(--text); margin-bottom:14px; display:flex; justify-content:space-between;}
+.hw-box{margin-bottom:15px;}
+.hw-label{font-family:var(--fm); font-size:11px; color:var(--muted); margin-bottom:6px; display:block; letter-spacing:1px;}
+.hw-img-ph{width:100%; height:120px; background:var(--bg2); border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px; cursor:pointer; position:relative; overflow:hidden;}
+.hw-img-ph:hover{border-color:var(--teal); color:var(--teal);}
+.hw-img-ph img{width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;}
+.hw-img-input{display:none;}
 
 /* ─── MOBILE ─── */
 @media(max-width:1000px){.ppt-layout{grid-template-columns:140px 1fr 280px}}
@@ -270,23 +279,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   .match-teams{flex-direction:column;align-items:flex-start;gap:6px}
   .upload-ph{width:100%;border-width:1px}
 }
-body.force-mobile{max-width:600px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.8);position:relative;border-left:1px solid var(--border);border-right:1px solid var(--border)}
-body.force-mobile .home-body{grid-template-columns:1fr!important;padding:0 16px!important;margin:20px auto!important}
-body.force-mobile .rooms-panel{padding:24px 0 0 0!important}
-body.force-mobile .ppt-layout{display:flex!important;flex-direction:column!important;overflow-y:auto!important}
-body.force-mobile .slide-panel{flex-direction:row!important;border-right:none!important;border-bottom:1px solid var(--border)!important;overflow-x:auto!important;height:auto!important;flex-shrink:0!important;padding:10px!important;align-items:center!important}
-body.force-mobile .slide-panel-hd{display:none!important}
-body.force-mobile .slide-list{display:flex!important;flex-direction:row!important;gap:10px!important;padding:0!important;flex:none!important;overflow-y:hidden!important}
-body.force-mobile .slide-thumb{width:130px!important;margin-bottom:0!important;flex-shrink:0!important}
-body.force-mobile .slide-thumb .st-del{display:flex!important}
-body.force-mobile .btn-add-slide{margin:0 0 0 10px!important;width:auto!important;padding:10px 20px!important;white-space:nowrap!important;flex-shrink:0!important;height:fit-content!important}
-body.force-mobile .canvas-area{min-height:55vh!important;border-bottom:1px solid var(--border)!important;flex:none!important}
-body.force-mobile .canvas-wrap{padding:10px!important}
-body.force-mobile #bg-image{max-height:calc(55vh - 100px)!important}
-body.force-mobile .tb .tip{display:none!important}
-body.force-mobile .info-panel{border-left:none!important;flex:none!important}
-body.force-mobile .match-teams{flex-direction:column!important;align-items:flex-start!important;gap:6px!important}
-body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
 </style>
 </head>
 <body>
@@ -302,11 +294,12 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
   </div>
 </div>
 
+<!-- Admin View -->
 <div id="view-admin" class="view">
   <div class="topbar">
-    <div class="logo">VALO<span>TACT</span> <span class="admin-badge" style="background:var(--red);color:white">ADMIN MODE</span></div>
+    <div class="logo">VALO<span>TACT</span> <span class="admin-badge">ADMIN MODE</span></div>
     <div class="tb-right">
-      <button class="btn-back" onclick="enterSystem()">← BACK TO HUB</button>
+      <button class="btn-back" onclick="logout()">EXIT ADMIN</button>
     </div>
   </div>
   <div class="admin-container">
@@ -327,14 +320,16 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
   </div>
 </div>
 
+<!-- Home (Analysis Rooms) -->
 <div id="view-home" class="view">
   <div class="topbar">
     <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
     <div class="tb-sub">STRATEGY ANALYSIS SYSTEM</div>
     <div class="tb-right">
+      <button class="btn-back btn-tab active" onclick="goHome()">분석 방</button>
+      <button class="btn-back" onclick="goHomework()">숙제 제출</button>
       <div class="user-display" id="current-user-name">👤 USER</div>
-      <button id="btn-admin-panel" class="btn-back" style="display:none; color:var(--teal); border-color:var(--teal)" onclick="showAdminView()">⚙️ 멤버 관리</button>
       <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
       <button class="btn-back" onclick="logout()">LOGOUT</button>
     </div>
@@ -355,10 +350,14 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
         <div class="fg"><label class="fl">TEAM A</label><input type="text" id="inp-ta" class="fi" placeholder="우리팀"></div>
         <div class="fg"><label class="fl">TEAM B</label><input type="text" id="inp-tb" class="fi" placeholder="상대팀"></div>
       </div>
+      <div class="fg"><label class="fl">MAP</label><input type="text" id="inp-map" class="fi" placeholder="맵 선택"></div>
+      
+      <!-- 날짜 2개로 분리 -->
       <div class="fr">
-        <div class="fg"><label class="fl">MAP</label><input type="text" id="inp-map" class="fi" placeholder="맵 선택"></div>
-        <div class="fg"><label class="fl">DATE</label><input type="date" id="inp-date" class="fi"></div>
+        <div class="fg"><label class="fl">경기 날짜 (Match Date)</label><input type="date" id="inp-match-date" class="fi"></div>
+        <div class="fg"><label class="fl">분석 날짜 (Analysis Date)</label><input type="date" id="inp-analysis-date" class="fi"></div>
       </div>
+
       <button class="btn-create" onclick="createRoom()">GENERATE ROOM</button>
     </div>
     <div class="rooms-panel">
@@ -370,6 +369,35 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
   </div>
 </div>
 
+<!-- Homework View -->
+<div id="view-hw" class="view">
+  <div class="topbar">
+    <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
+    <div class="tb-div"></div>
+    <div class="tb-sub">HOMEWORK SYSTEM</div>
+    <div class="tb-right">
+      <button class="btn-back" onclick="goHome()">분석 방</button>
+      <button class="btn-back btn-tab active" onclick="goHomework()">숙제 제출</button>
+      <div class="user-display" id="hw-user-name">👤 USER</div>
+      <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
+      <button class="btn-back" onclick="logout()">LOGOUT</button>
+    </div>
+  </div>
+  <div class="hw-container">
+    <div class="hw-header">
+      <div>
+        <div class="panel-title" style="font-size:24px; margin-bottom:5px;">DAILY HOMEWORK</div>
+        <div class="fl">팀원들의 당일 숙제 인증 게시판</div>
+      </div>
+      <input type="date" id="hw-date" class="hw-date-picker" onchange="loadHomework()">
+    </div>
+    <div id="hw-grid" class="hw-grid">
+      <!-- 동적 렌더링 -->
+    </div>
+  </div>
+</div>
+
+<!-- Room View -->
 <div id="view-room" class="view">
   <div class="topbar">
     <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
@@ -387,7 +415,8 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
       <div class="mt" id="rm-tb">TEAM B</div>
       <div class="mbadge" id="rm-name">MATCH NAME</div>
       <div class="mbadge map" id="rm-map">MAP</div>
-      <div class="mbadge" id="rm-date">DATE</div>
+      <div class="mbadge" id="rm-date-m">경기: DATE</div>
+      <div class="mbadge" id="rm-date-a" style="border-color:var(--teal); color:var(--teal);">분석: DATE</div>
     </div>
   </div>
   <div class="rounds-sec">
@@ -399,6 +428,7 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
   </div>
 </div>
 
+<!-- Round View -->
 <div id="view-round" class="view">
   <div class="topbar">
     <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
@@ -443,9 +473,9 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
         <div class="canvas-inner" id="canvas-inner">
           <img id="bg-image" src="" alt="" style="display:none">
           <canvas id="ann-canvas"></canvas>
-          <canvas id="tmp-canvas"></canvas> <input type="text" id="c-txt-inp" class="c-txt-inp" placeholder="텍스트 입력 후 Enter">
+          <canvas id="tmp-canvas"></canvas>
+          <input type="text" id="c-txt-inp" class="c-txt-inp" placeholder="텍스트 입력 후 Enter">
         </div>
-        
         <div class="upload-ph" id="upload-ph" onclick="triggerUpload()">
           <div class="uico">📸</div>
           <div class="utxt">MAP SCREENSHOT UPLOAD</div>
@@ -501,20 +531,15 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
           <textarea id="notes-ta" class="notes-area" placeholder="이 라운드의 전술적 핵심을 기록하세요..."></textarea>
         </div>
         
+        <!-- 어드민 피드백 추가 -->
         <div class="info-sec">
-          <label class="info-sec-label">COACH / TEAM FEEDBACK</label>
-          <div id="feedback-list" class="feedback-list"></div>
-          <div class="feedback-input-wrap">
-            <input type="text" id="inp-feedback" class="fi" placeholder="피드백 입력..." style="padding:6px 10px; font-size:12px">
-            <button class="btn-create" style="margin-top:0; padding:6px 12px; clip-path:none; border-radius:2px" onclick="addFeedback()">등록</button>
-          </div>
+          <label class="info-sec-label" style="color:var(--yellow)">COACH FEEDBACK</label>
+          <textarea id="notes-feedback" class="feedback-area" placeholder="코치 피드백이 등록되는 공간입니다."></textarea>
         </div>
 
         <div class="info-sec">
           <label class="info-sec-label">ANNOTATIONS <span id="ann-count" style="color:var(--red)">0</span></label>
-          <div id="ann-list" class="ann-list">
-            <div style="font-family:var(--fm);font-size:10px;color:var(--muted);padding:6px">주석 없음</div>
-          </div>
+          <div id="ann-list" class="ann-list"></div>
         </div>
       </div>
       <div class="info-actions">
@@ -543,6 +568,10 @@ body.force-mobile .upload-ph{width:100%!important;border-width:1px!important}
   </div>
 </div>
 
+<!-- 숨겨진 파일 인풋들 (숙제용) -->
+<input type="file" id="hw-comp-input" accept="image/*" style="display:none;">
+<input type="file" id="hw-tactic-input" accept="image/*" style="display:none;">
+
 <div id="notif"></div>
 
 <script>
@@ -554,47 +583,43 @@ const firebaseConfig = {
   authDomain: "valorant-d4648.firebaseapp.com",
   databaseURL: "https://valorant-d4648-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "valorant-d4648",
-  storageBucket: "valorant-d4648.firebasestorage.app",
+  storageBucket: "valorant-d4648.appspot.com", // 정확한 Storage 버킷 주소 (콘솔에서 확인 후 변경 필요할 수 있음)
   messagingSenderId: "288343599550",
   appId: "1:288343599550:web:8fa59d4c3ba74ad154b1ef",
   measurementId: "G-9TZRB3QT9P"
 };
 if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 const db = firebase.database();
+const storage = firebase.storage();
 
 // ══════════════════════════════════
 //  STATE MANAGEMENT
 // ══════════════════════════════════
 const ADMIN_PASS = "prnadmin";
 let S = { rooms:[], curRoom:null, curRound:null, members:[], currentUser:null, isAdmin:false };
+let hwData = {}; // 현재 선택된 날짜의 숙제 데이터
+let curHwTarget = { type: null, member: null }; // 숙제 업로드 타겟 기록
 
 function initFirebaseSync() {
   db.ref('VALOTACT_DATA/members').on('value', (snap) => {
     S.members = snap.val() || [];
     renderMemberSelection();
-    if (S.isAdmin && document.getElementById('view-admin').classList.contains('active')) renderAdminMemberList();
+    if (S.isAdmin) renderAdminMemberList();
   });
 
   db.ref('VALOTACT_DATA/rooms').on('value', (snap) => {
     const remoteRooms = snap.val() || [];
-    
     if (document.getElementById('view-round').classList.contains('active') && S.curRoom) {
       const activeRoomRemote = remoteRooms.find(r => r.id === S.curRoom);
       const activeRoundRemote = activeRoomRemote?.rounds?.find(rd => rd.id === S.curRound);
-      
-      if (activeRoundRemote) {
-        if (activeRoundRemote.slides && activeRoundRemote.slides[curSlideIdx]) {
-          annotations = activeRoundRemote.slides[curSlideIdx].annotations || [];
-          renderAnns();
-          renderAnnList();
-        }
+      if (activeRoundRemote && activeRoundRemote.slides && activeRoundRemote.slides[curSlideIdx]) {
+        annotations = activeRoundRemote.slides[curSlideIdx].annotations || [];
+        renderAnns(); renderAnnList();
       }
     }
-    
     S.rooms = remoteRooms;
     if (document.getElementById('view-home').classList.contains('active')) renderRooms();
     if (document.getElementById('view-room').classList.contains('active')) renderRounds();
-    if (document.getElementById('view-round').classList.contains('active')) renderFeedback();
   });
 }
 
@@ -672,24 +697,23 @@ function loginAs(name){
   else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
 function promptAdminLogin(){
-  const pass = prompt('코치 / 관리자 비밀번호를 입력하세요:');
-  if(pass === ADMIN_PASS){ 
-    S.currentUser = 'COACH'; 
-    S.isAdmin = true; 
-    saveS(); 
-    enterSystem(); // 코치도 바로 홈으로 입장하여 모든 택틱을 봄
-  }
+  const pass = prompt('관리자 비밀번호를 입력하세요:');
+  if(pass === ADMIN_PASS){ S.currentUser='ADMIN'; S.isAdmin=true; saveS(); showAdminView(); }
   else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
-function showAdminView(){ 
-  setView('view-admin'); 
-  renderAdminMemberList(); 
-}
+function showAdminView(){ setView('view-admin'); renderAdminMemberList(); }
 function enterSystem(){
   setView('view-home');
-  document.getElementById('current-user-name').innerHTML =
-    S.isAdmin ? `👤 ${esc(S.currentUser)} <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
-  document.getElementById('btn-admin-panel').style.display = S.isAdmin ? 'flex' : 'none';
+  const userText = S.isAdmin ? `👤 COACH (ADMIN) <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
+  document.getElementById('current-user-name').innerHTML = userText;
+  document.getElementById('hw-user-name').innerHTML = userText;
+  
+  // 날짜 초기화 (오늘 날짜)
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('inp-match-date').value = today;
+  document.getElementById('inp-analysis-date').value = today;
+  document.getElementById('hw-date').value = today;
+
   renderRooms();
 }
 function logout(){ S.currentUser=null; S.isAdmin=false; saveS(); localStorage.removeItem('vt_team_v3'); location.reload(); }
@@ -734,14 +758,15 @@ function createRoom(){
     name:document.getElementById('inp-name').value.trim()||`${ta} vs ${tb}`,
     teamA:ta, teamB:tb,
     map:document.getElementById('inp-map').value.trim()||'—',
-    date:document.getElementById('inp-date').value||'날짜 미지정',
+    matchDate:document.getElementById('inp-match-date').value||'날짜 미지정',
+    analysisDate:document.getElementById('inp-analysis-date').value||'날짜 미지정',
     createdBy:S.currentUser,
     rounds:[]
   };
   if(!S.rooms) S.rooms = [];
   S.rooms.unshift(room);
   syncNode('rooms', S.rooms);
-  ['inp-name','inp-ta','inp-tb','inp-map','inp-date'].forEach(id=>document.getElementById(id).value='');
+  ['inp-name','inp-ta','inp-tb','inp-map'].forEach(id=>document.getElementById(id).value='');
   showNotif('✓ 분석방이 생성되었습니다');
   openRoom(room.id);
 }
@@ -753,7 +778,8 @@ function openRoom(rid){
   document.getElementById('rm-tb').textContent=r.teamB;
   document.getElementById('rm-name').textContent=r.name;
   document.getElementById('rm-map').textContent='📍 '+r.map;
-  document.getElementById('rm-date').textContent=r.date;
+  document.getElementById('rm-date-m').textContent='경기: '+r.matchDate;
+  document.getElementById('rm-date-a').textContent='분석: '+r.analysisDate;
   document.getElementById('room-tb-sub').textContent=r.name.toUpperCase().slice(0,40);
   renderRounds(); setView('view-room');
 }
@@ -775,6 +801,7 @@ function renderRooms(){
       <div class="rmeta">
         <div class="rmi"><span class="dot"></span>${esc(r.name)}</div>
         <div class="rmi">📍${esc(r.map)}</div>
+        <div class="rmi">⚔️ ${esc(r.matchDate)}</div>
         <div class="rmi">👤 ${esc(r.createdBy||'')}</div>
         <div class="rrc">${r.rounds ? r.rounds.length : 0} 라운드</div>
       </div>
@@ -783,7 +810,7 @@ function renderRooms(){
 }
 
 // ══════════════════════════════════
-//  ROUNDS & FEEDBACK
+//  ROUNDS
 // ══════════════════════════════════
 function getCurRoom(){ return S.rooms.find(r=>r.id===S.curRoom); }
 function getCurRound(){ const rm=getCurRoom(); return rm?.rounds?.find(r=>r.id===S.curRound); }
@@ -802,9 +829,8 @@ function confirmAddRound(){
   const desc=document.getElementById('m-rdesc').value.trim();
   const round={
     id:gid(), number:num, description:desc,
-    phase:'FULL BUY', side:'ATTACK', result:'WIN', notes:'',
+    phase:'FULL BUY', side:'ATTACK', result:'WIN', notes:'', feedback:'',
     analyzedBy:S.currentUser,
-    feedbacks: [],
     slides:[{id:gid(), title:'슬라이드 1', image:null, annotations:[]}]
   };
   if(!rm.rounds) rm.rounds = [];
@@ -827,8 +853,13 @@ function openRound(rid){
   document.getElementById('edit-side').value=round.side||'ATTACK';
   document.getElementById('edit-result').value=round.result||'WIN';
   document.getElementById('notes-ta').value=round.notes||'';
+  
+  // 피드백 영역 어드민 권한 처리
+  const fbArea = document.getElementById('notes-feedback');
+  fbArea.value = round.feedback||'';
+  fbArea.disabled = !S.isAdmin; // 코치(어드민)만 작성 가능
+
   renderSlidePanelAndLoad(0);
-  renderFeedback();
   setView('view-round');
 }
 function delRound(rid,e){
@@ -853,7 +884,8 @@ function renderRounds(){
           :`<div class="rprev-empty">NO IMAGE</div>`}
       </div>
       ${r.description?`<div style="font-size:10px;font-family:var(--fm);color:var(--muted);margin-bottom:4px">${esc(r.description)}</div>`:''}
-      <div class="rnotes">${r.notes?esc(r.notes):'<span style="color:var(--muted)">노트 없음</span>'}</div>
+      <div class="rnotes" style="margin-bottom:5px;">${r.notes?esc(r.notes):'<span style="color:var(--muted)">노트 없음</span>'}</div>
+      ${r.feedback?`<div class="rnotes" style="color:var(--yellow); font-size:11px; padding:4px; background:rgba(245,197,24,.1);">↳ 피드백 있음</div>`:''}
       <div style="font-size:9px;color:var(--muted);margin-top:5px;font-family:var(--fm)">by ${esc(r.analyzedBy||'')}</div>
       <button class="card-del" onclick="delRound('${r.id}',event)">✕</button>
     </div>`).join('');
@@ -866,7 +898,8 @@ function saveRound(){
   round.side=document.getElementById('edit-side').value;
   round.result=document.getElementById('edit-result').value;
   round.notes=document.getElementById('notes-ta').value;
-  round.analyzedBy=S.currentUser;
+  if(S.isAdmin) round.feedback = document.getElementById('notes-feedback').value;
+
   const rm=getCurRoom(); if(rm) rm.rounds.sort((a,b)=>a.number-b.number);
   
   const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
@@ -874,73 +907,7 @@ function saveRound(){
   
   document.getElementById('rd-rnum').textContent=round.number;
   document.getElementById('rd-rnum2').textContent=round.number;
-  showNotif('✓ 저장되었습니다');
-}
-
-// ── FEEDBACK SYSTEM ──
-function addFeedback() {
-  const round = getCurRound(); if (!round) return;
-  const text = document.getElementById('inp-feedback').value.trim();
-  if (!text) return;
-  if (!round.feedbacks) round.feedbacks = [];
-  
-  round.feedbacks.push({
-    id: gid(),
-    author: S.currentUser,
-    isAdmin: S.isAdmin,
-    text: text,
-    timestamp: Date.now()
-  });
-  
-  const rmIdx = S.rooms.findIndex(r => r.id === S.curRoom);
-  const rdIdx = S.rooms[rmIdx]?.rounds?.findIndex(r => r.id === S.curRound);
-  if(rmIdx !== -1 && rdIdx !== -1) {
-    syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/feedbacks`, round.feedbacks);
-  }
-  
-  document.getElementById('inp-feedback').value = '';
-  renderFeedback();
-  showNotif('피드백이 등록되었습니다');
-}
-
-function renderFeedback() {
-  const round = getCurRound();
-  const list = document.getElementById('feedback-list');
-  if (!round || !round.feedbacks || !round.feedbacks.length) {
-    list.innerHTML = '<div style="font-family:var(--fm);font-size:10px;color:var(--muted);padding:6px">등록된 코치/멤버 피드백이 없습니다.</div>';
-    return;
-  }
-  
-  list.innerHTML = round.feedbacks.map(f => `
-    <div class="feedback-item ${f.isAdmin ? 'admin-feedback' : ''}">
-      <div class="fb-hd">
-        <span class="fb-author">
-          ${esc(f.author)} 
-          ${f.isAdmin ? '<span class="admin-badge" style="font-size:9px;padding:2px 5px;letter-spacing:0">COACH</span>' : ''}
-        </span>
-        ${(f.author === S.currentUser || S.isAdmin) ? `<button class="fb-del" onclick="delFeedback('${f.id}')">✕</button>` : ''}
-      </div>
-      <div class="fb-text">${esc(f.text)}</div>
-    </div>
-  `).join('');
-  
-  // 자동 스크롤
-  list.scrollTop = list.scrollHeight;
-}
-
-function delFeedback(fid) {
-  if(!confirm('피드백을 삭제하시겠습니까?')) return;
-  const round = getCurRound();
-  if (!round || !round.feedbacks) return;
-  
-  round.feedbacks = round.feedbacks.filter(f => f.id !== fid);
-  const rmIdx = S.rooms.findIndex(r => r.id === S.curRoom);
-  const rdIdx = S.rooms[rmIdx]?.rounds?.findIndex(r => r.id === S.curRound);
-  
-  if(rmIdx !== -1 && rdIdx !== -1) {
-    syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/feedbacks`, round.feedbacks);
-  }
-  renderFeedback();
+  showNotif('✓ 분석 및 피드백 저장 완료');
 }
 
 // ══════════════════════════════════
@@ -950,10 +917,8 @@ function addSlide(){
   const round=getCurRound(); if(!round) return;
   commitSlideAnnotations();
   round.slides.push({id:gid(), title:'슬라이드 '+(round.slides.length+1), image:null, annotations:[]});
-  
   const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
   if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
-  
   renderSlidePanelAndLoad(round.slides.length-1);
   const list=document.getElementById('slide-list');
   setTimeout(()=>list.scrollTop=list.scrollHeight, 50);
@@ -964,10 +929,8 @@ function delSlide(idx,e){
   if(round.slides.length<=1){ showNotif('최소 1개의 슬라이드가 필요합니다'); return; }
   if(!confirm('이 슬라이드를 삭제하시겠습니까?')) return;
   round.slides.splice(idx,1);
-  
   const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
   if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
-  
   renderSlidePanelAndLoad(Math.min(curSlideIdx, round.slides.length-1));
   showNotif('슬라이드 삭제됨');
 }
@@ -1020,15 +983,25 @@ function renderSlidePanelAndLoad(idx){
 function switchSlide(idx){ commitSlideAnnotations(); renderSlidePanelAndLoad(idx); }
 
 // ══════════════════════════════════
-//  IMAGE UPLOAD & CANVAS COMPRESSION OPTIMIZATION
+//  FIREBASE STORAGE UPLOAD ENGINE (최적화 적용)
 // ══════════════════════════════════
+async function uploadToStorage(dataUrl, folderPath) {
+  const fileName = gid() + '.jpg';
+  const ref = storage.ref().child(`${folderPath}/${fileName}`);
+  await ref.putString(dataUrl, 'data_url');
+  return await ref.getDownloadURL();
+}
+
 function triggerUpload(){ document.getElementById('file-input').click(); }
 function loadImage(e){
   const file=e.target.files[0]; if(!file) return;
+  showNotif('이미지 최적화 및 업로드 중... ⏳');
+  
   const reader=new FileReader();
   reader.onload=ev=>{
     const tempImg = new Image();
-    tempImg.onload = () => {
+    tempImg.onload = async () => {
+      // 캔버스 압축
       const maxW = 1440;
       let w = tempImg.width, h = tempImg.height;
       if (w > maxW) { h = (maxW / w) * h; w = maxW; }
@@ -1037,27 +1010,141 @@ function loadImage(e){
       compCanvas.width = w; compCanvas.height = h;
       const compCtx = compCanvas.getContext('2d');
       compCtx.drawImage(tempImg, 0, 0, w, h);
-      
       const compressedDataUrl = compCanvas.toDataURL('image/jpeg', 0.85);
 
-      const round=getCurRound(); if(!round) return;
-      const sl=round.slides[curSlideIdx]; if(!sl) return;
-      sl.image=compressedDataUrl;
-      
-      const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
-      if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
+      try {
+        // Storage 업로드 (기존 DB 직접 저장을 스토리지 URL로 대체)
+        const downloadUrl = await uploadToStorage(compressedDataUrl, 'round_slides');
+        
+        const round=getCurRound(); if(!round) return;
+        const sl=round.slides[curSlideIdx]; if(!sl) return;
+        sl.image = downloadUrl; // URL만 저장
+        
+        const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
+        if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
 
-      const bgImg=document.getElementById('bg-image');
-      const ph=document.getElementById('upload-ph');
-      bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
-      bgImg.onload=()=>{ annotations=[]; setupCanvas(); renderAnns(); renderAnnList(); };
-      renderSlidePanelAndLoad(curSlideIdx);
+        const bgImg=document.getElementById('bg-image');
+        const ph=document.getElementById('upload-ph');
+        bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
+        bgImg.onload=()=>{ annotations=[]; setupCanvas(); renderAnns(); renderAnnList(); };
+        renderSlidePanelAndLoad(curSlideIdx);
+        showNotif('✓ 이미지 업로드 완료');
+      } catch (err) {
+        console.error(err);
+        alert('업로드 실패: Firebase Storage 설정(규칙)을 확인해주세요.');
+      }
     };
     tempImg.src = ev.target.result;
   };
   reader.readAsDataURL(file);
   e.target.value='';
 }
+
+// ══════════════════════════════════
+//  HOMEWORK SYSTEM (숙제 인증)
+// ══════════════════════════════════
+function goHomework() {
+  setView('view-hw');
+  loadHomework();
+}
+
+function loadHomework() {
+  const date = document.getElementById('hw-date').value;
+  if(!date) return;
+  
+  db.ref(`VALOTACT_DATA/homework/${date}`).once('value', snap => {
+    hwData = snap.val() || {};
+    renderHomeworkGrid();
+  });
+}
+
+function renderHomeworkGrid() {
+  const grid = document.getElementById('hw-grid');
+  if (!S.members || S.members.length === 0) {
+    grid.innerHTML = '<div class="empty-state">등록된 멤버가 없습니다. 관리자 모드에서 추가하세요.</div>';
+    return;
+  }
+  
+  grid.innerHTML = S.members.map(m => {
+    const data = hwData[m.name] || { compImg: null, tacticImg: null };
+    const isMe = (S.currentUser === m.name || S.isAdmin);
+    
+    return `
+      <div class="hw-card">
+        <div class="hw-name">${esc(m.name)}</div>
+        
+        <div class="hw-box">
+          <label class="hw-label">1. 경쟁 2회 플레이 인증</label>
+          <div class="hw-img-ph" onclick="${isMe ? `triggerHwUpload('comp', '${m.name}')` : ''}">
+            ${data.compImg ? `<img src="${data.compImg}">` : (isMe ? '클릭하여 사진 업로드' : '미제출')}
+          </div>
+        </div>
+
+        <div class="hw-box">
+          <label class="hw-label">2. 당일 맵 택틱 인증</label>
+          <div class="hw-img-ph" onclick="${isMe ? `triggerHwUpload('tactic', '${m.name}')` : ''}">
+            ${data.tacticImg ? `<img src="${data.tacticImg}">` : (isMe ? '클릭하여 사진 업로드' : '미제출')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function triggerHwUpload(type, member) {
+  curHwTarget = { type, member };
+  if(type === 'comp') document.getElementById('hw-comp-input').click();
+  if(type === 'tactic') document.getElementById('hw-tactic-input').click();
+}
+
+function handleHwUpload(e, type) {
+  const file = e.target.files[0]; if(!file) return;
+  const date = document.getElementById('hw-date').value;
+  const member = curHwTarget.member;
+  
+  showNotif('숙제 사진 업로드 중... ⏳');
+  
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const tempImg = new Image();
+    tempImg.onload = async () => {
+      // 캔버스 압축 (숙제는 좀 더 작게 압축)
+      const maxW = 1000;
+      let w = tempImg.width, h = tempImg.height;
+      if (w > maxW) { h = (maxW / w) * h; w = maxW; }
+      
+      const compCanvas = document.createElement('canvas');
+      compCanvas.width = w; compCanvas.height = h;
+      compCanvas.getContext('2d').drawImage(tempImg, 0, 0, w, h);
+      const compressedDataUrl = compCanvas.toDataURL('image/jpeg', 0.8);
+
+      try {
+        const downloadUrl = await uploadToStorage(compressedDataUrl, `homework/${date}`);
+        
+        // 데이터 갱신
+        if(!hwData[member]) hwData[member] = {};
+        if(type === 'comp') hwData[member].compImg = downloadUrl;
+        if(type === 'tactic') hwData[member].tacticImg = downloadUrl;
+        
+        // DB 저장
+        await db.ref(`VALOTACT_DATA/homework/${date}/${member}`).set(hwData[member]);
+        
+        renderHomeworkGrid();
+        showNotif('✓ 숙제 제출 완료!');
+      } catch (err) {
+        console.error(err);
+        alert('업로드 실패: Firebase Storage 설정을 확인하세요.');
+      }
+    };
+    tempImg.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+document.getElementById('hw-comp-input').addEventListener('change', (e) => handleHwUpload(e, 'comp'));
+document.getElementById('hw-tactic-input').addEventListener('change', (e) => handleHwUpload(e, 'tactic'));
+
 
 // ══════════════════════════════════
 //  CANVAS LAYER DOUBLE BUFFERING ENGINE
@@ -1067,53 +1154,34 @@ function setupCanvas(){
   const c=document.getElementById('ann-canvas');
   const tc=document.getElementById('tmp-canvas');
   const ratio = window.devicePixelRatio || 1;
-  
   const w = bgImg.naturalWidth || bgImg.offsetWidth;
   const h = bgImg.naturalHeight || bgImg.offsetHeight;
-  
   [c, tc].forEach(canvas => {
     if(!canvas) return;
-    canvas.width = w * ratio;
-    canvas.height = h * ratio;
-    canvas.style.width = bgImg.offsetWidth+'px';
-    canvas.style.height = bgImg.offsetHeight+'px';
+    canvas.width = w * ratio; canvas.height = h * ratio;
+    canvas.style.width = bgImg.offsetWidth+'px'; canvas.style.height = bgImg.offsetHeight+'px';
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
   });
-
   c.onmousedown=startDraw; c.onmousemove=onDrawing; c.onmouseup=endDraw; c.onmouseleave=endDraw;
-  c.ontouchstart=e=>{startDraw(touchEv(e));};
-  c.ontouchmove=e=>{onDrawing(touchEv(e));};
-  c.ontouchend=e=>{endDraw(touchEv(e));};
+  c.ontouchstart=e=>{startDraw(touchEv(e));}; c.ontouchmove=e=>{onDrawing(touchEv(e));}; c.ontouchend=e=>{endDraw(touchEv(e));};
 }
-function touchEv(e){ 
-  const t=e.touches[0]||e.changedTouches[0]; 
-  return {clientX:t.clientX,clientY:t.clientY}; 
-}
+function touchEv(e){ const t=e.touches[0]||e.changedTouches[0]; return {clientX:t.clientX,clientY:t.clientY}; }
 function getPos(e) {
   const c=document.getElementById('ann-canvas'); const r=c.getBoundingClientRect();
   const bgImg=document.getElementById('bg-image');
-  const w = bgImg.naturalWidth || bgImg.offsetWidth;
-  const h = bgImg.naturalHeight || bgImg.offsetHeight;
-  return {
-    x: (e.clientX - r.left) * (w / r.width), 
-    y: (e.clientY - r.top) * (h / r.height)
-  };
+  const w = bgImg.naturalWidth || bgImg.offsetWidth; const h = bgImg.naturalHeight || bgImg.offsetHeight;
+  return { x: (e.clientX - r.left) * (w / r.width), y: (e.clientY - r.top) * (h / r.height) };
 }
 function startDraw(e){
   if(curTool==='text'){ showTextInput(e); return; }
-  isDrawing=true;
-  const p=getPos(e); startX=p.x; startY=p.y;
+  isDrawing=true; const p=getPos(e); startX=p.x; startY=p.y;
   if(curTool==='pen') curPath=[{x:p.x,y:p.y}];
 }
 
 function onDrawing(e){
   if(!isDrawing) return;
-  const p=getPos(e);
-  const tc=document.getElementById('tmp-canvas');
-  const tctx=tc.getContext('2d');
-  
+  const p=getPos(e); const tc=document.getElementById('tmp-canvas'); const tctx=tc.getContext('2d');
   tctx.clearRect(0, 0, tc.width, tc.height);
-  
   tctx.strokeStyle=curColor; tctx.lineWidth=strokeSz; tctx.lineCap='round'; tctx.lineJoin='round';
   if(curTool==='pen'){
     curPath.push({x:p.x,y:p.y});
@@ -1132,10 +1200,7 @@ function onDrawing(e){
 function endDraw(e){
   if(!isDrawing) return; isDrawing=false;
   const p=getPos(e); let ann=null;
-  
-  const tc=document.getElementById('tmp-canvas');
-  tc.getContext('2d').clearRect(0, 0, tc.width, tc.height);
-
+  const tc=document.getElementById('tmp-canvas'); tc.getContext('2d').clearRect(0, 0, tc.width, tc.height);
   if(curTool==='pen'&&curPath.length>1) ann={id:gid(),tool:'pen',color:curColor,size:strokeSz,path:[...curPath]};
   else if(curTool==='arrow') ann={id:gid(),tool:'arrow',color:curColor,size:strokeSz,x1:startX,y1:startY,x2:p.x,y2:p.y};
   else if(curTool==='rect') ann={id:gid(),tool:'rect',color:curColor,size:strokeSz,x:startX,y:startY,w:p.x-startX,h:p.y-startY};
@@ -1143,15 +1208,10 @@ function endDraw(e){
   else if(curTool==='line') ann={id:gid(),tool:'line',color:curColor,size:strokeSz,x1:startX,y1:startY,x2:p.x,y2:p.y};
   
   if(ann){ 
-    annotations.push(ann); 
-    renderAnns(); 
-    renderAnnList(); 
-    
+    annotations.push(ann); renderAnns(); renderAnnList(); 
     const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
     const rdIdx = S.rooms[rmIdx]?.rounds?.findIndex(r=>r.id===S.curRound);
-    if(rmIdx !== -1 && rdIdx !== -1) {
-      syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/slides/${curSlideIdx}/annotations`, annotations);
-    }
+    if(rmIdx !== -1 && rdIdx !== -1) syncNode(`rooms/${rmIdx}/rounds/${rdIdx}/slides/${curSlideIdx}/annotations`, annotations);
   }
 }
 function drawArrowCtx(ctx,x1,y1,x2,y2){
@@ -1165,10 +1225,7 @@ function drawArrowCtx(ctx,x1,y1,x2,y2){
 
 function renderAnns(){
   const c=document.getElementById('ann-canvas'); if(!c.width) return;
-  const ctx=c.getContext('2d');
-  
-  ctx.clearRect(0, 0, c.width, c.height);
-
+  const ctx=c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height);
   annotations.forEach(a=>{
     ctx.strokeStyle=a.color; ctx.fillStyle=a.color; ctx.lineWidth=a.size; ctx.lineCap='round'; ctx.lineJoin='round';
     if(a.tool==='pen'&&a.path.length>1){
@@ -1197,10 +1254,8 @@ function renderAnns(){
 function showTextInput(e){
   const ci=document.getElementById('canvas-inner'); const ciR=ci.getBoundingClientRect();
   const inp=document.getElementById('c-txt-inp');
-  inp.style.left=(e.clientX-ciR.left-2)+'px';
-  inp.style.top=(e.clientY-ciR.top-14)+'px';
-  inp.style.color=curColor;
-  inp.style.fontSize=Math.max(14,strokeSz*6)+'px';
+  inp.style.left=(e.clientX-ciR.left-2)+'px'; inp.style.top=(e.clientY-ciR.top-14)+'px';
+  inp.style.color=curColor; inp.style.fontSize=Math.max(14,strokeSz*6)+'px';
   inp.style.display='block'; inp.value=''; inp.focus();
   const cx=getPos(e).x, cy=getPos(e).y;
   inp.onkeydown=ev=>{
@@ -1257,18 +1312,18 @@ function setTool(t){
 }
 
 // ══════════════════════════════════
-//  EXPORT ENGINE
+//  EXPORT ENGINE (내보내기)
 // ══════════════════════════════════
 function makeCompositeCanvas(slide){
   return new Promise(resolve=>{
     const img=new Image();
+    img.crossOrigin = "Anonymous"; // CORS 이슈 방지
     img.onload=()=>{
       const oc=document.createElement('canvas');
       oc.width=img.naturalWidth; oc.height=img.naturalHeight;
       const ctx=oc.getContext('2d');
       ctx.drawImage(img,0,0);
       const sc=document.getElementById('ann-canvas');
-      
       const scaleX=img.naturalWidth / (sc.offsetWidth || 1);
       const scaleY=img.naturalHeight / (sc.offsetHeight || 1);
       
@@ -1365,11 +1420,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
     renderSlidePanelAndLoad(curSlideIdx);
   });
-  
-  // Enter 키로 피드백 바로 등록
-  document.getElementById('inp-feedback').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') addFeedback();
-  });
 
   const ph=document.getElementById('upload-ph');
   ph.addEventListener('dragover',e=>{e.preventDefault(); ph.style.borderColor='var(--red)';});
@@ -1391,7 +1441,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('modal-add').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-add'); });
 
   if(S.currentUser){
-    enterSystem();
+    if(S.isAdmin) showAdminView();
+    else enterSystem();
   } else {
     renderMemberSelection();
   }
