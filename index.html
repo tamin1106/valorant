@@ -256,8 +256,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .hw-label{font-family:var(--fm); font-size:11px; color:var(--muted); margin-bottom:6px; display:block; letter-spacing:1px;}
 .hw-img-ph{width:100%; height:120px; background:var(--bg2); border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px; cursor:pointer; position:relative; overflow:hidden;}
 .hw-img-ph:hover{border-color:var(--teal); color:var(--teal);}
-.hw-img-ph img{width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;}
-.hw-img-input{display:none;}
+.hw-img-ph img, .hw-img-ph video {width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; pointer-events: none;}
 
 /* ─── MOBILE ─── */
 @media(max-width:1000px){.ppt-layout{grid-template-columns:140px 1fr 280px}}
@@ -294,12 +293,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- Admin View -->
+<!-- Admin View (멤버 관리 화면) -->
 <div id="view-admin" class="view">
   <div class="topbar">
     <div class="logo">VALO<span>TACT</span> <span class="admin-badge">ADMIN MODE</span></div>
     <div class="tb-right">
-      <button class="btn-back" onclick="logout()">EXIT ADMIN</button>
+      <button class="btn-back" onclick="enterSystem()">← BACK TO HUB</button>
     </div>
   </div>
   <div class="admin-container">
@@ -329,6 +328,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="tb-right">
       <button class="btn-back btn-tab active" onclick="goHome()">분석 방</button>
       <button class="btn-back" onclick="goHomework()">숙제 제출</button>
+      
+      <!-- 어드민 전용 '멤버 관리' 버튼 -->
+      <button class="btn-back btn-admin-manage" onclick="showAdminView()" style="display:none; border-color:var(--yellow); color:var(--yellow);">👥 멤버 관리</button>
+      
       <div class="user-display" id="current-user-name">👤 USER</div>
       <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
       <button class="btn-back" onclick="logout()">LOGOUT</button>
@@ -352,7 +355,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       </div>
       <div class="fg"><label class="fl">MAP</label><input type="text" id="inp-map" class="fi" placeholder="맵 선택"></div>
       
-      <!-- 날짜 2개로 분리 -->
       <div class="fr">
         <div class="fg"><label class="fl">경기 날짜 (Match Date)</label><input type="date" id="inp-match-date" class="fi"></div>
         <div class="fg"><label class="fl">분석 날짜 (Analysis Date)</label><input type="date" id="inp-analysis-date" class="fi"></div>
@@ -378,6 +380,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="tb-right">
       <button class="btn-back" onclick="goHome()">분석 방</button>
       <button class="btn-back btn-tab active" onclick="goHomework()">숙제 제출</button>
+      
+      <!-- 어드민 전용 '멤버 관리' 버튼 -->
+      <button class="btn-back btn-admin-manage" onclick="showAdminView()" style="display:none; border-color:var(--yellow); color:var(--yellow);">👥 멤버 관리</button>
+
       <div class="user-display" id="hw-user-name">👤 USER</div>
       <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
       <button class="btn-back" onclick="logout()">LOGOUT</button>
@@ -531,7 +537,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
           <textarea id="notes-ta" class="notes-area" placeholder="이 라운드의 전술적 핵심을 기록하세요..."></textarea>
         </div>
         
-        <!-- 어드민 피드백 추가 -->
         <div class="info-sec">
           <label class="info-sec-label" style="color:var(--yellow)">COACH FEEDBACK</label>
           <textarea id="notes-feedback" class="feedback-area" placeholder="코치 피드백이 등록되는 공간입니다."></textarea>
@@ -568,9 +573,9 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- 숨겨진 파일 인풋들 (숙제용) -->
-<input type="file" id="hw-comp-input" accept="image/*" style="display:none;">
-<input type="file" id="hw-tactic-input" accept="image/*" style="display:none;">
+<!-- 숨겨진 파일 인풋들 (숙제용, MP4 허용으로 변경) -->
+<input type="file" id="hw-comp-input" accept="image/*,video/mp4,video/quicktime,video/webm" style="display:none;">
+<input type="file" id="hw-tactic-input" accept="image/*,video/mp4,video/quicktime,video/webm" style="display:none;">
 
 <div id="notif"></div>
 
@@ -583,7 +588,7 @@ const firebaseConfig = {
   authDomain: "valorant-d4648.firebaseapp.com",
   databaseURL: "https://valorant-d4648-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "valorant-d4648",
-  storageBucket: "valorant-d4648.appspot.com", // 정확한 Storage 버킷 주소 (콘솔에서 확인 후 변경 필요할 수 있음)
+  storageBucket: "valorant-d4648.appspot.com", 
   messagingSenderId: "288343599550",
   appId: "1:288343599550:web:8fa59d4c3ba74ad154b1ef",
   measurementId: "G-9TZRB3QT9P"
@@ -597,14 +602,14 @@ const storage = firebase.storage();
 // ══════════════════════════════════
 const ADMIN_PASS = "prnadmin";
 let S = { rooms:[], curRoom:null, curRound:null, members:[], currentUser:null, isAdmin:false };
-let hwData = {}; // 현재 선택된 날짜의 숙제 데이터
-let curHwTarget = { type: null, member: null }; // 숙제 업로드 타겟 기록
+let hwData = {}; 
+let curHwTarget = { type: null, member: null }; 
 
 function initFirebaseSync() {
   db.ref('VALOTACT_DATA/members').on('value', (snap) => {
     S.members = snap.val() || [];
     renderMemberSelection();
-    if (S.isAdmin) renderAdminMemberList();
+    if (S.isAdmin && document.getElementById('view-admin').classList.contains('active')) renderAdminMemberList();
   });
 
   db.ref('VALOTACT_DATA/rooms').on('value', (snap) => {
@@ -697,18 +702,30 @@ function loginAs(name){
   else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
 function promptAdminLogin(){
-  const pass = prompt('관리자 비밀번호를 입력하세요:');
-  if(pass === ADMIN_PASS){ S.currentUser='ADMIN'; S.isAdmin=true; saveS(); showAdminView(); }
+  const pass = prompt('코치(관리자) 비밀번호를 입력하세요:');
+  if(pass === ADMIN_PASS){ 
+    S.currentUser='COACH'; 
+    S.isAdmin=true; 
+    saveS(); 
+    // 로그인 직후 어드민 관리창 대신 메인 허브(분석방)로 바로 접속하도록 변경
+    enterSystem(); 
+  }
   else if(pass !== null) alert('비밀번호가 틀렸습니다.');
 }
-function showAdminView(){ setView('view-admin'); renderAdminMemberList(); }
+function showAdminView(){ 
+  setView('view-admin'); 
+  renderAdminMemberList(); 
+}
 function enterSystem(){
   setView('view-home');
   const userText = S.isAdmin ? `👤 COACH (ADMIN) <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
   document.getElementById('current-user-name').innerHTML = userText;
   document.getElementById('hw-user-name').innerHTML = userText;
   
-  // 날짜 초기화 (오늘 날짜)
+  // 어드민일 경우에만 상단의 '멤버 관리' 버튼 표시
+  const adminBtns = document.querySelectorAll('.btn-admin-manage');
+  adminBtns.forEach(btn => btn.style.display = S.isAdmin ? 'flex' : 'none');
+
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('inp-match-date').value = today;
   document.getElementById('inp-analysis-date').value = today;
@@ -854,10 +871,9 @@ function openRound(rid){
   document.getElementById('edit-result').value=round.result||'WIN';
   document.getElementById('notes-ta').value=round.notes||'';
   
-  // 피드백 영역 어드민 권한 처리
   const fbArea = document.getElementById('notes-feedback');
   fbArea.value = round.feedback||'';
-  fbArea.disabled = !S.isAdmin; // 코치(어드민)만 작성 가능
+  fbArea.disabled = !S.isAdmin;
 
   renderSlidePanelAndLoad(0);
   setView('view-round');
@@ -983,7 +999,7 @@ function renderSlidePanelAndLoad(idx){
 function switchSlide(idx){ commitSlideAnnotations(); renderSlidePanelAndLoad(idx); }
 
 // ══════════════════════════════════
-//  FIREBASE STORAGE UPLOAD ENGINE (최적화 적용)
+//  FIREBASE STORAGE UPLOAD (맵 이미지 전용)
 // ══════════════════════════════════
 async function uploadToStorage(dataUrl, folderPath) {
   const fileName = gid() + '.jpg';
@@ -1001,7 +1017,6 @@ function loadImage(e){
   reader.onload=ev=>{
     const tempImg = new Image();
     tempImg.onload = async () => {
-      // 캔버스 압축
       const maxW = 1440;
       let w = tempImg.width, h = tempImg.height;
       if (w > maxW) { h = (maxW / w) * h; w = maxW; }
@@ -1013,12 +1028,10 @@ function loadImage(e){
       const compressedDataUrl = compCanvas.toDataURL('image/jpeg', 0.85);
 
       try {
-        // Storage 업로드 (기존 DB 직접 저장을 스토리지 URL로 대체)
         const downloadUrl = await uploadToStorage(compressedDataUrl, 'round_slides');
-        
         const round=getCurRound(); if(!round) return;
         const sl=round.slides[curSlideIdx]; if(!sl) return;
-        sl.image = downloadUrl; // URL만 저장
+        sl.image = downloadUrl; 
         
         const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
         if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
@@ -1041,7 +1054,7 @@ function loadImage(e){
 }
 
 // ══════════════════════════════════
-//  HOMEWORK SYSTEM (숙제 인증)
+//  HOMEWORK SYSTEM (숙제 및 MP4 업로드 엔진)
 // ══════════════════════════════════
 function goHomework() {
   setView('view-hw');
@@ -1056,6 +1069,16 @@ function loadHomework() {
     hwData = snap.val() || {};
     renderHomeworkGrid();
   });
+}
+
+function renderHwMedia(url, isMe) {
+  if (!url) return isMe ? '클릭하여 사진/영상 첨부' : '미제출';
+  // MP4 등 동영상 URL이면 video 태그, 아니면 img 태그 렌더링
+  if (url.includes('.mp4') || url.includes('.webm') || url.includes('.mov') || url.includes('.m4v')) {
+    return `<video src="${url}" autoplay loop muted playsinline></video>`;
+  } else {
+    return `<img src="${url}">`;
+  }
 }
 
 function renderHomeworkGrid() {
@@ -1076,14 +1099,14 @@ function renderHomeworkGrid() {
         <div class="hw-box">
           <label class="hw-label">1. 경쟁 2회 플레이 인증</label>
           <div class="hw-img-ph" onclick="${isMe ? `triggerHwUpload('comp', '${m.name}')` : ''}">
-            ${data.compImg ? `<img src="${data.compImg}">` : (isMe ? '클릭하여 사진 업로드' : '미제출')}
+            ${renderHwMedia(data.compImg, isMe)}
           </div>
         </div>
 
         <div class="hw-box">
-          <label class="hw-label">2. 당일 맵 택틱 인증</label>
+          <label class="hw-label">2. 당일 맵 택틱 인증 (MP4 포함)</label>
           <div class="hw-img-ph" onclick="${isMe ? `triggerHwUpload('tactic', '${m.name}')` : ''}">
-            ${data.tacticImg ? `<img src="${data.tacticImg}">` : (isMe ? '클릭하여 사진 업로드' : '미제출')}
+            ${renderHwMedia(data.tacticImg, isMe)}
           </div>
         </div>
       </div>
@@ -1102,13 +1125,38 @@ function handleHwUpload(e, type) {
   const date = document.getElementById('hw-date').value;
   const member = curHwTarget.member;
   
-  showNotif('숙제 사진 업로드 중... ⏳');
+  showNotif('파일 업로드 중... ⏳');
   
+  // [1] 동영상(MP4) 업로드 로직: 캔버스 리사이징 없이 원본 파일을 다이렉트로 스토리지에 업로드
+  if (file.type.startsWith('video/')) {
+    const ext = file.name.split('.').pop() || 'mp4';
+    const fileName = `${gid()}.${ext}`;
+    const ref = storage.ref().child(`homework/${date}/${fileName}`);
+    
+    ref.put(file).then(snapshot => {
+      return snapshot.ref.getDownloadURL();
+    }).then(downloadUrl => {
+      if(!hwData[member]) hwData[member] = {};
+      if(type === 'comp') hwData[member].compImg = downloadUrl;
+      if(type === 'tactic') hwData[member].tacticImg = downloadUrl;
+      
+      return db.ref(`VALOTACT_DATA/homework/${date}/${member}`).set(hwData[member]);
+    }).then(() => {
+      renderHomeworkGrid();
+      showNotif('✓ 동영상 숙제 제출 완료!');
+    }).catch(err => {
+      console.error(err);
+      alert('동영상 업로드 실패: Firebase Storage 설정을 확인하세요.');
+    });
+    e.target.value='';
+    return;
+  }
+
+  // [2] 이미지 업로드 로직: 기존의 캔버스 최적화 방식
   const reader=new FileReader();
   reader.onload=ev=>{
     const tempImg = new Image();
     tempImg.onload = async () => {
-      // 캔버스 압축 (숙제는 좀 더 작게 압축)
       const maxW = 1000;
       let w = tempImg.width, h = tempImg.height;
       if (w > maxW) { h = (maxW / w) * h; w = maxW; }
@@ -1120,17 +1168,13 @@ function handleHwUpload(e, type) {
 
       try {
         const downloadUrl = await uploadToStorage(compressedDataUrl, `homework/${date}`);
-        
-        // 데이터 갱신
         if(!hwData[member]) hwData[member] = {};
         if(type === 'comp') hwData[member].compImg = downloadUrl;
         if(type === 'tactic') hwData[member].tacticImg = downloadUrl;
         
-        // DB 저장
         await db.ref(`VALOTACT_DATA/homework/${date}/${member}`).set(hwData[member]);
-        
         renderHomeworkGrid();
-        showNotif('✓ 숙제 제출 완료!');
+        showNotif('✓ 사진 숙제 제출 완료!');
       } catch (err) {
         console.error(err);
         alert('업로드 실패: Firebase Storage 설정을 확인하세요.');
@@ -1317,7 +1361,7 @@ function setTool(t){
 function makeCompositeCanvas(slide){
   return new Promise(resolve=>{
     const img=new Image();
-    img.crossOrigin = "Anonymous"; // CORS 이슈 방지
+    img.crossOrigin = "Anonymous";
     img.onload=()=>{
       const oc=document.createElement('canvas');
       oc.width=img.naturalWidth; oc.height=img.naturalHeight;
@@ -1441,8 +1485,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('modal-add').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-add'); });
 
   if(S.currentUser){
-    if(S.isAdmin) showAdminView();
-    else enterSystem();
+    // 세션 유지 중이면 바로 접속
+    enterSystem();
   } else {
     renderMemberSelection();
   }
