@@ -45,6 +45,22 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .btn-tab{color:var(--text); border-color:var(--teal); background:rgba(0,212,170,.1);}
 .btn-tab:hover{background:rgba(0,212,170,.2);}
 
+/* ─── LOBBY (DASHBOARD) ─── */
+#view-lobby { background:var(--bg); flex:1; }
+.lobby-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; padding:40px 20px; }
+.lobby-title { font-family:var(--fh); font-size:clamp(30px, 5vw, 48px); font-weight:700; letter-spacing:4px; margin-bottom:10px; text-align:center; color:var(--red); }
+.lobby-sub { font-family:var(--fm); font-size:12px; color:var(--teal); letter-spacing:3px; margin-bottom:50px; text-align:center; }
+.lobby-grid { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; max-width:1000px; width:100%; }
+.lobby-card { background:var(--bg2); border:1px solid var(--border); width:280px; padding:40px 30px; border-radius:4px; cursor:pointer; transition:all .2s; position:relative; overflow:hidden; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+.lobby-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--border2); transition:all .2s; }
+.lobby-card:hover { transform:translateY(-5px); background:var(--bg3); border-color:var(--teal); box-shadow:0 10px 30px rgba(0,0,0,.5); }
+.lobby-card:hover::before { background:var(--teal); }
+.lobby-card.admin:hover::before { background:var(--yellow); }
+.lobby-card.admin:hover { border-color:var(--yellow); }
+.lc-icon { font-size:42px; margin-bottom:20px; }
+.lc-title { font-family:var(--fh); font-size:22px; font-weight:700; letter-spacing:2px; margin-bottom:12px; color:var(--text); }
+.lc-desc { font-family:var(--fb); font-size:12px; color:var(--muted); line-height:1.6; word-break:keep-all; }
+
 /* ─── HOME ─── */
 #view-home{background:var(--bg)}
 .hero{padding:52px 24px 36px;text-align:center;position:relative}
@@ -254,9 +270,15 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .hw-name{font-family:var(--fh); font-size:18px; font-weight:700; color:var(--text); margin-bottom:14px; display:flex; justify-content:space-between;}
 .hw-box{margin-bottom:15px;}
 .hw-label{font-family:var(--fm); font-size:11px; color:var(--muted); margin-bottom:6px; display:block; letter-spacing:1px;}
-.hw-img-ph{width:100%; height:120px; background:var(--bg2); border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px; cursor:pointer; position:relative; overflow:hidden;}
-.hw-img-ph:hover{border-color:var(--teal); color:var(--teal);}
-.hw-img-ph img, .hw-img-ph video {width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; pointer-events: none;}
+.hw-img-ph{width:100%; height:160px; background:var(--bg2); border:1px dashed var(--border); position:relative; overflow:hidden;}
+.hw-reupload-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(0,0,0,0.8); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--fm); font-size: 10px;
+  padding: 6px 10px; cursor: pointer; z-index: 10;
+  letter-spacing: 1px; transition: all .2s; border-radius: 2px;
+}
+.hw-reupload-btn:hover { border-color: var(--teal); color: var(--teal); background: #000; }
 
 /* ─── MOBILE ─── */
 @media(max-width:1000px){.ppt-layout{grid-template-columns:140px 1fr 280px}}
@@ -277,11 +299,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   .info-panel{border-left:none;flex:none}
   .match-teams{flex-direction:column;align-items:flex-start;gap:6px}
   .upload-ph{width:100%;border-width:1px}
+  .lobby-card { width: 100%; padding: 30px 20px; }
 }
 </style>
 </head>
 <body>
 
+<!-- Login View -->
 <div id="view-login" class="view active">
   <div class="login-view">
     <div class="login-card">
@@ -293,12 +317,49 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
+<!-- LOBBY (DASHBOARD) View -->
+<div id="view-lobby" class="view">
+  <div class="topbar">
+    <div class="logo" onclick="goLobby()">VALO<span>TACT</span></div>
+    <div class="tb-right">
+      <div class="user-display" id="lobby-user-name">👤 USER</div>
+      <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
+      <button class="btn-back" onclick="logout()">LOGOUT</button>
+    </div>
+  </div>
+  <div class="lobby-wrap">
+    <div class="lobby-title">MAIN DASHBOARD</div>
+    <div class="lobby-sub">VALOTACT TEAM HUB</div>
+    <div class="lobby-grid">
+      
+      <div class="lobby-card" onclick="goHome()">
+        <div class="lc-icon">📊</div>
+        <div class="lc-title">ANALYSIS ROOM</div>
+        <div class="lc-desc">팀원들과 전술을 공유하고<br>자세한 피드백을 주고받는<br>경기 분석 전용 공간입니다.</div>
+      </div>
+      
+      <div class="lobby-card" onclick="goHomework()">
+        <div class="lc-icon">📝</div>
+        <div class="lc-title">DAILY HOMEWORK</div>
+        <div class="lc-desc">경쟁전 플레이 및 당일 택틱 복습<br>사진과 영상을 간편하게<br>인증하는 게시판입니다.</div>
+      </div>
+
+      <div class="lobby-card admin" id="lobby-admin-card" onclick="showAdminView()" style="display:none;">
+        <div class="lc-icon">👥</div>
+        <div class="lc-title">MEMBER MANAGE</div>
+        <div class="lc-desc" style="color:var(--muted2);">코치 / 관리자 전용 메뉴<br>새로운 팀원 계정을 등록하거나<br>삭제할 수 있습니다.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- Admin View (멤버 관리 화면) -->
 <div id="view-admin" class="view">
   <div class="topbar">
-    <div class="logo">VALO<span>TACT</span> <span class="admin-badge">ADMIN MODE</span></div>
+    <div class="logo" onclick="goLobby()">VALO<span>TACT</span></div>
     <div class="tb-right">
-      <button class="btn-back" onclick="enterSystem()">← BACK TO HUB</button>
+      <button class="btn-back" onclick="goLobby()">← BACK TO LOBBY</button>
     </div>
   </div>
   <div class="admin-container">
@@ -322,16 +383,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <!-- Home (Analysis Rooms) -->
 <div id="view-home" class="view">
   <div class="topbar">
-    <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
+    <div class="logo" onclick="goLobby()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
     <div class="tb-sub">STRATEGY ANALYSIS SYSTEM</div>
     <div class="tb-right">
+      <button class="btn-back" onclick="goLobby()">🏠 메인 로비</button>
       <button class="btn-back btn-tab active" onclick="goHome()">분석 방</button>
       <button class="btn-back" onclick="goHomework()">숙제 제출</button>
-      
-      <!-- 어드민 전용 '멤버 관리' 버튼 -->
-      <button class="btn-back btn-admin-manage" onclick="showAdminView()" style="display:none; border-color:var(--yellow); color:var(--yellow);">👥 멤버 관리</button>
-      
       <div class="user-display" id="current-user-name">👤 USER</div>
       <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
       <button class="btn-back" onclick="logout()">LOGOUT</button>
@@ -374,16 +432,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <!-- Homework View -->
 <div id="view-hw" class="view">
   <div class="topbar">
-    <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
+    <div class="logo" onclick="goLobby()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
     <div class="tb-sub">HOMEWORK SYSTEM</div>
     <div class="tb-right">
+      <button class="btn-back" onclick="goLobby()">🏠 메인 로비</button>
       <button class="btn-back" onclick="goHome()">분석 방</button>
       <button class="btn-back btn-tab active" onclick="goHomework()">숙제 제출</button>
-      
-      <!-- 어드민 전용 '멤버 관리' 버튼 -->
-      <button class="btn-back btn-admin-manage" onclick="showAdminView()" style="display:none; border-color:var(--yellow); color:var(--yellow);">👥 멤버 관리</button>
-
       <div class="user-display" id="hw-user-name">👤 USER</div>
       <button class="btn-back btn-vm" onclick="toggleViewMode()">⚙️ 반응형</button>
       <button class="btn-back" onclick="logout()">LOGOUT</button>
@@ -406,7 +461,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <!-- Room View -->
 <div id="view-room" class="view">
   <div class="topbar">
-    <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
+    <div class="logo" onclick="goLobby()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
     <div id="room-tb-sub" class="tb-sub">MATCH ANALYSIS</div>
     <div class="tb-right">
@@ -437,7 +492,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <!-- Round View -->
 <div id="view-round" class="view">
   <div class="topbar">
-    <div class="logo" onclick="goHome()">VALO<span>TACT</span></div>
+    <div class="logo" onclick="goLobby()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
     <div id="rd-match-sub" class="tb-sub">MATCH NAME</div>
     <div style="font-family:var(--fm);font-size:11px;color:var(--muted);margin-left:4px">/ ROUND <span id="rd-rnum" style="color:var(--red);font-size:14px;font-family:var(--fh);font-weight:700">—</span></div>
@@ -707,7 +762,6 @@ function promptAdminLogin(){
     S.currentUser='COACH'; 
     S.isAdmin=true; 
     saveS(); 
-    // 로그인 직후 어드민 관리창 대신 메인 허브(분석방)로 바로 접속하도록 변경
     enterSystem(); 
   }
   else if(pass !== null) alert('비밀번호가 틀렸습니다.');
@@ -716,15 +770,18 @@ function showAdminView(){
   setView('view-admin'); 
   renderAdminMemberList(); 
 }
+function goLobby() {
+  setView('view-lobby');
+}
 function enterSystem(){
-  setView('view-home');
-  const userText = S.isAdmin ? `👤 COACH (ADMIN) <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
+  setView('view-lobby');
+  const userText = S.isAdmin ? `👤 COACH <span class="admin-badge">ALL ACCESS</span>` : `👤 ${esc(S.currentUser)}`;
+  
   document.getElementById('current-user-name').innerHTML = userText;
   document.getElementById('hw-user-name').innerHTML = userText;
+  document.getElementById('lobby-user-name').innerHTML = userText;
   
-  // 어드민일 경우에만 상단의 '멤버 관리' 버튼 표시
-  const adminBtns = document.querySelectorAll('.btn-admin-manage');
-  adminBtns.forEach(btn => btn.style.display = S.isAdmin ? 'flex' : 'none');
+  document.getElementById('lobby-admin-card').style.display = S.isAdmin ? 'flex' : 'none';
 
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('inp-match-date').value = today;
@@ -1056,6 +1113,11 @@ function loadImage(e){
 // ══════════════════════════════════
 //  HOMEWORK SYSTEM (숙제 및 MP4 업로드 엔진)
 // ══════════════════════════════════
+function goHome() {
+  setView('view-home');
+  renderRooms();
+}
+
 function goHomework() {
   setView('view-hw');
   loadHomework();
@@ -1071,14 +1133,23 @@ function loadHomework() {
   });
 }
 
-function renderHwMedia(url, isMe) {
-  if (!url) return isMe ? '클릭하여 사진/영상 첨부' : '미제출';
-  // MP4 등 동영상 URL이면 video 태그, 아니면 img 태그 렌더링
-  if (url.includes('.mp4') || url.includes('.webm') || url.includes('.mov') || url.includes('.m4v')) {
-    return `<video src="${url}" autoplay loop muted playsinline></video>`;
-  } else {
-    return `<img src="${url}">`;
+function renderHwMedia(url, isMe, type, member) {
+  if (!url) {
+    return isMe ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="triggerHwUpload('${type}','${member}')">클릭하여 사진/영상 첨부</div>` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">미제출</div>';
   }
+  
+  let mediaHtml = '';
+  const lowerUrl = url.toLowerCase();
+  
+  if (lowerUrl.includes('.mp4') || lowerUrl.includes('.webm') || lowerUrl.includes('.mov')) {
+    mediaHtml = `<video src="${url}" controls playsinline style="width:100%; height:100%; object-fit:contain; background:#000; position:absolute; top:0; left:0; z-index:2; pointer-events:auto;"></video>`;
+  } else {
+    mediaHtml = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; pointer-events:none;">`;
+  }
+
+  const btnHtml = isMe ? `<button class="hw-reupload-btn" onclick="triggerHwUpload('${type}', '${member}')">🔄 변경</button>` : '';
+  
+  return mediaHtml + btnHtml;
 }
 
 function renderHomeworkGrid() {
@@ -1098,15 +1169,15 @@ function renderHomeworkGrid() {
         
         <div class="hw-box">
           <label class="hw-label">1. 경쟁 2회 플레이 인증</label>
-          <div class="hw-img-ph" onclick="${isMe ? `triggerHwUpload('comp', '${m.name}')` : ''}">
-            ${renderHwMedia(data.compImg, isMe)}
+          <div class="hw-img-ph">
+            ${renderHwMedia(data.compImg, isMe, 'comp', m.name)}
           </div>
         </div>
 
         <div class="hw-box">
-          <label class="hw-label">2. 당일 맵 택틱 인증 (MP4 포함)</label>
-          <div class="hw-img-ph" onclick="${isMe ? `triggerHwUpload('tactic', '${m.name}')` : ''}">
-            ${renderHwMedia(data.tacticImg, isMe)}
+          <label class="hw-label">2. 당일 맵 택틱 인증 (MP4 지원)</label>
+          <div class="hw-img-ph">
+            ${renderHwMedia(data.tacticImg, isMe, 'tactic', m.name)}
           </div>
         </div>
       </div>
@@ -1127,7 +1198,6 @@ function handleHwUpload(e, type) {
   
   showNotif('파일 업로드 중... ⏳');
   
-  // [1] 동영상(MP4) 업로드 로직: 캔버스 리사이징 없이 원본 파일을 다이렉트로 스토리지에 업로드
   if (file.type.startsWith('video/')) {
     const ext = file.name.split('.').pop() || 'mp4';
     const fileName = `${gid()}.${ext}`;
@@ -1152,7 +1222,6 @@ function handleHwUpload(e, type) {
     return;
   }
 
-  // [2] 이미지 업로드 로직: 기존의 캔버스 최적화 방식
   const reader=new FileReader();
   reader.onload=ev=>{
     const tempImg = new Image();
@@ -1440,8 +1509,6 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 function showNotif(m){ const n=document.getElementById('notif'); n.textContent=m; n.classList.add('show'); setTimeout(()=>n.classList.remove('show'),2200); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 function setView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-function goHome(){ setView('view-home'); renderRooms(); }
-function goRoom(){ setView('view-room'); renderRounds(); }
 
 // ══════════════════════════════════
 //  INIT
@@ -1485,7 +1552,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('modal-add').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-add'); });
 
   if(S.currentUser){
-    // 세션 유지 중이면 바로 접속
     enterSystem();
   } else {
     renderMemberSelection();
