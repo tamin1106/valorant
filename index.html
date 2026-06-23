@@ -452,8 +452,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       </div>
       <input type="week" id="hw-date" class="hw-date-picker" onchange="loadHomework()">
     </div>
+    <div id="hw-summary" style="font-family:var(--fm);font-size:11px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);letter-spacing:1px;"></div>
     <div id="hw-grid" class="hw-grid">
-      <!-- 동적 렌더링 -->
     </div>
   </div>
 </div>
@@ -540,7 +540,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         <div class="upload-ph" id="upload-ph" onclick="triggerUpload()">
           <div class="uico">📸</div>
           <div class="utxt">MAP SCREENSHOT UPLOAD</div>
-          <div class="usub">터치하거나 파일을 드래그하세요 (PNG, JPG)</div>
+          <div class="usub">이미지(PNG/JPG) 또는 영상(MP4) 드래그 & 드롭</div>
         </div>
       </div>
       <div class="canvas-nav">
@@ -669,12 +669,17 @@ function initFirebaseSync() {
 
   db.ref('VALOTACT_DATA/rooms').on('value', (snap) => {
     const remoteRooms = snap.val() || [];
-    if (document.getElementById('view-round').classList.contains('active') && S.curRoom) {
+    // 그리는 중이면 annotations 동기화 스킵 (덮어쓰기 방지)
+    if (!isDrawing && document.getElementById('view-round').classList.contains('active') && S.curRoom) {
       const activeRoomRemote = remoteRooms.find(r => r.id === S.curRoom);
       const activeRoundRemote = activeRoomRemote?.rounds?.find(rd => rd.id === S.curRound);
       if (activeRoundRemote && activeRoundRemote.slides && activeRoundRemote.slides[curSlideIdx]) {
-        annotations = activeRoundRemote.slides[curSlideIdx].annotations || [];
-        renderAnns(); renderAnnList();
+        const remoteAnns = activeRoundRemote.slides[curSlideIdx].annotations || [];
+        // 주석 수가 다를 때만 업데이트 (불필요한 리렌더 방지)
+        if (JSON.stringify(remoteAnns) !== JSON.stringify(annotations)) {
+          annotations = remoteAnns;
+          renderAnns(); renderAnnList();
+        }
       }
     }
     S.rooms = remoteRooms;
@@ -683,13 +688,24 @@ function initFirebaseSync() {
   });
 }
 
-function syncNode(path, data) {
-  try {
-    localStorage.setItem('vt_team_v3', JSON.stringify(S));
-    db.ref(`VALOTACT_DATA/${path}`).set(data);
-  } catch(e) { console.error("Sync error:", e); }
+let _lsSaveTimer = null;
+function saveSession() {
+  // 세션 정보(로그인 상태)만 localStorage에 저장 - rooms/members는 Firebase가 source of truth
+  clearTimeout(_lsSaveTimer);
+  _lsSaveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem('vt_team_v3', JSON.stringify({
+        currentUser: S.currentUser, isAdmin: S.isAdmin,
+        curRoom: S.curRoom, curRound: S.curRound
+      }));
+    } catch(e) {}
+  }, 300);
 }
-
+function syncNode(path, data) {
+  saveSession();
+  return db.ref(`VALOTACT_DATA/${path}`).set(data)
+    .catch(e => console.error("Firebase sync error:", e));
+}
 function saveS() {
   syncNode('rooms', S.rooms);
   syncNode('members', S.members);
@@ -709,6 +725,13 @@ function loadLocalSession() {
 }
 
 function gid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function formatDate(d){
+  if(!d||d==='날짜 미지정') return d||'날짜 미지정';
+  try{
+    const dt=new Date(d+'T00:00:00');
+    return dt.toLocaleDateString('ko-KR',{month:'short',day:'numeric'});
+  }catch(e){return d;}
+}
 
 // ── View Mode ──
 let viewMode = localStorage.getItem('vt_viewmode') || 'auto';
@@ -881,7 +904,7 @@ function renderRooms(){
       <div class="rmeta">
         <div class="rmi"><span class="dot"></span>${esc(r.name)}</div>
         <div class="rmi">📍${esc(r.map)}</div>
-        <div class="rmi">⚔️ ${esc(r.matchDate)}</div>
+        <div class="rmi">⚔️ ${formatDate(r.matchDate)}</div>
         <div class="rmi">👤 ${esc(r.createdBy||'')}</div>
         <div class="rrc">${r.rounds ? r.rounds.length : 0} 라운드</div>
       </div>
@@ -924,7 +947,7 @@ function openRound(rid){
   const rm=getCurRoom(); if(!rm) return;
   const round=rm.rounds.find(r=>r.id===rid); if(!round) return;
   S.curRound=rid; curSlideIdx=0;
-  localStorage.setItem('vt_team_v3', JSON.stringify(S));
+  saveSession();
   document.getElementById('rd-match-sub').textContent=rm.name.toUpperCase().slice(0,30);
   document.getElementById('rd-rnum').textContent=round.number;
   document.getElementById('rd-rnum2').textContent=round.number;
@@ -1204,13 +1227,26 @@ function renderHomeworkGrid() {
     return;
   }
   
+  // 제출 현황 요약
+  const totalM = S.members.length;
+  const doneComp = S.members.filter(m=>(hwData[m.name]||{}).compImg).length;
+  const doneTactic = S.members.filter(m=>(hwData[m.name]||{}).tacticImg).length;
+  const sumEl = document.getElementById('hw-summary');
+  if(sumEl) sumEl.innerHTML = `전체 ${totalM}명 &nbsp;|&nbsp; 경쟁 인증 <span style="color:var(--teal)">${doneComp}/${totalM}</span> &nbsp;|&nbsp; 택틱 인증 <span style="color:var(--teal)">${doneTactic}/${totalM}</span>`;
+
   grid.innerHTML = S.members.map(m => {
     const data = hwData[m.name] || { compImg: null, tacticImg: null };
     const isMe = (S.currentUser === m.name || S.isAdmin);
     
     return `
       <div class="hw-card">
-        <div class="hw-name">${esc(m.name)}</div>
+        <div class="hw-name">
+          ${esc(m.name)}
+          <span style="font-size:12px;font-family:var(--fm);">
+            ${data.compImg?'<span style="color:var(--teal)">✓경쟁</span>':'<span style="color:var(--muted)">✗경쟁</span>'}
+            ${data.tacticImg?'<span style="color:var(--teal);margin-left:4px">✓택틱</span>':'<span style="color:var(--muted);margin-left:4px">✗택틱</span>'}
+          </span>
+        </div>
         
         <div class="hw-box">
           <label class="hw-label">1. 경쟁 2회 플레이 인증</label>
@@ -1336,15 +1372,21 @@ function startDraw(e){
   if(curTool==='pen') curPath=[{x:p.x,y:p.y}];
 }
 
+const _tmpCanvas = ()=>document.getElementById('tmp-canvas');
 function onDrawing(e){
   if(!isDrawing) return;
-  const p=getPos(e); const tc=document.getElementById('tmp-canvas'); const tctx=tc.getContext('2d');
+  const p=getPos(e); const tc=_tmpCanvas(); const tctx=tc.getContext('2d');
   tctx.clearRect(0, 0, tc.width, tc.height);
   tctx.strokeStyle=curColor; tctx.lineWidth=strokeSz; tctx.lineCap='round'; tctx.lineJoin='round';
   if(curTool==='pen'){
     curPath.push({x:p.x,y:p.y});
-    tctx.beginPath(); tctx.moveTo(curPath[0].x,curPath[0].y);
-    curPath.forEach(pt=>tctx.lineTo(pt.x,pt.y)); tctx.stroke();
+    // 임시 캔버스는 마지막 세그먼트만 그려도 충분 (clearRect 없이 누적)
+    if(curPath.length >= 2){
+      const last=curPath[curPath.length-1], prev=curPath[curPath.length-2];
+      tctx.clearRect(0,0,tc.width,tc.height);
+      tctx.beginPath(); tctx.moveTo(curPath[0].x,curPath[0].y);
+      curPath.forEach(pt=>tctx.lineTo(pt.x,pt.y)); tctx.stroke();
+    }
   } else if(curTool==='arrow') drawArrowCtx(tctx,startX,startY,p.x,p.y);
   else if(curTool==='rect') tctx.strokeRect(startX,startY,p.x-startX,p.y-startY);
   else if(curTool==='circle'){
@@ -1358,7 +1400,7 @@ function onDrawing(e){
 function endDraw(e){
   if(!isDrawing) return; isDrawing=false;
   const p=getPos(e); let ann=null;
-  const tc=document.getElementById('tmp-canvas'); tc.getContext('2d').clearRect(0, 0, tc.width, tc.height);
+  const tc=_tmpCanvas(); tc.getContext('2d').clearRect(0, 0, tc.width, tc.height);
   if(curTool==='pen'&&curPath.length>1) ann={id:gid(),tool:'pen',color:curColor,size:strokeSz,path:[...curPath]};
   else if(curTool==='arrow') ann={id:gid(),tool:'arrow',color:curColor,size:strokeSz,x1:startX,y1:startY,x2:p.x,y2:p.y};
   else if(curTool==='rect') ann={id:gid(),tool:'rect',color:curColor,size:strokeSz,x:startX,y:startY,w:p.x-startX,h:p.y-startY};
@@ -1384,8 +1426,9 @@ function drawArrowCtx(ctx,x1,y1,x2,y2){
 function renderAnns(){
   const c=document.getElementById('ann-canvas'); if(!c.width) return;
   const ctx=c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height);
+  ctx.lineCap='round'; ctx.lineJoin='round';
   annotations.forEach(a=>{
-    ctx.strokeStyle=a.color; ctx.fillStyle=a.color; ctx.lineWidth=a.size; ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle=a.color; ctx.fillStyle=a.color; ctx.lineWidth=a.size;
     if(a.tool==='pen'&&a.path.length>1){
       ctx.beginPath(); ctx.moveTo(a.path[0].x,a.path[0].y);
       a.path.forEach(pt=>ctx.lineTo(pt.x,pt.y)); ctx.stroke();
@@ -1551,9 +1594,19 @@ async function exportAllSlides(){
 //  UTIL
 // ══════════════════════════════════
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function showNotif(m){ const n=document.getElementById('notif'); n.textContent=m; n.classList.add('show'); setTimeout(()=>n.classList.remove('show'),2200); }
+let _notifTimer=null;
+function showNotif(m){
+  const n=document.getElementById('notif');
+  n.textContent=m; n.classList.add('show');
+  clearTimeout(_notifTimer);
+  _notifTimer=setTimeout(()=>n.classList.remove('show'),2200);
+}
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-function setView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+const _ALL_VIEWS = ['view-login','view-lobby','view-admin','view-home','view-hw','view-room','view-round'];
+function setView(id){
+  _ALL_VIEWS.forEach(v=>{ const el=document.getElementById(v); if(el) el.classList.remove('active'); });
+  const target=document.getElementById(id); if(target) target.classList.add('active');
+}
 
 // ══════════════════════════════════
 //  INIT
@@ -1583,7 +1636,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   ph.addEventListener('drop',e=>{
     e.preventDefault(); ph.style.borderColor='var(--border)';
     const f=e.dataTransfer.files[0];
-    if(f&&f.type.startsWith('image/')) loadImage({target:{files:[f],value:''}});
+    if(f&&(f.type.startsWith('image/')||f.type.startsWith('video/'))) loadImage({target:{files:[f],value:''}});
   });
 
   document.addEventListener('keydown',e=>{
@@ -1595,6 +1648,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 
   document.getElementById('modal-add').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-add'); });
+
+  // 창 크기 변경 시 캔버스 재조정
+  let _resizeTimer=null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(_resizeTimer);
+    _resizeTimer=setTimeout(()=>{
+      if(document.getElementById('view-round').classList.contains('active')){
+        setupCanvas(); renderAnns();
+      }
+    }, 200);
+  });
 
   if(S.currentUser){
     enterSystem();
