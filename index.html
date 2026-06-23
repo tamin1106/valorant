@@ -450,7 +450,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         <div class="panel-title" style="font-size:24px; margin-bottom:5px;">DAILY HOMEWORK</div>
         <div class="fl">팀원들의 당일 숙제 인증 게시판</div>
       </div>
-      <input type="date" id="hw-date" class="hw-date-picker" onchange="loadHomework()">
+      <input type="week" id="hw-date" class="hw-date-picker" onchange="loadHomework()">
     </div>
     <div id="hw-grid" class="hw-grid">
       <!-- 동적 렌더링 -->
@@ -549,7 +549,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         <input type="text" id="slide-title-inp" class="slide-title-input" placeholder="SLIDE TITLE" maxlength="40">
         <button class="nav-btn" id="nav-next" onclick="navSlide(1)">›</button>
       </div>
-      <input type="file" id="file-input" accept="image/*" onchange="loadImage(event)">
+      <input type="file" id="file-input" accept="image/*,video/mp4,video/quicktime,video/webm" onchange="loadImage(event)">
     </div>
 
     <div class="info-panel">
@@ -786,7 +786,13 @@ function enterSystem(){
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('inp-match-date').value = today;
   document.getElementById('inp-analysis-date').value = today;
-  document.getElementById('hw-date').value = today;
+  // Set current ISO week (YYYY-Wxx)
+  (function(){
+    const d=new Date(), y=d.getFullYear();
+    const s=new Date(y,0,1);
+    const w=Math.ceil(((d-s)/86400000+s.getDay()+1)/7);
+    document.getElementById('hw-date').value=y+'-W'+String(w).padStart(2,'0');
+  })();
 
   renderRooms();
 }
@@ -1030,7 +1036,7 @@ function renderSlidePanelAndLoad(idx){
     <div class="slide-thumb ${i===curSlideIdx?'active':''}" onclick="switchSlide(${i})">
       <span class="st-num">${i+1}</span>
       <button class="st-del" onclick="delSlide(${i},event)">✕</button>
-      <div class="st-img">${sl.image?`<img src="${sl.image}" alt="${i+1}">`:`<div class="st-empty">🗺️</div>`}</div>
+      <div class="st-img">${sl.image?(sl.isVideo?`<div class="st-empty" style="font-size:22px;opacity:.9">🎬</div>`:`<img src="${sl.image}" alt="${i+1}">`):`<div class="st-empty">🗺️</div>`}</div>
       <div class="st-title">${esc(sl.title||'슬라이드 '+(i+1))}</div>
     </div>`).join('');
   const sl=round.slides[curSlideIdx];
@@ -1042,9 +1048,17 @@ function renderSlidePanelAndLoad(idx){
   document.getElementById('nav-next').disabled=curSlideIdx===round.slides.length-1;
   const bgImg=document.getElementById('bg-image');
   const ph=document.getElementById('upload-ph');
+  /* 이전 슬라이드의 video 제거 */
+  const oldVid2=document.getElementById('slide-video'); if(oldVid2) oldVid2.remove();
+  document.getElementById('ann-canvas').style.display='';
+  document.getElementById('tmp-canvas').style.display='';
   if(sl.image){
-    bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
-    bgImg.onload=()=>{ setupCanvas(); renderAnns(); };
+    if(sl.isVideo){
+      loadSlideVideo(sl);
+    } else {
+      bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
+      bgImg.onload=()=>{ setupCanvas(); renderAnns(); };
+    }
   } else {
     bgImg.src=''; bgImg.style.display='none'; ph.style.display='flex';
     document.getElementById('ann-canvas').width=0; 
@@ -1066,10 +1080,42 @@ async function uploadToStorage(dataUrl, folderPath) {
 }
 
 function triggerUpload(){ document.getElementById('file-input').click(); }
+function loadSlideVideo(sl){
+  /* 슬라이드에 동영상을 렌더링 */
+  const bgImg=document.getElementById('bg-image');
+  const ph=document.getElementById('upload-ph');
+  const old=document.getElementById('slide-video'); if(old) old.remove();
+  document.getElementById('ann-canvas').style.display='none';
+  document.getElementById('tmp-canvas').style.display='none';
+  bgImg.style.display='none'; ph.style.display='none';
+  const vid=document.createElement('video');
+  vid.id='slide-video'; vid.src=sl.image; vid.controls=true; vid.playsinline=true;
+  vid.style.cssText='display:block;max-width:100%;max-height:calc(100vh - 200px);background:#000;position:relative;z-index:4;border:1px solid var(--border);';
+  document.getElementById('canvas-inner').insertBefore(vid, bgImg);
+}
 function loadImage(e){
   const file=e.target.files[0]; if(!file) return;
+
+  /* ── 동영상 업로드 ── */
+  if(file.type.startsWith('video/')){
+    showNotif('동영상 업로드 중... ⏳');
+    const ext=file.name.split('.').pop()||'mp4';
+    const ref=storage.ref().child('round_slides/'+gid()+'.'+ext);
+    ref.put(file).then(s=>s.ref.getDownloadURL()).then(async url=>{
+      const round=getCurRound(); if(!round) return;
+      const sl=round.slides[curSlideIdx]; if(!sl) return;
+      sl.image=url; sl.isVideo=true;
+      const rmIdx=S.rooms.findIndex(r=>r.id===S.curRoom);
+      if(rmIdx!==-1) syncNode('rooms/'+rmIdx, S.rooms[rmIdx]);
+      loadSlideVideo(sl);
+      renderSlidePanelAndLoad(curSlideIdx);
+      showNotif('✓ 동영상 업로드 완료');
+    }).catch(err=>{console.error(err);alert('업로드 실패: Firebase Storage 규칙을 확인하세요.');});
+    e.target.value=''; return;
+  }
+
+  /* ── 이미지 업로드 ── */
   showNotif('이미지 최적화 및 업로드 중... ⏳');
-  
   const reader=new FileReader();
   reader.onload=ev=>{
     const tempImg = new Image();
@@ -1077,24 +1123,22 @@ function loadImage(e){
       const maxW = 1440;
       let w = tempImg.width, h = tempImg.height;
       if (w > maxW) { h = (maxW / w) * h; w = maxW; }
-      
       const compCanvas = document.createElement('canvas');
       compCanvas.width = w; compCanvas.height = h;
-      const compCtx = compCanvas.getContext('2d');
-      compCtx.drawImage(tempImg, 0, 0, w, h);
+      compCanvas.getContext('2d').drawImage(tempImg, 0, 0, w, h);
       const compressedDataUrl = compCanvas.toDataURL('image/jpeg', 0.85);
-
       try {
         const downloadUrl = await uploadToStorage(compressedDataUrl, 'round_slides');
         const round=getCurRound(); if(!round) return;
         const sl=round.slides[curSlideIdx]; if(!sl) return;
-        sl.image = downloadUrl; 
-        
+        sl.image = downloadUrl; sl.isVideo = false;
         const rmIdx = S.rooms.findIndex(r=>r.id===S.curRoom);
-        if(rmIdx !== -1) syncNode(`rooms/${rmIdx}`, S.rooms[rmIdx]);
-
+        if(rmIdx !== -1) syncNode('rooms/'+rmIdx, S.rooms[rmIdx]);
         const bgImg=document.getElementById('bg-image');
         const ph=document.getElementById('upload-ph');
+        const oldVid=document.getElementById('slide-video'); if(oldVid) oldVid.remove();
+        document.getElementById('ann-canvas').style.display='';
+        document.getElementById('tmp-canvas').style.display='';
         bgImg.src=sl.image; bgImg.style.display='block'; ph.style.display='none';
         bgImg.onload=()=>{ annotations=[]; setupCanvas(); renderAnns(); renderAnnList(); };
         renderSlidePanelAndLoad(curSlideIdx);
@@ -1123,11 +1167,12 @@ function goHomework() {
   loadHomework();
 }
 
-function loadHomework() {
-  const date = document.getElementById('hw-date').value;
-  if(!date) return;
-  
-  db.ref(`VALOTACT_DATA/homework/${date}`).once('value', snap => {
+function getHwWeekKey(){
+  return document.getElementById('hw-date').value || '';
+}
+function loadHomework(){
+  const key = getHwWeekKey(); if(!key) return;
+  db.ref('VALOTACT_DATA/homework/' + key).once('value', snap => {
     hwData = snap.val() || {};
     renderHomeworkGrid();
   });
@@ -1193,7 +1238,7 @@ function triggerHwUpload(type, member) {
 
 function handleHwUpload(e, type) {
   const file = e.target.files[0]; if(!file) return;
-  const date = document.getElementById('hw-date').value;
+  const date = getHwWeekKey();
   const member = curHwTarget.member;
   
   showNotif('파일 업로드 중... ⏳');
@@ -1558,6 +1603,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 });
 
+function goRoom(){
+  if(!S.curRoom){ goHome(); return; }
+  openRoom(S.curRoom);
+}
 function setColor(el){
   curColor=el.dataset.c;
   document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('active'));
