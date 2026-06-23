@@ -263,7 +263,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #view-hw{background:var(--bg)}
 .hw-container{max-width:1180px;margin:36px auto;width:100%;padding:0 24px}
 .hw-header{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px;}
-.hw-date-picker{padding:8px 12px; background:var(--bg2); border:1px solid var(--teal); color:var(--text); font-family:var(--fb); outline:none; border-radius:0;}
 .hw-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;}
 .hw-card{background:var(--card); border:1px solid var(--border); padding:20px; position:relative;}
 .hw-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal)}
@@ -279,6 +278,36 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   letter-spacing: 1px; transition: all .2s; border-radius: 2px;
 }
 .hw-reupload-btn:hover { border-color: var(--teal); color: var(--teal); background: #000; }
+.hw-topline{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.hw-week-range{font-family:var(--fm);font-size:12px;color:var(--muted2);letter-spacing:1px}
+.hw-countdown{font-family:var(--fm);font-size:13px;color:var(--teal);background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.3);padding:8px 16px;letter-spacing:1px;white-space:nowrap}
+.hw-countdown.urgent{color:var(--red);border-color:rgba(255,70,85,.4);background:rgba(255,70,85,.08)}
+.hw-countdown b{font-size:15px;margin:0 2px}
+.hw-week-select{padding:8px 12px;background:var(--bg2);border:1px solid var(--teal);color:var(--text);font-family:var(--fb);outline:none;border-radius:0}
+.hw-coach-tag{font-family:var(--fm);font-size:10px;color:var(--yellow);border:1px solid rgba(245,197,24,.4);background:rgba(245,197,24,.08);padding:3px 8px;letter-spacing:1px}
+.hw-progress-pill{font-size:11px;font-family:var(--fm);letter-spacing:.5px}
+.hw-status-ok{color:var(--teal)}
+.hw-status-no{color:var(--muted)}
+.hw-complete-tag{font-family:var(--fm);font-size:10px;color:var(--teal);border:1px solid rgba(0,212,170,.4);background:rgba(0,212,170,.1);padding:2px 7px;letter-spacing:1px}
+.hw-incomplete-tag{font-family:var(--fm);font-size:10px;color:var(--muted2);border:1px solid var(--border);padding:2px 7px;letter-spacing:1px}
+.hw-comp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hw-tactic-gallery{display:flex;flex-wrap:wrap;gap:6px}
+.hw-tactic-item{position:relative;width:84px;height:84px;background:var(--bg2);border:1px solid var(--border);overflow:hidden}
+.hw-tactic-item img,.hw-tactic-item video{width:100%;height:100%;object-fit:cover}
+.hw-tactic-del{position:absolute;top:2px;right:2px;width:18px;height:18px;background:rgba(0,0,0,.85);border:1px solid var(--border);color:var(--red);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}
+.hw-tactic-add{width:84px;height:84px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:24px;flex-shrink:0;background:var(--bg2)}
+.hw-tactic-add:hover{border-color:var(--teal);color:var(--teal)}
+.hw-tactic-count{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:4px;display:block}
+.hw-pro-box{padding:10px;background:var(--bg2);border:1px solid var(--border);min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hw-pro-info{font-size:12px;color:var(--text);line-height:1.5}
+.hw-pro-info .sub{font-family:var(--fm);font-size:10px;color:var(--muted2)}
+.hw-pro-pick{padding:7px 12px;background:transparent;border:1px solid var(--teal);color:var(--teal);font-family:var(--fh);font-size:12px;letter-spacing:1px;cursor:pointer;white-space:nowrap}
+.hw-pro-pick:hover{background:rgba(0,212,170,.1)}
+.round-pick-item{padding:10px 12px;background:var(--card);border:1px solid var(--border);cursor:pointer;display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.round-pick-item:hover{border-color:var(--teal);background:var(--bg3)}
+.round-pick-thumb{width:54px;height:40px;background:var(--bg2);object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.round-pick-meta{font-size:12px;color:var(--text);line-height:1.5}
+.round-pick-meta .sub{font-family:var(--fm);font-size:10px;color:var(--muted2)}
 
 /* ─── MOBILE ─── */
 @media(max-width:1000px){.ppt-layout{grid-template-columns:140px 1fr 280px}}
@@ -364,13 +393,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
   <div class="admin-container">
     <div class="admin-card">
-      <div class="panel-title">MEMBER MANAGEMENT</div>
+      <div class="panel-title">멤버 관리</div>
       <div class="fg">
-        <label class="fl">MEMBER NAME</label>
+        <label class="fl">멤버 이름</label>
         <input type="text" id="inp-new-member" class="fi" placeholder="멤버 이름 입력...">
       </div>
       <div class="fg">
-        <label class="fl">ACCESS PASSWORD</label>
+        <label class="fl">접속 비밀번호</label>
         <input type="password" id="inp-new-pass" class="fi" placeholder="비밀번호 설정...">
       </div>
       <button class="btn-create" style="width:100%" onclick="addMember()">REGISTER NEW MEMBER</button>
@@ -402,14 +431,14 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
   <div class="home-body">
     <div class="create-panel">
-      <div class="panel-title">NEW ANALYSIS ROOM</div>
+      <div class="panel-title">새 분석방 생성</div>
       <div class="fg">
-        <label class="fl">MATCH NAME</label>
+        <label class="fl">경기 이름</label>
         <input type="text" id="inp-name" class="fi" placeholder="예: 스크림 1세트">
       </div>
       <div class="fr">
-        <div class="fg"><label class="fl">TEAM A</label><input type="text" id="inp-ta" class="fi" placeholder="우리팀"></div>
-        <div class="fg"><label class="fl">TEAM B</label><input type="text" id="inp-tb" class="fi" placeholder="상대팀"></div>
+        <div class="fg"><label class="fl">팀 A</label><input type="text" id="inp-ta" class="fi" placeholder="우리팀"></div>
+        <div class="fg"><label class="fl">팀 B</label><input type="text" id="inp-tb" class="fi" placeholder="상대팀"></div>
       </div>
       <div class="fg"><label class="fl">MAP</label><input type="text" id="inp-map" class="fi" placeholder="맵 선택"></div>
       
@@ -434,7 +463,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="topbar">
     <div class="logo" onclick="goLobby()">VALO<span>TACT</span></div>
     <div class="tb-div"></div>
-    <div class="tb-sub">HOMEWORK SYSTEM</div>
+    <div class="tb-sub">숙제 제출 시스템</div>
     <div class="tb-right">
       <button class="btn-back" onclick="goLobby()">🏠 메인 로비</button>
       <button class="btn-back" onclick="goHome()">분석 방</button>
@@ -447,13 +476,34 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="hw-container">
     <div class="hw-header">
       <div>
-        <div class="panel-title" style="font-size:24px; margin-bottom:5px;">DAILY HOMEWORK</div>
-        <div class="fl">팀원들의 당일 숙제 인증 게시판</div>
+        <div class="panel-title" style="font-size:24px; margin-bottom:5px;">주간 숙제</div>
+        <div class="fl">팀원들의 이번 주 숙제 인증 게시판</div>
       </div>
-      <input type="week" id="hw-date" class="hw-date-picker" onchange="loadHomework()">
+      <div id="hw-week-controls" style="display:flex;align-items:center;gap:10px;"></div>
+    </div>
+    <div class="hw-topline">
+      <div class="hw-week-range" id="hw-week-range"></div>
+      <div class="hw-countdown" id="hw-countdown">계산 중...</div>
     </div>
     <div id="hw-summary" style="font-family:var(--fm);font-size:11px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);letter-spacing:1px;"></div>
     <div id="hw-grid" class="hw-grid">
+    </div>
+  </div>
+</div>
+
+<!-- 프로경기 분석 라운드 선택 모달 -->
+<div class="modal-overlay" id="modal-round-pick">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-hd">
+      <div class="modal-title">라운드 선택</div>
+      <button class="modal-close" onclick="closeModal('modal-round-pick')">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
+      <div class="fl" style="margin-bottom:10px;">내가 작성한 라운드 중 프로경기 분석으로 제출할 라운드를 선택하세요</div>
+      <div id="round-pick-list"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-modal cancel" onclick="closeModal('modal-round-pick')">취소</button>
     </div>
   </div>
 </div>
@@ -614,16 +664,16 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="modal-overlay" id="modal-add">
   <div class="modal">
     <div class="modal-hd">
-      <div class="modal-title">ADD ROUND</div>
+      <div class="modal-title">라운드 추가</div>
       <button class="modal-close" onclick="closeModal('modal-add')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="fg"><label class="fl">ROUND NUMBER</label><input id="m-rnum" class="fi" type="number" value="1" min="1" max="50"></div>
+      <div class="fg"><label class="fl">라운드 번호</label><input id="m-rnum" class="fi" type="number" value="1" min="1" max="50"></div>
       <div class="fg"><label class="fl">DESCRIPTION (선택)</label><input id="m-rdesc" class="fi" type="text" placeholder="예) B러시, 미드 컨트롤"></div>
     </div>
     <div class="modal-ft">
-      <button class="btn-modal cancel" onclick="closeModal('modal-add')">CANCEL</button>
-      <button class="btn-modal confirm" onclick="confirmAddRound()">ADD</button>
+      <button class="btn-modal cancel" onclick="closeModal('modal-add')">취소</button>
+      <button class="btn-modal confirm" onclick="confirmAddRound()">추가</button>
     </div>
   </div>
 </div>
@@ -809,13 +859,6 @@ function enterSystem(){
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('inp-match-date').value = today;
   document.getElementById('inp-analysis-date').value = today;
-  // Set current ISO week (YYYY-Wxx)
-  (function(){
-    const d=new Date(), y=d.getFullYear();
-    const s=new Date(y,0,1);
-    const w=Math.ceil(((d-s)/86400000+s.getDay()+1)/7);
-    document.getElementById('hw-date').value=y+'-W'+String(w).padStart(2,'0');
-  })();
 
   renderRooms();
 }
@@ -1178,154 +1221,312 @@ function loadImage(e){
 }
 
 // ══════════════════════════════════
-//  HOMEWORK SYSTEM (숙제 및 MP4 업로드 엔진)
+//  HOMEWORK SYSTEM (주간 숙제 / 경쟁2 · 택틱2+ · 프로분석1)
 // ══════════════════════════════════
 function goHome() {
   setView('view-home');
   renderRooms();
 }
 
-function goHomework() {
-  setView('view-hw');
-  loadHomework();
+let hwWeekKey = null;       // 현재 화면에 표시 중인 주(week) 키
+let hwCountdownTimer = null;
+let hwAvailableWeeks = [];  // 코치가 고를 수 있는 과거 주차 목록
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+// 해당 날짜가 속한 주의 "월요일" Date 객체 (00:00)를 반환
+function getMonday(d){
+  const dt = new Date(d);
+  dt.setHours(0,0,0,0);
+  const day = dt.getDay(); // 0=일 ... 6=토
+  const diff = (day === 0 ? -6 : 1 - day); // 월요일로 이동
+  dt.setDate(dt.getDate() + diff);
+  return dt;
+}
+function weekKeyOf(d){
+  const mon = getMonday(d);
+  return `${mon.getFullYear()}-${pad2(mon.getMonth()+1)}-${pad2(mon.getDate())}`;
+}
+function getCurrentWeekKey(){ return weekKeyOf(new Date()); }
+
+// weekKey(월요일)의 그 주 금요일 19:00 마감 시각
+function getDeadlineDate(weekKey){
+  const [y,m,d] = weekKey.split('-').map(Number);
+  const mon = new Date(y, m-1, d, 0,0,0,0);
+  const fri = new Date(mon);
+  fri.setDate(mon.getDate()+4);
+  fri.setHours(19,0,0,0);
+  return fri;
+}
+function formatWeekRangeLabel(weekKey){
+  const [y,m,d] = weekKey.split('-').map(Number);
+  const mon = new Date(y, m-1, d);
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  const fmt = dt => `${dt.getMonth()+1}.${dt.getDate()}`;
+  return `${fmt(mon)} (월) ~ ${fmt(sun)} (일)`;
 }
 
-function getHwWeekKey(){
-  return document.getElementById('hw-date').value || '';
+function goHomework() {
+  hwWeekKey = getCurrentWeekKey();
+  setView('view-hw');
+  renderWeekControls();
+  loadHomework(hwWeekKey);
+  startHwCountdown();
 }
-function loadHomework(){
-  const key = getHwWeekKey(); if(!key) return;
+
+function startHwCountdown(){
+  updateHwCountdown();
+  clearInterval(hwCountdownTimer);
+  hwCountdownTimer = setInterval(()=>{
+    if(!document.getElementById('view-hw').classList.contains('active')){
+      clearInterval(hwCountdownTimer); return;
+    }
+    updateHwCountdown();
+  }, 1000);
+}
+function updateHwCountdown(){
+  const el = document.getElementById('countdown-target-week') ? hwWeekKey : hwWeekKey;
+  const rangeEl = document.getElementById('hw-week-range');
+  if(rangeEl) rangeEl.textContent = formatWeekRangeLabel(hwWeekKey) + ' 주 숙제';
+
+  const cd = document.getElementById('hw-countdown');
+  if(!cd) return;
+  const isCurrentWeek = (hwWeekKey === getCurrentWeekKey());
+  if(!isCurrentWeek){
+    cd.classList.remove('urgent');
+    cd.innerHTML = '지난 주차 숙제 (조회 전용)';
+    return;
+  }
+  const now = new Date();
+  const deadline = getDeadlineDate(hwWeekKey);
+  let diff = deadline - now;
+  if(diff <= 0){
+    cd.classList.add('urgent');
+    cd.innerHTML = '⏰ 이번 주 숙제 마감됨 (금요일 오후 7시 마감)';
+    return;
+  }
+  const totalSec = Math.floor(diff/1000);
+  const days = Math.floor(totalSec/86400);
+  const hours = Math.floor((totalSec%86400)/3600);
+  const mins = Math.floor((totalSec%3600)/60);
+  const secs = totalSec%60;
+  cd.classList.toggle('urgent', diff < 1000*60*60*6); // 6시간 이내 경고
+  cd.innerHTML = `마감까지 <b>${days}</b>일 <b>${pad2(hours)}</b>시간 <b>${pad2(mins)}</b>분 <b>${pad2(secs)}</b>초 (금요일 오후 7시 마감)`;
+}
+
+function renderWeekControls(){
+  const wrap = document.getElementById('hw-week-controls');
+  if(!wrap) return;
+  if(!S.isAdmin){
+    wrap.innerHTML = `<span class="hw-coach-tag" style="display:none"></span>`;
+    wrap.innerHTML = '';
+    return;
+  }
+  // 코치(관리자)만 지난 주차를 조회할 수 있음
+  db.ref('VALOTACT_DATA/homework').once('value', snap => {
+    const data = snap.val() || {};
+    const keys = Object.keys(data);
+    if(!keys.includes(getCurrentWeekKey())) keys.push(getCurrentWeekKey());
+    keys.sort().reverse();
+    hwAvailableWeeks = keys;
+    wrap.innerHTML = `
+      <span class="hw-coach-tag">👑 코치 전용</span>
+      <select id="hw-week-select" class="hw-week-select" onchange="onWeekSelectChange()">
+        ${keys.map(k=>`<option value="${k}" ${k===hwWeekKey?'selected':''}>${formatWeekRangeLabel(k)}${k===getCurrentWeekKey()?' (이번 주)':''}</option>`).join('')}
+      </select>`;
+  });
+}
+function onWeekSelectChange(){
+  const sel = document.getElementById('hw-week-select');
+  if(!sel) return;
+  hwWeekKey = sel.value;
+  loadHomework(hwWeekKey);
+  updateHwCountdown();
+}
+
+function loadHomework(key){
+  if(!key) return;
   db.ref('VALOTACT_DATA/homework/' + key).once('value', snap => {
     hwData = snap.val() || {};
     renderHomeworkGrid();
   });
 }
 
-function renderHwMedia(url, isMe, type, member) {
-  if (!url) {
-    return isMe ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="triggerHwUpload('${type}','${member}')">클릭하여 사진/영상 첨부</div>` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">미제출</div>';
-  }
-  
-  let mediaHtml = '';
-  const lowerUrl = url.toLowerCase();
-  
-  if (lowerUrl.includes('.mp4') || lowerUrl.includes('.webm') || lowerUrl.includes('.mov')) {
-    mediaHtml = `<video src="${url}" controls playsinline style="width:100%; height:100%; object-fit:contain; background:#000; position:absolute; top:0; left:0; z-index:2; pointer-events:auto;"></video>`;
-  } else {
-    mediaHtml = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; pointer-events:none;">`;
-  }
+// 숙제 1인분 데이터 정규화
+function normHwEntry(raw){
+  return {
+    comp: (raw && Array.isArray(raw.comp)) ? raw.comp : [null,null],
+    tactics: (raw && Array.isArray(raw.tactics)) ? raw.tactics : [],
+    proAnalysis: (raw && raw.proAnalysis) ? raw.proAnalysis : null
+  };
+}
+function isHwComplete(data){
+  const d = normHwEntry(data);
+  return !!(d.comp[0] && d.comp[1]) && d.tactics.length >= 2 && !!d.proAnalysis;
+}
 
-  const btnHtml = isMe ? `<button class="hw-reupload-btn" onclick="triggerHwUpload('${type}', '${member}')">🔄 변경</button>` : '';
-  
+function renderHwSlot(url, isMe, member, idx){
+  if(!url){
+    return isMe
+      ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;text-align:center;" onclick="triggerHwUpload('comp','${esc(member)}',${idx})">클릭하여<br>경쟁 ${idx+1} 첨부</div>`
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;">미제출</div>';
+  }
+  const lowerUrl = url.toLowerCase();
+  let mediaHtml;
+  if(lowerUrl.includes('.mp4')||lowerUrl.includes('.webm')||lowerUrl.includes('.mov')){
+    mediaHtml = `<video src="${url}" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000;position:absolute;top:0;left:0;z-index:2;"></video>`;
+  } else {
+    mediaHtml = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;pointer-events:none;">`;
+  }
+  const btnHtml = isMe ? `<button class="hw-reupload-btn" onclick="triggerHwUpload('comp','${esc(member)}',${idx})">🔄 변경</button>` : '';
   return mediaHtml + btnHtml;
 }
 
-function renderHomeworkGrid() {
+function renderTacticGallery(tactics, isMe, member){
+  const items = tactics.map((url,i) => {
+    const lowerUrl = url.toLowerCase();
+    const isVid = lowerUrl.includes('.mp4')||lowerUrl.includes('.webm')||lowerUrl.includes('.mov');
+    const media = isVid
+      ? `<video src="${url}" controls playsinline></video>`
+      : `<img src="${url}">`;
+    const del = isMe ? `<button class="hw-tactic-del" onclick="delTactic('${esc(member)}',${i})">✕</button>` : '';
+    return `<div class="hw-tactic-item">${media}${del}</div>`;
+  }).join('');
+  const addBtn = isMe ? `<div class="hw-tactic-add" onclick="triggerHwUpload('tactic','${esc(member)}',-1)">＋</div>` : '';
+  return `<div class="hw-tactic-gallery">${items}${addBtn}</div>
+    <span class="hw-tactic-count">${tactics.length}개 업로드됨 (최소 2개 필요)</span>`;
+}
+
+function renderProBox(proAnalysis, isMe, member){
+  const pickBtn = isMe ? `<button class="hw-pro-pick" onclick="openRoundPick('${esc(member)}')">${proAnalysis?'라운드 변경':'라운드 선택'}</button>` : '';
+  if(!proAnalysis){
+    return `<div class="hw-pro-box"><div class="hw-pro-info" style="color:var(--muted)">선택된 라운드 없음</div>${pickBtn}</div>`;
+  }
+  return `<div class="hw-pro-box">
+    <div class="hw-pro-info">${esc(proAnalysis.roomName)} · R${proAnalysis.roundNumber}<br><span class="sub">${esc(proAnalysis.mapOrDesc||'')}</span></div>
+    ${pickBtn}
+  </div>`;
+}
+
+function renderHomeworkGrid(){
   const grid = document.getElementById('hw-grid');
-  if (!S.members || S.members.length === 0) {
+  if(!S.members || S.members.length === 0){
     grid.innerHTML = '<div class="empty-state">등록된 멤버가 없습니다. 관리자 모드에서 추가하세요.</div>';
     return;
   }
-  
-  // 제출 현황 요약
+  const isCurrentWeek = (hwWeekKey === getCurrentWeekKey());
+
   const totalM = S.members.length;
-  const doneComp = S.members.filter(m=>(hwData[m.name]||{}).compImg).length;
-  const doneTactic = S.members.filter(m=>(hwData[m.name]||{}).tacticImg).length;
+  const doneAll = S.members.filter(m => isHwComplete(hwData[m.name])).length;
   const sumEl = document.getElementById('hw-summary');
-  if(sumEl) sumEl.innerHTML = `전체 ${totalM}명 &nbsp;|&nbsp; 경쟁 인증 <span style="color:var(--teal)">${doneComp}/${totalM}</span> &nbsp;|&nbsp; 택틱 인증 <span style="color:var(--teal)">${doneTactic}/${totalM}</span>`;
+  if(sumEl) sumEl.innerHTML = `전체 ${totalM}명 &nbsp;|&nbsp; 숙제 완료 <span style="color:var(--teal)">${doneAll}/${totalM}</span>명`;
 
   grid.innerHTML = S.members.map(m => {
-    const data = hwData[m.name] || { compImg: null, tacticImg: null };
-    const isMe = (S.currentUser === m.name || S.isAdmin);
-    
+    const data = normHwEntry(hwData[m.name]);
+    const isMe = isCurrentWeek && (S.currentUser === m.name || S.isAdmin);
+    const complete = isHwComplete(hwData[m.name]);
+
     return `
       <div class="hw-card">
         <div class="hw-name">
           ${esc(m.name)}
-          <span style="font-size:12px;font-family:var(--fm);">
-            ${data.compImg?'<span style="color:var(--teal)">✓경쟁</span>':'<span style="color:var(--muted)">✗경쟁</span>'}
-            ${data.tacticImg?'<span style="color:var(--teal);margin-left:4px">✓택틱</span>':'<span style="color:var(--muted);margin-left:4px">✗택틱</span>'}
-          </span>
+          <span>${complete?'<span class="hw-complete-tag">✓ 제출완료</span>':'<span class="hw-incomplete-tag">미완료</span>'}</span>
         </div>
-        
+
         <div class="hw-box">
-          <label class="hw-label">1. 경쟁 2회 플레이 인증</label>
-          <div class="hw-img-ph">
-            ${renderHwMedia(data.compImg, isMe, 'comp', m.name)}
+          <label class="hw-label">1. 경쟁 2회 플레이 인증 (2개 필수)</label>
+          <div class="hw-comp-row">
+            <div class="hw-img-ph">${renderHwSlot(data.comp[0], isMe, m.name, 0)}</div>
+            <div class="hw-img-ph">${renderHwSlot(data.comp[1], isMe, m.name, 1)}</div>
           </div>
         </div>
 
         <div class="hw-box">
-          <label class="hw-label">2. 당일 맵 택틱 인증 (MP4 지원)</label>
-          <div class="hw-img-ph">
-            ${renderHwMedia(data.tacticImg, isMe, 'tactic', m.name)}
-          </div>
+          <label class="hw-label">2. 맵 택틱 인증 (2개 이상, MP4 지원)</label>
+          ${renderTacticGallery(data.tactics, isMe, m.name)}
+        </div>
+
+        <div class="hw-box">
+          <label class="hw-label">3. 프로경기 분석 (작성한 라운드 중 1개 선택)</label>
+          ${renderProBox(data.proAnalysis, isMe, m.name)}
         </div>
       </div>
     `;
   }).join('');
 }
 
-function triggerHwUpload(type, member) {
-  curHwTarget = { type, member };
+function triggerHwUpload(type, member, idx){
+  if(hwWeekKey !== getCurrentWeekKey()){ showNotif('지난 주차 숙제는 수정할 수 없습니다'); return; }
+  curHwTarget = { type, member, idx };
   if(type === 'comp') document.getElementById('hw-comp-input').click();
   if(type === 'tactic') document.getElementById('hw-tactic-input').click();
 }
 
-function handleHwUpload(e, type) {
+function delTactic(member, idx){
+  if(hwWeekKey !== getCurrentWeekKey()){ return; }
+  if(!confirm('이 택틱 인증을 삭제하시겠습니까?')) return;
+  const data = normHwEntry(hwData[member]);
+  data.tactics.splice(idx,1);
+  hwData[member] = data;
+  db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data).then(()=>{
+    renderHomeworkGrid();
+    showNotif('택틱 인증이 삭제되었습니다');
+  });
+}
+
+async function persistHwEntry(member){
+  const data = normHwEntry(hwData[member]);
+  hwData[member] = data;
+  await db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data);
+}
+
+function handleHwUpload(e, type){
   const file = e.target.files[0]; if(!file) return;
-  const date = getHwWeekKey();
+  const week = hwWeekKey;
   const member = curHwTarget.member;
-  
+  const idx = curHwTarget.idx;
+
   showNotif('파일 업로드 중... ⏳');
-  
-  if (file.type.startsWith('video/')) {
+
+  const finalizeUrl = async (url) => {
+    const data = normHwEntry(hwData[member]);
+    if(type === 'comp'){
+      data.comp[idx] = url;
+    } else {
+      data.tactics.push(url);
+    }
+    hwData[member] = data;
+    await db.ref(`VALOTACT_DATA/homework/${week}/${member}`).set(data);
+    renderHomeworkGrid();
+    showNotif('✓ 숙제 제출 완료!');
+  };
+
+  if(file.type.startsWith('video/')){
     const ext = file.name.split('.').pop() || 'mp4';
     const fileName = `${gid()}.${ext}`;
-    const ref = storage.ref().child(`homework/${date}/${fileName}`);
-    
-    ref.put(file).then(snapshot => {
-      return snapshot.ref.getDownloadURL();
-    }).then(downloadUrl => {
-      if(!hwData[member]) hwData[member] = {};
-      if(type === 'comp') hwData[member].compImg = downloadUrl;
-      if(type === 'tactic') hwData[member].tacticImg = downloadUrl;
-      
-      return db.ref(`VALOTACT_DATA/homework/${date}/${member}`).set(hwData[member]);
-    }).then(() => {
-      renderHomeworkGrid();
-      showNotif('✓ 동영상 숙제 제출 완료!');
-    }).catch(err => {
-      console.error(err);
-      alert('동영상 업로드 실패: Firebase Storage 설정을 확인하세요.');
-    });
+    const ref = storage.ref().child(`homework/${week}/${fileName}`);
+    ref.put(file).then(snapshot => snapshot.ref.getDownloadURL())
+      .then(finalizeUrl)
+      .catch(err => { console.error(err); alert('동영상 업로드 실패: Firebase Storage 설정을 확인하세요.'); });
     e.target.value='';
     return;
   }
 
-  const reader=new FileReader();
-  reader.onload=ev=>{
+  const reader = new FileReader();
+  reader.onload = ev => {
     const tempImg = new Image();
     tempImg.onload = async () => {
       const maxW = 1000;
       let w = tempImg.width, h = tempImg.height;
-      if (w > maxW) { h = (maxW / w) * h; w = maxW; }
-      
-      const compCanvas = document.createElement('canvas');
-      compCanvas.width = w; compCanvas.height = h;
-      compCanvas.getContext('2d').drawImage(tempImg, 0, 0, w, h);
-      const compressedDataUrl = compCanvas.toDataURL('image/jpeg', 0.8);
-
+      if(w > maxW){ h = (maxW/w)*h; w = maxW; }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(tempImg,0,0,w,h);
+      const compressedDataUrl = c.toDataURL('image/jpeg', 0.8);
       try {
-        const downloadUrl = await uploadToStorage(compressedDataUrl, `homework/${date}`);
-        if(!hwData[member]) hwData[member] = {};
-        if(type === 'comp') hwData[member].compImg = downloadUrl;
-        if(type === 'tactic') hwData[member].tacticImg = downloadUrl;
-        
-        await db.ref(`VALOTACT_DATA/homework/${date}/${member}`).set(hwData[member]);
-        renderHomeworkGrid();
-        showNotif('✓ 사진 숙제 제출 완료!');
-      } catch (err) {
+        const downloadUrl = await uploadToStorage(compressedDataUrl, `homework/${week}`);
+        await finalizeUrl(downloadUrl);
+      } catch(err){
         console.error(err);
         alert('업로드 실패: Firebase Storage 설정을 확인하세요.');
       }
@@ -1338,6 +1539,51 @@ function handleHwUpload(e, type) {
 
 document.getElementById('hw-comp-input').addEventListener('change', (e) => handleHwUpload(e, 'comp'));
 document.getElementById('hw-tactic-input').addEventListener('change', (e) => handleHwUpload(e, 'tactic'));
+
+// ── 프로경기 분석: 기존에 작성한 라운드를 선택해서 숙제로 제출 ──
+let _roundPickMember = null;
+function openRoundPick(member){
+  if(hwWeekKey !== getCurrentWeekKey()){ showNotif('지난 주차 숙제는 수정할 수 없습니다'); return; }
+  _roundPickMember = member;
+  const list = document.getElementById('round-pick-list');
+  const myRounds = [];
+  (S.rooms||[]).forEach(room => {
+    (room.rounds||[]).forEach(round => {
+      if(round.analyzedBy === member){
+        myRounds.push({ room, round });
+      }
+    });
+  });
+  if(!myRounds.length){
+    list.innerHTML = '<div class="empty-state">내가 작성한 라운드가 없습니다. 분석방에서 먼저 라운드를 작성하세요.</div>';
+  } else {
+    list.innerHTML = myRounds.map(({room,round}) => {
+      const thumb = round.slides && round.slides[0] && round.slides[0].image
+        ? `<img class="round-pick-thumb" src="${round.slides[0].image}">`
+        : `<div class="round-pick-thumb"></div>`;
+      return `<div class="round-pick-item" onclick='pickRound(${JSON.stringify(member)}, ${JSON.stringify(room.id)}, ${JSON.stringify(round.id)})'>
+        ${thumb}
+        <div class="round-pick-meta">${esc(room.name)} · R${round.number}<br><span class="sub">📍 ${esc(room.map||'')} · ${esc(round.description||'')}</span></div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('modal-round-pick').classList.add('open');
+}
+async function pickRound(member, roomId, roundId){
+  const room = S.rooms.find(r=>r.id===roomId); if(!room) return;
+  const round = (room.rounds||[]).find(r=>r.id===roundId); if(!round) return;
+  const data = normHwEntry(hwData[member]);
+  data.proAnalysis = {
+    roomId, roundId,
+    roomName: room.name, roundNumber: round.number,
+    mapOrDesc: `📍 ${room.map||''} ${round.description?'· '+round.description:''}`
+  };
+  hwData[member] = data;
+  await db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data);
+  closeModal('modal-round-pick');
+  renderHomeworkGrid();
+  showNotif('✓ 프로경기 분석 라운드가 제출되었습니다');
+}
 
 
 // ══════════════════════════════════
@@ -1648,6 +1894,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 
   document.getElementById('modal-add').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-add'); });
+  document.getElementById('modal-round-pick').addEventListener('click',function(e){ if(e.target===this) closeModal('modal-round-pick'); });
 
   // 창 크기 변경 시 캔버스 재조정
   let _resizeTimer=null;
