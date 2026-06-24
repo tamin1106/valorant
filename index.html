@@ -897,18 +897,8 @@ function initFirebaseSync() {
   });
 }
 
-let _lsSaveTimer = null;
 function saveSession() {
-  // 세션 정보(로그인 상태)만 localStorage에 저장 - rooms/members는 Firebase가 source of truth
-  clearTimeout(_lsSaveTimer);
-  _lsSaveTimer = setTimeout(() => {
-    try {
-      localStorage.setItem('vt_team_v3', JSON.stringify({
-        currentUser: S.currentUser, isAdmin: S.isAdmin,
-        curRoom: S.curRoom, curRound: S.curRound
-      }));
-    } catch(e) {}
-  }, 300);
+  // 세션 정보 저장하지 않음 - 매번 로그인 필요
 }
 function syncNode(path, data) {
   saveSession();
@@ -921,16 +911,7 @@ function saveS() {
 }
 
 function loadLocalSession() {
-  try {
-    const s = localStorage.getItem('vt_team_v3');
-    if(s) {
-      const parsed = JSON.parse(s);
-      S.currentUser = parsed.currentUser;
-      S.isAdmin = parsed.isAdmin;
-      S.curRoom = parsed.curRoom;
-      S.curRound = parsed.curRound;
-    }
-  } catch(e){}
+  // 자동 로그인 없음 - 매번 로그인 화면에서 시작
 }
 
 function gid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
