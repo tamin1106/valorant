@@ -393,16 +393,47 @@ body.light-mode .topbar{background:rgba(240,242,245,0.95)}
 /* ─── TEAM HUB / AUTH ─── */
 .login-view{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;position:relative}
 .login-view::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%, rgba(255,70,85,0.06) 0%, transparent 60%);pointer-events:none}
-.login-card{background:var(--card);border:1px solid var(--border2);padding:44px;width:100%;max-width:440px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.02);animation:fadeInUp .5s ease both}
+.login-card{background:var(--card);border:1px solid var(--border2);padding:36px;width:100%;max-width:440px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.02);animation:fadeInUp .5s ease both}
 .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--red),var(--red-dim),transparent)}
-.login-card h2{font-family:var(--fh);font-size:26px;letter-spacing:5px;margin-bottom:32px;text-align:center;text-shadow:0 0 30px rgba(255,70,85,0.2)}
-.member-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:30px;max-height:300px;overflow-y:auto;padding-right:4px}
-.member-btn{background:var(--bg2);border:1px solid var(--border);padding:16px;color:var(--text);font-family:var(--fh);font-size:15px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:var(--transition-smooth);text-align:center;position:relative;overflow:hidden}
+.login-card h2{font-family:var(--fh);font-size:26px;letter-spacing:5px;margin-bottom:24px;text-align:center;text-shadow:0 0 30px rgba(255,70,85,0.2)}
+
+/* Auth role tabs (팀원 / 코치) */
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.auth-tab-btn{padding:16px 10px;background:var(--bg2);border:1px solid var(--border);color:var(--muted2);font-family:var(--fh);font-size:15px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:var(--transition-smooth);display:flex;flex-direction:column;align-items:center;gap:6px;text-transform:uppercase}
+.auth-tab-btn .ati{font-size:20px}
+.auth-tab-btn:hover{border-color:var(--border2);background:var(--bg3)}
+.auth-tab-btn.active{background:rgba(0,212,170,.1);border-color:var(--teal);color:var(--teal);box-shadow:0 4px 16px var(--teal-glow)}
+.auth-tab-btn.active.coach{background:rgba(255,70,85,.1);border-color:var(--red);color:var(--red);box-shadow:0 4px 16px var(--red-glow)}
+.auth-panel{display:none}
+.auth-panel.active{display:block;animation:fadeIn .2s ease}
+
+.member-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px;max-height:300px;overflow-y:auto;padding-right:4px}
+.member-btn{background:var(--bg2);border:1px solid var(--border);padding:16px 10px;color:var(--text);font-family:var(--fh);font-size:15px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:var(--transition-smooth);text-align:center;position:relative;overflow:hidden;min-height:48px}
 .member-btn::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--teal);transform:scaleX(0);transition:transform .3s}
 .member-btn:hover{border-color:rgba(0,212,170,.4);background:var(--bg3);color:var(--teal);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
 .member-btn:hover::before{transform:scaleX(1)}
-.admin-trigger{display:block;width:100%;text-align:center;font-size:11px;color:var(--muted);cursor:pointer;margin-top:12px;font-family:var(--fm);letter-spacing:1px;transition:color .2s;padding:6px}
-.admin-trigger:hover{color:var(--red)}
+.member-btn.sel{border-color:var(--teal);background:rgba(0,212,170,.1);color:var(--teal)}
+
+/* Inline password step (replaces prompt()) */
+.auth-pass-step{margin-top:18px;animation:fadeInUp .25s ease both}
+.auth-pass-back{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--muted2);font-family:var(--fm);font-size:12px;letter-spacing:1px;cursor:pointer;padding:6px 2px;margin-bottom:12px;transition:color .2s}
+.auth-pass-back:hover{color:var(--text)}
+.auth-pass-target{font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.auth-pass-target .apt-tag{font-family:var(--fm);font-size:10px;color:var(--muted2);border:1px solid var(--border2);padding:2px 8px;letter-spacing:1px}
+.auth-pass-input-row{display:flex;gap:8px}
+.auth-pass-input{flex:1;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:var(--fm);font-size:16px;letter-spacing:3px;padding:14px 16px;transition:border-color .2s;min-width:0}
+.auth-pass-input:focus{outline:none;border-color:var(--teal)}
+.auth-pass-step.coach .auth-pass-input:focus{border-color:var(--red)}
+.auth-pass-submit{background:linear-gradient(135deg,var(--teal),#00a988);color:#fff;border:none;padding:0 20px;font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:var(--transition-smooth);white-space:nowrap}
+.auth-pass-submit:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--teal-glow)}
+.auth-pass-submit.coach{background:linear-gradient(135deg,var(--red),var(--red-dim))}
+.auth-pass-submit.coach:hover{box-shadow:0 6px 16px var(--red-glow)}
+.auth-pass-err{color:var(--red);font-family:var(--fm);font-size:12px;letter-spacing:.5px;margin-top:10px;min-height:14px;display:flex;align-items:center;gap:6px}
+
+/* Coach panel direct entry */
+.coach-direct-btn{width:100%;background:linear-gradient(135deg,var(--red),var(--red-dim));color:#fff;border:none;padding:18px;font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:var(--transition-smooth);text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:10px}
+.coach-direct-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--red-glow)}
+.coach-panel-desc{color:var(--muted2);font-size:12px;text-align:center;margin-bottom:18px;line-height:1.6}
 
 /* Admin View */
 #view-admin.active{display:flex}
@@ -527,8 +558,33 @@ body.light-mode .topbar{background:rgba(240,242,245,0.95)}
       </div>
       <div class="logo" style="margin-bottom:10px;text-align:center">VALO<span>TACT</span></div>
       <h2>TEAM HUB</h2>
-      <div id="member-selection-grid" class="member-grid"></div>
-      <div class="admin-trigger" onclick="promptAdminLogin()">COACH / ADMIN LOGIN</div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab-btn member active" id="auth-tab-member" onclick="switchAuthTab('member')">
+          <span class="ati">👤</span>팀원 로그인
+        </button>
+        <button class="auth-tab-btn coach" id="auth-tab-coach" onclick="switchAuthTab('coach')">
+          <span class="ati">👑</span>코치 로그인
+        </button>
+      </div>
+
+      <!-- 팀원 로그인 패널 -->
+      <div class="auth-panel active" id="auth-panel-member">
+        <div id="member-selection-grid" class="member-grid"></div>
+        <div id="member-pass-step"></div>
+      </div>
+
+      <!-- 코치 로그인 패널 -->
+      <div class="auth-panel" id="auth-panel-coach">
+        <div class="coach-panel-desc">코치 / 관리자 비밀번호를 입력하세요.</div>
+        <div class="auth-pass-step coach" style="margin-top:0">
+          <div class="auth-pass-input-row">
+            <input type="password" id="coach-pass-input" class="auth-pass-input" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter') submitCoachLogin()">
+            <button class="auth-pass-submit coach" onclick="submitCoachLogin()">로그인</button>
+          </div>
+          <div class="auth-pass-err" id="coach-pass-err"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -830,7 +886,49 @@ body.light-mode .topbar{background:rgba(240,242,245,0.95)}
       <div id="sched-day-list"></div>
       <div id="sched-add-form" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
         <div class="fg"><label class="fl">경기 이름</label><input id="sm-name" class="fi" type="text" placeholder="예: 스크림 vs OO팀"></div>
-        <div class="fg"><label class="fl">시간</label><input id="sm-time" class="fi" type="time" value="20:00"></div>
+        <div class="fg">
+          <label class="fl">시간</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <select id="sm-hour" class="fi">
+              <option value="">--시</option>
+              <option value="00">00시</option><option value="01">01시</option><option value="02">02시</option>
+              <option value="03">03시</option><option value="04">04시</option><option value="05">05시</option>
+              <option value="06">06시</option><option value="07">07시</option><option value="08">08시</option>
+              <option value="09">09시</option><option value="10">10시</option><option value="11">11시</option>
+              <option value="12">12시</option><option value="13">13시</option><option value="14">14시</option>
+              <option value="15">15시</option><option value="16">16시</option><option value="17">17시</option>
+              <option value="18">18시</option><option value="19">19시</option><option value="20" selected>20시</option>
+              <option value="21">21시</option><option value="22">22시</option><option value="23">23시</option>
+            </select>
+            <select id="sm-min" class="fi">
+              <option value="00" selected>00분</option>
+              <option value="10">10분</option>
+              <option value="15">15분</option>
+              <option value="20">20분</option>
+              <option value="30">30분</option>
+              <option value="40">40분</option>
+              <option value="45">45분</option>
+              <option value="50">50분</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl">대상 팀</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <label style="display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:8px 10px;cursor:pointer;transition:border-color .2s;" id="sm-tier-1-lbl">
+              <input type="checkbox" id="sm-tier-1" value="1군" style="accent-color:var(--teal);width:14px;height:14px;" onchange="updateTierLabel()">
+              <span style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--teal);">1군</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:8px 10px;cursor:pointer;transition:border-color .2s;" id="sm-tier-2-lbl">
+              <input type="checkbox" id="sm-tier-2" value="2군" style="accent-color:var(--yellow);width:14px;height:14px;" onchange="updateTierLabel()">
+              <span style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--yellow);">2군</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:8px 10px;cursor:pointer;transition:border-color .2s;" id="sm-tier-all-lbl">
+              <input type="checkbox" id="sm-tier-all" style="accent-color:var(--red);width:14px;height:14px;" onchange="updateTierAll()">
+              <span style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--red);">전체</span>
+            </label>
+          </div>
+        </div>
         <button class="btn-create" style="width:100%" onclick="confirmAddMatch()">경기 추가</button>
       </div>
     </div>
@@ -1235,8 +1333,24 @@ let isDrawing=false, startX=0, startY=0, curPath=[];
 // ══════════════════════════════════
 //  AUTH
 // ══════════════════════════════════
+let _selectedMember = null;
+
+function switchAuthTab(tab){
+  document.getElementById('auth-tab-member').classList.toggle('active', tab==='member');
+  document.getElementById('auth-tab-coach').classList.toggle('active', tab==='coach');
+  document.getElementById('auth-panel-member').classList.toggle('active', tab==='member');
+  document.getElementById('auth-panel-coach').classList.toggle('active', tab==='coach');
+  if(tab==='coach'){
+    setTimeout(()=>{ const inp=document.getElementById('coach-pass-input'); if(inp){ inp.value=''; inp.focus(); } }, 50);
+    document.getElementById('coach-pass-err').textContent='';
+  } else {
+    cancelMemberPassStep();
+  }
+}
+
 function renderMemberSelection(){
   const grid = document.getElementById('member-selection-grid');
+  cancelMemberPassStep();
   if(!S.members || !S.members.length){
     grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:12px;padding:20px;font-family:var(--fm)">등록된 멤버가 없습니다.</div>';
     return;
@@ -1248,27 +1362,65 @@ function renderMemberSelection(){
     return `<div class="member-tier-section" style="grid-column:1/-1">
       <div class="member-tier-heading ${cls}">${label}</div>
       <div class="member-grid" style="margin-bottom:0;max-height:none;overflow:visible;padding-right:0">
-        ${list.map(m=>`<button class="member-btn" onclick="loginAs('${esc(m.name)}')">${esc(m.name)}</button>`).join('')}
+        ${list.map(m=>`<button class="member-btn" id="mbtn-${esc(m.name)}" onclick="selectMember('${esc(m.name)}')">${esc(m.name)}</button>`).join('')}
       </div>
     </div>`;
   };
   grid.innerHTML = section('1군', tier1, 't1') + section('2군', tier2, 't2');
 }
-function loginAs(name){
+
+function selectMember(name){
   const member = S.members.find(m=>m.name===name); if(!member) return;
-  const pass = prompt(`[${name}] 멤버 비밀번호를 입력하세요:`);
-  if(pass === member.pass){ S.currentUser=name; S.isAdmin=false; saveS(); enterSystem(); }
-  else if(pass !== null) alert('비밀번호가 틀렸습니다.');
+  _selectedMember = name;
+  document.querySelectorAll('.member-btn').forEach(b=>b.classList.remove('sel'));
+  const btn = document.getElementById(`mbtn-${name}`); if(btn) btn.classList.add('sel');
+  document.getElementById('member-pass-step').innerHTML = `
+    <div class="auth-pass-step" id="member-pass-step-inner">
+      <button class="auth-pass-back" onclick="cancelMemberPassStep()">← 다른 팀원 선택</button>
+      <div class="auth-pass-target">${esc(name)} <span class="apt-tag">팀원</span></div>
+      <div class="auth-pass-input-row">
+        <input type="password" id="member-pass-input" class="auth-pass-input" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter') submitMemberLogin()">
+        <button class="auth-pass-submit" onclick="submitMemberLogin()">로그인</button>
+      </div>
+      <div class="auth-pass-err" id="member-pass-err"></div>
+    </div>`;
+  setTimeout(()=>{ const inp=document.getElementById('member-pass-input'); if(inp) inp.focus(); }, 50);
 }
-function promptAdminLogin(){
-  const pass = prompt('코치(관리자) 비밀번호를 입력하세요:');
-  if(pass === ADMIN_PASS){ 
-    S.currentUser='COACH'; 
-    S.isAdmin=true; 
-    saveS(); 
-    enterSystem(); 
+
+function cancelMemberPassStep(){
+  _selectedMember = null;
+  document.querySelectorAll('.member-btn').forEach(b=>b.classList.remove('sel'));
+  const step = document.getElementById('member-pass-step');
+  if(step) step.innerHTML='';
+}
+
+function submitMemberLogin(){
+  const name = _selectedMember;
+  const member = S.members.find(m=>m.name===name); if(!member) return;
+  const inp = document.getElementById('member-pass-input');
+  const pass = inp ? inp.value : '';
+  const err = document.getElementById('member-pass-err');
+  if(pass === member.pass){
+    S.currentUser=name; S.isAdmin=false; saveS(); enterSystem();
+  } else {
+    if(err) err.textContent='⚠ 비밀번호가 틀렸습니다.';
+    if(inp){ inp.value=''; inp.focus(); }
   }
-  else if(pass !== null) alert('비밀번호가 틀렸습니다.');
+}
+
+function submitCoachLogin(){
+  const inp = document.getElementById('coach-pass-input');
+  const pass = inp ? inp.value : '';
+  const err = document.getElementById('coach-pass-err');
+  if(pass === ADMIN_PASS){
+    S.currentUser='COACH';
+    S.isAdmin=true;
+    saveS();
+    enterSystem();
+  } else {
+    if(err) err.textContent='⚠ 비밀번호가 틀렸습니다.';
+    if(inp){ inp.value=''; inp.focus(); }
+  }
 }
 function showAdminView(){ 
   setView('view-admin'); 
@@ -1770,25 +1922,58 @@ function openDayModal(dateKey){
   if(!dayMatches.length){
     list.innerHTML = '<div class="empty-state" style="padding:18px;">등록된 경기가 없습니다</div>';
   } else {
-    list.innerHTML = dayMatches.map(m=>`
+    list.innerHTML = dayMatches.map(m=>{
+      const tierBadge = m.tier ? `<span style="font-family:var(--fh);font-size:10px;font-weight:700;padding:1px 7px;border:1px solid;border-radius:1px;margin-left:6px;${m.tier==='1군'?'color:var(--teal);border-color:var(--teal)':m.tier==='2군'?'color:var(--yellow);border-color:var(--yellow)':'color:var(--red);border-color:var(--red)'}">${esc(m.tier)}</span>` : '';
+      return `
       <div class="day-match-item">
-        <div class="day-match-meta">${esc(m.name)}<br><span class="sub">⏰ ${esc(m.time||'시간 미정')} · by ${esc(m.createdBy||'')}</span></div>
+        <div class="day-match-meta">${esc(m.name)}${tierBadge}<br><span class="sub">⏰ ${esc(m.time||'시간 미정')} · by ${esc(m.createdBy||'')}</span></div>
         ${S.isAdmin?`<button class="card-del" style="position:static;opacity:1;" onclick="delMatch('${m.id}')">✕</button>`:''}
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
   document.getElementById('sched-add-form').style.display = S.isAdmin ? 'block' : 'none';
   document.getElementById('sm-name').value='';
-  document.getElementById('sm-time').value='20:00';
+  document.getElementById('sm-hour').value='20';
+  document.getElementById('sm-min').value='00';
+  document.getElementById('sm-tier-1').checked=false;
+  document.getElementById('sm-tier-2').checked=false;
+  document.getElementById('sm-tier-all').checked=false;
+  updateTierLabel();
   document.getElementById('modal-schedule-day').classList.add('open');
+}
+function updateTierLabel(){
+  const t1 = document.getElementById('sm-tier-1').checked;
+  const t2 = document.getElementById('sm-tier-2').checked;
+  const allChk = document.getElementById('sm-tier-all');
+  allChk.checked = t1 && t2;
+  document.getElementById('sm-tier-1-lbl').style.borderColor = t1 ? 'var(--teal)' : 'var(--border)';
+  document.getElementById('sm-tier-2-lbl').style.borderColor = t2 ? 'var(--yellow)' : 'var(--border)';
+  document.getElementById('sm-tier-all-lbl').style.borderColor = allChk.checked ? 'var(--red)' : 'var(--border)';
+}
+function updateTierAll(){
+  const allChk = document.getElementById('sm-tier-all').checked;
+  document.getElementById('sm-tier-1').checked = allChk;
+  document.getElementById('sm-tier-2').checked = allChk;
+  updateTierLabel();
 }
 function confirmAddMatch(){
   if(!S.isAdmin) return;
   const name = document.getElementById('sm-name').value.trim();
-  const time = document.getElementById('sm-time').value || '';
+  const hour = document.getElementById('sm-hour').value;
+  const min  = document.getElementById('sm-min').value;
+  const time = hour ? `${hour}:${min}` : '';
+  const t1 = document.getElementById('sm-tier-1').checked;
+  const t2 = document.getElementById('sm-tier-2').checked;
+  const tall = document.getElementById('sm-tier-all').checked;
+  let tier = '';
+  if(tall || (t1 && t2)) tier = '전체';
+  else if(t1) tier = '1군';
+  else if(t2) tier = '2군';
   if(!name){ alert('경기 이름을 입력하세요.'); return; }
+  if(!tier){ alert('대상 팀을 선택하세요 (1군 / 2군 / 전체).'); return; }
   if(!S.schedule) S.schedule = [];
-  S.schedule.push({ id:gid(), date:schedSelectedDate, time, name, createdBy:S.currentUser });
+  S.schedule.push({ id:gid(), date:schedSelectedDate, time, name, tier, createdBy:S.currentUser });
   syncNode('schedule', S.schedule);
   closeModal('modal-schedule-day');
   renderCalendar();
@@ -1827,7 +2012,7 @@ function updateLobbyNextMatch(){
   const dateStr = `${next.dt.getMonth()+1}.${next.dt.getDate()} ${pad2(next.dt.getHours())}:${pad2(next.dt.getMinutes())}`;
   widget.innerHTML = `
     <div class="lnm-label">📅 가장 가까운 경기</div>
-    <div class="lnm-name">${esc(next.name)}</div>
+    <div class="lnm-name">${esc(next.name)}${next.tier?` <span style="font-size:13px;font-family:var(--fh);padding:2px 8px;border:1px solid;${next.tier==='1군'?'color:var(--teal);border-color:var(--teal)':next.tier==='2군'?'color:var(--yellow);border-color:var(--yellow)':'color:var(--red);border-color:var(--red)'}">${esc(next.tier)}</span>`:''}</div>
     <div class="lnm-time">${dateStr}</div>
     <div class="lnm-countdown">남은 시간: <b>${days}</b>일 <b>${pad2(hours)}</b>시간 <b>${pad2(mins)}</b>분 <b>${pad2(secs)}</b>초</div>`;
 }
@@ -1969,8 +2154,11 @@ function normHwEntry(raw){
   return {
     comp: (raw && Array.isArray(raw.comp)) ? raw.comp : [null,null],
     tactics: (raw && Array.isArray(raw.tactics)) ? raw.tactics : [],
-    proAnalysis: (raw && raw.proAnalysis) ? raw.proAnalysis : null
+    proAnalysis: (raw && raw.proAnalysis) ? raw.proAnalysis : null,
+    status: (raw && raw.status) ? raw.status : 'pending',
+    feedback: (raw && raw.feedback) ? raw.feedback : ''
   };
+};
 }
 function isHwComplete(data){
   const d = normHwEntry(data);
@@ -2039,12 +2227,39 @@ function renderHomeworkGrid(){
     const isMe = isCurrentWeek && (S.currentUser === m.name || S.isAdmin);
     const complete = isHwComplete(hwData[m.name]);
 
+    let statusHtml = '';
+    if (complete) {
+      if (data.status === 'pass') {
+        statusHtml = '<span class="hw-complete-tag" style="background:rgba(0,212,170,.15);border-color:var(--teal);color:var(--teal)">🏆 숙제 통과</span>';
+      } else if (data.status === 'fail') {
+        statusHtml = '<span class="hw-complete-tag" style="background:rgba(255,70,85,.1);border-color:var(--red);color:var(--red)">⚠️ 불합격 (재제출 요망)</span>';
+      } else {
+        statusHtml = '<span class="hw-complete-tag" style="background:var(--bg3);border-color:var(--border);color:var(--text)">✅ 제출 완료 (심사 대기)</span>';
+      }
+    } else {
+      statusHtml = '<span class="hw-incomplete-tag">미완료</span>';
+    }
+
+    const feedbackHtml = (data.status === 'fail' && data.feedback)
+      ? `<div style="margin-bottom:15px; padding:10px; background:rgba(255,70,85,.08); border:1px solid rgba(255,70,85,.4); color:var(--red); font-size:12px; font-family:var(--fb);"><b>코치 피드백:</b> ${esc(data.feedback)}</div>`
+      : '';
+
+    let coachActions = '';
+    if (S.isAdmin && isCurrentWeek && complete) {
+      coachActions = `
+        <div style="display:flex; gap:8px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--border);">
+          <button onclick="setHwStatus('${esc(m.name)}', 'pass')" style="flex:1; padding:8px; background:rgba(0,212,170,.1); color:var(--teal); border:1px solid var(--teal); font-family:var(--fh); font-weight:700; cursor:pointer; transition:all 0.2s;">통과 (PASS)</button>
+          <button onclick="setHwStatus('${esc(m.name)}', 'fail')" style="flex:1; padding:8px; background:rgba(255,70,85,.1); border:1px solid var(--red); color:var(--red); font-family:var(--fh); font-weight:700; cursor:pointer; transition:all 0.2s;">불합격 (FAIL)</button>
+        </div>`;
+    }
+
     return `
       <div class="hw-card">
         <div class="hw-name">
           ${esc(m.name)}<span class="tier-badge ${ (m.tier||'1군')==='2군' ? 't2' : 't1' }">${esc(m.tier||'1군')}</span>
-          <span>${complete?'<span class="hw-complete-tag">✓ 제출완료</span>':'<span class="hw-incomplete-tag">미완료</span>'}</span>
+          <span>${statusHtml}</span>
         </div>
+        ${feedbackHtml}
 
         <div class="hw-box">
           <label class="hw-label">1. 경쟁 2회 플레이 인증 (2개 필수)</label>
@@ -2063,6 +2278,8 @@ function renderHomeworkGrid(){
           <label class="hw-label">3. 프로경기 분석 (작성한 라운드 중 1개 선택)</label>
           ${renderProBox(data.proAnalysis, isMe, m.name)}
         </div>
+        
+        ${coachActions}
       </div>
     `;
   }).join('');
@@ -2080,6 +2297,9 @@ function delTactic(member, idx){
   if(!confirm('이 택틱 인증을 삭제하시겠습니까?')) return;
   const data = normHwEntry(hwData[member]);
   data.tactics.splice(idx,1);
+  
+  data.status = 'pending';
+  data.feedback = '';
   hwData[member] = data;
   db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data).then(()=>{
     renderHomeworkGrid();
@@ -2091,6 +2311,9 @@ function delHwComp(member, idx){
   if(!confirm('이 경쟁전 인증을 삭제하시겠습니까?')) return;
   const data = normHwEntry(hwData[member]);
   data.comp[idx] = null;
+  
+  data.status = 'pending';
+  data.feedback = '';
   hwData[member] = data;
   db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data).then(()=>{
     renderHomeworkGrid();
@@ -2100,6 +2323,9 @@ function delHwComp(member, idx){
 
 async function persistHwEntry(member){
   const data = normHwEntry(hwData[member]);
+  
+  data.status = 'pending';
+  data.feedback = '';
   hwData[member] = data;
   await db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data);
 }
@@ -2119,7 +2345,10 @@ function handleHwUpload(e, type){
     } else {
       data.tactics.push(url);
     }
-    hwData[member] = data;
+    
+  data.status = 'pending';
+  data.feedback = '';
+  hwData[member] = data;
     await db.ref(`VALOTACT_DATA/homework/${week}/${member}`).set(data);
     renderHomeworkGrid();
     showNotif('✓ 숙제 제출 완료!');
@@ -2199,6 +2428,9 @@ async function pickRound(member, roomId, roundId){
     roomName: room.name, roundNumber: round.number,
     mapOrDesc: `📍 ${room.map||''} ${round.description?'· '+round.description:''}`
   };
+  
+  data.status = 'pending';
+  data.feedback = '';
   hwData[member] = data;
   await db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data);
   closeModal('modal-round-pick');
@@ -2695,6 +2927,29 @@ function setColor(el){
   document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('active'));
   el.classList.add('active');
 }
+
+// 코치 숙제 평가 함수
+window.setHwStatus = async function(member, status) {
+  if (!S.isAdmin) return;
+  
+  const data = normHwEntry(hwData[member]);
+  data.status = status;
+  
+  if (status === 'fail') {
+    const reason = prompt("불합격 사유를 입력하세요 (멤버에게 표시되어 재제출을 안내합니다):");
+    if (reason === null) return;
+    data.feedback = reason || "숙제 내용이 부족합니다. 다시 확인 후 수정해주세요.";
+  } else {
+    data.feedback = "";
+  }
+  
+  hwData[member] = data;
+  await db.ref(`VALOTACT_DATA/homework/${hwWeekKey}/${member}`).set(data);
+  renderHomeworkGrid();
+  showNotif(status === 'pass' ? `✓ ${member} 숙제 통과 처리됨` : `⚠️ ${member} 숙제 반려 처리됨`);
+};
+
 </script>
 </body>
   </html>
+
